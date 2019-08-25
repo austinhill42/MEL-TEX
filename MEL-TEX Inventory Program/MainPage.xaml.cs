@@ -45,6 +45,8 @@ namespace MELTEX
             MainWindow.GetWindow(this).Title = "Main Window";
 
             CB_Inventory.SelectedIndex = -1;
+            CB_Purchasing.SelectedIndex = -1;
+            CB_Sales.SelectedIndex = -1;
         }
     }
 }
