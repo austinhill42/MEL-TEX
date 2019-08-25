@@ -1,0 +1,252 @@
+﻿<Page
+    x:Class="MELTEX.MainPage"
+    x:Name="Main"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="Auto"
+    Width="Auto"
+    Title="Main Window"
+    Loaded="Main_Loaded">
+
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto">
+
+        <StackPanel
+            Orientation="Vertical"
+            Width="600"
+            Margin="20">
+
+            <TextBlock
+                FontSize="50"
+                Margin="20"
+                Foreground="Black"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            
+                    <Bold>MEL-TEX</Bold>
+
+            </TextBlock>
+
+
+
+            <Grid
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0, 20, 0, 0">
+
+                <Grid.ColumnDefinitions>
+
+
+                    <ColumnDefinition
+                        Width="150" />
+                    <ColumnDefinition
+                        Width="150" />
+                    <ColumnDefinition
+                        Width="150" />
+                    <ColumnDefinition
+                        Width="150" />
+
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Style="{StaticResource MainWindowButton}">
+
+                    <Grid>
+
+                        <ComboBox
+                            x:Name="CB_Inventory"
+                            Style="{StaticResource MainWindowComboBox}"
+                            SelectionChanged="Inventory_SelectionChanged">
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Inventory Report
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Add Inventory Item
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Inventory Inbound
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Inventory Item
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Inbounded Item
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Inventory Item
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Inbounded Item
+
+                            </ComboBoxItem>
+
+                        </ComboBox>
+
+                        <TextBlock
+                            Style="{StaticResource MainWindowButtonText}"
+                            Visibility="{Binding SelectedItem, ElementName=Inventory, Converter={StaticResource NullToVisibilityConverter}}"
+                            IsHitTestVisible="False"
+                            Text="Inventory" />
+
+                    </Grid>
+                </Button>
+
+                <Button
+                    Style="{StaticResource MainWindowButton}"
+                    Grid.Column="1">
+
+                    <Grid>
+
+                        <ComboBox
+                            x:Name="CB_Sales"
+                            Style="{StaticResource MainWindowComboBox}">
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Customer Information
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Add customer
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Customer
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Customer
+
+                            </ComboBoxItem>
+
+                        </ComboBox>
+
+                        <TextBlock
+                            Style="{StaticResource MainWindowButtonText}"
+                            Visibility="{Binding SelectedItem, ElementName=Sales, Converter={StaticResource NullToVisibilityConverter}}"
+                            Text="Sales" />
+
+                    </Grid>
+                </Button>
+
+                <Button
+                    Style="{StaticResource MainWindowButton}"
+                    Grid.Column="2">
+
+                    <Grid>
+
+                        <ComboBox
+                            x:Name="CB_Purchasing"
+                            Style="{StaticResource MainWindowComboBox}">
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Vendor Information
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Add Vendor
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Vendor
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Vendor
+
+                            </ComboBoxItem>
+
+                        </ComboBox>
+
+                        <TextBlock
+                            Style="{StaticResource MainWindowButtonText}"
+                            Visibility="{Binding SelectedItem, ElementName=Purchasing, Converter={StaticResource NullToVisibilityConverter}}"
+                            Text="Purchasing" />
+
+                    </Grid>
+                </Button>
+
+                <Button
+                    Style="{StaticResource MainWindowButton}"
+                    Grid.Column="3">
+
+                    <Grid>
+
+                        <ComboBox
+                            x:Name="Settings"
+                            Style="{StaticResource MainWindowComboBox}">
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Groups
+
+                            </ComboBoxItem>
+
+                        </ComboBox>
+
+                        <TextBlock
+                            Style="{StaticResource MainWindowButtonText}"
+                            Visibility="{Binding SelectedItem, ElementName=Settings, Converter={StaticResource NullToVisibilityConverter}}"
+                            IsHitTestVisible="False"
+                            Text="Settings" />
+
+                    </Grid>
+                </Button>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
