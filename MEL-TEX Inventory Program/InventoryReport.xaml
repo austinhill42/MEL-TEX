@@ -63,7 +63,9 @@
                     VerticalAlignment="Center" />
                 <TextBox
                     x:Name="TB_SearchID"
-                    Width="250" />
+                    Width="250"
+                    VerticalContentAlignment="Center"
+                    TextChanged="TB_SearchID_TextChanged" />
 
             </StackPanel>
 
@@ -80,7 +82,9 @@
                     VerticalAlignment="Center" />
                 <TextBox
                     x:Name="TB_SearchDesc"
-                    Width="400" />
+                    Width="400"
+                    TextWrapping="Wrap"
+                    TextChanged="TB_SearchDesc_TextChanged" />
 
             </StackPanel>
 
@@ -110,8 +114,23 @@
                 <DataGrid
                     x:Name="InventoryDataGrid"
                     Height="369"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch" />
+                    VerticalContentAlignment="Center"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding}">
+
+                    <DataGrid.Resources>
+                        <Style
+                            TargetType="DataGridRow">
+
+                            <EventSetter
+                                Event="MouseDoubleClick"
+                                Handler="InventoryDataGrid_MouseDoubleClick"/>
+                            
+                        </Style>
+
+                    </DataGrid.Resources>
+
+                </DataGrid>
 
             </StackPanel>
 
@@ -145,8 +164,42 @@
                 <DataGrid
                     x:Name="QuoteDataGrid"
                     Height="369"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch" />
+                    ItemsSource="{Binding}">
+
+                    <DataGrid.Resources>
+                        <Style
+                            TargetType="DataGridRow">
+
+                            <EventSetter
+                                Event="MouseDoubleClick"
+                                Handler="QuoteDataGrid_MouseDoubleClick" />
+
+                        </Style>
+
+                        <!--<Style
+                            TargetType="DataGridCell">
+
+                            <Style.Triggers>
+
+                                <Trigger
+                                    Property="IsMouseOver"
+                                    Value="True">
+
+                                    <Setter
+                                        Property="IsSelected"
+                                        Value="True" />
+
+                                    <Setter
+                                        Property="IsEditing"
+                                        Value="True" />
+
+                                </Trigger>
+
+                            </Style.Triggers>
+                        </Style>-->
+                    </DataGrid.Resources>
+                    
+                </DataGrid>
 
             </StackPanel>
 
