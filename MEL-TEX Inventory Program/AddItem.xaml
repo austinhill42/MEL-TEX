@@ -1,0 +1,275 @@
+﻿<Page
+    x:Class="MELTEX.AddItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="Auto"
+    Width="Auto"
+    Background="White"
+    Title="AddItem"
+    Loaded="Page_Loaded">
+
+    <Viewbox>
+
+        <Grid
+            x:Name="Grid"
+            Margin="10, 20, 10, 20">
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition
+                    Width="250" />
+                <ColumnDefinition
+                    Width="300" />
+                <ColumnDefinition
+                    Width="50" />
+                <ColumnDefinition
+                    Width="300" />
+                <ColumnDefinition
+                    Width="250" />
+
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="300" />
+                <RowDefinition
+                    Height="100" />
+
+            </Grid.RowDefinitions>
+
+            <Label
+                Content="Item ID: "
+                Grid.Row="0"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Center"/>
+
+            <TextBox
+                x:Name="TB_ItemID"
+                Grid.Row="0"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}" />
+
+            <Label
+                Content="Description: "
+                Grid.Row="0"
+                Grid.Column="3"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_Desc"
+                Grid.Row="0"
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}" />
+
+            <Label
+                Content="Weight: "
+                Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_Weight"
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}" />
+
+            <Label
+                Content="List Price: "
+                Grid.Row="1"
+                Grid.Column="3"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_ListPrice"
+                Grid.Row="1"
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}"
+                TextChanged="TB_ListPrice_TextChanged"/>
+
+            <Label
+                Content="Group: "
+                Grid.Row="2"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <ComboBox
+                x:Name="CB_Group"
+                ItemsSource="{Binding}"
+                DisplayMemberPath="Group"
+                SelectedValuePath="Multiplier"
+                Grid.Row="2"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Width="200"
+                SelectionChanged ="CB_Group_SelectionChanged"/>
+
+            <Label
+                Content="Multiplier: "
+                Grid.Row="2"
+                Grid.Column="3"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_Mult"
+                Grid.Row="2"
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}"
+                IsReadOnly="True"/>
+
+            <Label
+                Content="Published&#10;Sales: "
+                Grid.Row="3"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_PublishedSales"
+                Grid.Row="3"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}" 
+                IsReadOnly="True"/>
+
+            <Label
+                Content="Published&#10;Cost: "
+                Grid.Row="3"
+                Grid.Column="3"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+
+            <TextBox
+                x:Name="TB_PublishedCost"
+                Grid.Row="3"
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}" />
+
+            <Label
+                Content="Notes: "
+                Grid.Row="4"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="0, 30, 0, 0" />
+
+            <TextBox
+                x:Name="TB_Notes"
+                Grid.Row="4"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Margin="0, 40, 20, 0"
+                Height="200"
+                Width="530"
+                IsReadOnly="True" 
+                FontSize="16"/>
+
+            <Label
+                Content="New Note: "
+                Grid.Row="4"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="0, 30, 0, 0" />
+
+            <TextBox
+                x:Name="TB_AddNote"
+                Grid.Row="4"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                VerticalContentAlignment="Center"
+                Margin="0, 0, 20, 0"
+                Height="30"
+                Width="530"
+                FontSize="16"/>
+
+            <Button
+                x:Name="BTN_AddNote"
+                Content="Add Note"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="4"
+                Grid.Column="4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom" 
+                Click="BTN_AddNote_Click"/>
+
+            <Button
+                x:Name="BTN_Back"
+                Content="_Back"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="5"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Click="BTN_Back_Click" />
+
+            <Button
+                x:Name="BTN_Clear"
+                Content="_Clear"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="5"
+                Grid.Column="4"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Click="BTN_Clear_Click" />
+
+            <Button
+                x:Name="BTN_Save"
+                Content="_Save"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="5"
+                Grid.Column="4"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Click="BTN_Save_Click" />
+
+        </Grid>
+    </Viewbox>
+</Page>

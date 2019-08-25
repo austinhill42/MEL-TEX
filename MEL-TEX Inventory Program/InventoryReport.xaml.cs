@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace MELTEX
 {
@@ -25,7 +15,7 @@ namespace MELTEX
     {
         internal Page previousPage;
         private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
-                    "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale' ";
+                    "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale', item.Notes ";
         private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         private DataTable inventoryDataTable;
@@ -154,9 +144,6 @@ namespace MELTEX
                     adapter.Fill(inventoryDataTable);
                 }
 
-                inventoryDataTable.Columns.Add(new DataColumn("Notes", typeof(string)));
-                PopulateInventoryNotes();
-
                 AddLineNumbers(inventoryDataTable);
 
                 InventoryDataGrid.DataContext = inventoryDataTable.DefaultView;
@@ -166,40 +153,6 @@ namespace MELTEX
             catch (Exception ex)
             {
                 MessageBox.Show("Problem populating Inventory DataGrid:\n\n" + ex.Message);
-            }
-        }
-
-        private void PopulateInventoryNotes()
-        {
-            foreach (DataRow row in inventoryDataTable.Rows)
-            {
-                string notes = "";
-
-                try
-                {
-                    using (SqlConnection sql = new SqlConnection(connString))
-                    {
-                        sql.Open();
-                        SqlCommand com = sql.CreateCommand();
-                        com.CommandText = $"SELECT Date, Time, Description " +
-                            $"FROM Inventory_Notes " +
-                            $"WHERE Inventory_Item LIKE '{row[0].ToString()}'";
-
-                        SqlDataReader reader = com.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            // get the date part of the long date string       get the time                         get the note 
-                            notes += $"{reader.GetValue(0).ToString().Split(' ')[0]}  --  {reader.GetValue(1).ToString()}  --  {reader.GetValue(2).ToString()}\n";
-                        }
-                    }
-
-                    row["Notes"] = notes;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Problem populating inventory notes to Inventory DataGrid:\n\n" + ex.Message);
-                }
             }
         }
 
