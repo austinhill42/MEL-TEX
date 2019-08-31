@@ -42,7 +42,7 @@ namespace MELTEX
 
         private void InventoryReportPage_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow.GetWindow(this).Title = "Inventory Report";
+            this.WindowTitle = "Inventory Report";
 
             PopulateInventoryDataGrid();
             InitializeQuoteDataGrid();
