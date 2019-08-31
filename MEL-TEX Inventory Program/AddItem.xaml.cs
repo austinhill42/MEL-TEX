@@ -99,9 +99,8 @@ namespace MELTEX
                 SqlCommand com = sql.CreateCommand();
                 com.CommandText = query;
 
-
-
                 com.ExecuteNonQuery();
+
                 SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
                 {
                     SelectCommand = com
