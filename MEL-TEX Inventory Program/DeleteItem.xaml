@@ -1,0 +1,85 @@
+﻿<Page
+    x:Class="MELTEX.DeleteItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="Auto"
+    Width="Auto"
+    Background="White"
+    Loaded="Page_Loaded">
+
+    <Viewbox>
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition
+                    Width="110" />
+                <ColumnDefinition
+                    Width="100" />
+                <ColumnDefinition
+                    Width="250" />
+                <ColumnDefinition
+                    Width="110" />
+                
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="100" />
+                <RowDefinition
+                    Height="100" />
+            </Grid.RowDefinitions>
+
+            <Label
+                Content="Item ID: "
+                Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Margin="0" />
+
+            <ComboBox
+                x:Name="CB_ItemID"
+                ItemsSource="{Binding}"
+                DisplayMemberPath="Inventory_Item"
+                SelectedValuePath="Inventory_Item"
+                Grid.Row="1"
+                Grid.Column="2"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                FontSize="16"
+                Width="230"
+                Margin="0, 3, 0, 0" />
+
+            <Button
+                x:Name="BTN_Back"
+                Content="_Back"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="2"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Click="BTN_Back_Click" />
+
+            <Button
+                x:Name="BTN_Delete"
+                Content="_Delete"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="2"
+                Grid.Column="3"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Click="BTN_Delete_Click" />
+        </Grid>
+
+    </Viewbox>
+</Page>
