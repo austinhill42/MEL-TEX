@@ -15,8 +15,7 @@ namespace MELTEX
         private Page previousPage;
         private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
-        DataTable table;
-
+        
         public InventoryInbound(Page prev)
         {
             InitializeComponent();
@@ -89,6 +88,8 @@ namespace MELTEX
 
         private void PopulateItemInfo()
         {
+            DataTable table = new DataTable();
+
             try
             {
                 using (SqlConnection sql = new SqlConnection(connString))
@@ -105,8 +106,6 @@ namespace MELTEX
                     {
                         SelectCommand = com
                     };
-
-                    table = new DataTable();
 
                     adapter.Fill(table);
                 }
@@ -125,6 +124,66 @@ namespace MELTEX
             L_Weight.Content = table.Rows[0]["Weight"];
             TB_ItemNotes.Text = table.Rows[0]["Notes"].ToString().Replace("\n", "\n\n");
 
+        }
+
+        private void UpdateQuantityAvailable()
+        {
+            DataTable quantities = new DataTable();
+
+            try
+            {
+                string query = "SELECT Quantity FROM Inventory WHERE Inventory_Item = @item";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
+
+                    com.ExecuteNonQuery();
+
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                    {
+                        SelectCommand = com
+                    };
+
+                    adapter.Fill(quantities);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
+            }
+
+            int quantityAvail = 0;
+
+            foreach (DataRow row in quantities.Rows)
+                foreach (object cell in row.ItemArray)
+                    quantityAvail += Convert.ToInt32(cell);
+
+            try
+            {
+                string query = "UPDATE Inventory SET QuantityAvail = @avail WHERE Inventory_Item = @item";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
+                    com.Parameters.AddWithValue("@avail", quantityAvail);
+
+                    com.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
+            }
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
@@ -149,14 +208,6 @@ namespace MELTEX
 
                     com.ExecuteNonQuery();
 
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    table = new DataTable();
-
-                    adapter.Fill(table);
                 }
             }
             catch (Exception ex)
@@ -173,6 +224,8 @@ namespace MELTEX
             }
 
             MessageBox.Show($"Item {CB_ItemID.SelectedValue.ToString()} inbounded successfully");
+
+            UpdateQuantityAvailable();
             Clear();
         }
 
