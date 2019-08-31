@@ -35,6 +35,7 @@ namespace MELTEX
                         MainWindow.GetWindow(this).Content = new InventoryInbound(this);
                         break;
                     case "Edit Inventory Item":
+                        MainWindow.GetWindow(this).Content = new AddItem(this, true);
                         break;
                     case "Edit Inbounded Item":
                         break;
@@ -72,7 +73,7 @@ namespace MELTEX
 
         private void Main_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow.GetWindow(this).Title = "Main Window";
+            this.WindowTitle = "Main Window";
         }
 
         private void LoginWrapper(Page page)

@@ -30,6 +30,8 @@ namespace MELTEX
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            this.WindowTitle = "Change Password";
+
             UpdateUsersComboBox();
         }
 
