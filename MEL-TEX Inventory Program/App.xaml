@@ -1,40 +1,62 @@
-﻿<Application x:Class="MELTEX.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MELTEX"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             StartupUri="MainWindow.xaml">
-    
+﻿<Application
+    x:Class="MELTEX.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:MELTEX"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    StartupUri="MainWindow.xaml">
+
     <Application.Resources>
 
-        <sys:String x:Key="DBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="|DataDirectory|\MEL-TEXDB.mdf";Integrated Security=True</sys:String>
-        <sys:String x:Key="QuoteDBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MEL-TEXQuoteDB.mdf";Integrated Security=True</sys:String>
-        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <sys:Double x:Key="MainWindowControlHeight">50</sys:Double>
-        <sys:Double x:Key="MainWindowControlWidth">150</sys:Double>
-        <sys:Double x:Key="WindowHeight">800</sys:Double>
-        <sys:Double x:Key="WindowWidth">1100</sys:Double>
-        <sys:Double x:Key="PageHeight">1440</sys:Double>
-        <sys:Double x:Key="PageWidth">2560</sys:Double>
+        <sys:String
+            x:Key="DBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="|DataDirectory|\MEL-TEXDB.mdf";Integrated Security=True</sys:String>
+        <sys:String
+            x:Key="QuoteDBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MEL-TEXQuoteDB.mdf";Integrated Security=True</sys:String>
+        <local:NullToVisibilityConverter
+            x:Key="NullToVisibilityConverter" />
+        <sys:Double
+            x:Key="MainWindowControlHeight">50</sys:Double>
+        <sys:Double
+            x:Key="MainWindowControlWidth">150</sys:Double>
+        <sys:Double
+            x:Key="WindowHeight">800</sys:Double>
+        <sys:Double
+            x:Key="WindowWidth">1100</sys:Double>
+        <sys:Double
+            x:Key="PageHeight">1440</sys:Double>
+        <sys:Double
+            x:Key="PageWidth">2560</sys:Double>
 
-        <Style 
-            TargetType="Button" 
+        <Style
+            TargetType="Button"
             x:Key="MainWindowButton">
 
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Height" Value="{StaticResource MainWindowControlHeight}"/>
-            <Setter Property="Width" Value="{StaticResource MainWindowControlWidth}"/>
-            
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Center" />
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center" />
+            <Setter
+                Property="Height"
+                Value="{StaticResource MainWindowControlHeight}" />
+            <Setter
+                Property="Width"
+                Value="{StaticResource MainWindowControlWidth}" />
+
 
         </Style>
 
-        <Style 
-            TargetType="TextBlock" 
+        <Style
+            TargetType="TextBlock"
             x:Key="MainWindowButtonText">
 
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Center" />
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center" />
 
         </Style>
 
@@ -42,22 +64,43 @@
             TargetType="ComboBox"
             x:Key="MainWindowComboBox">
 
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="Width" Value="{StaticResource MainWindowControlWidth}"/>
-            <Setter Property="Height" Value="{StaticResource MainWindowControlHeight}"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="SelectedValuePath" Value="Content"/>
+            <Setter
+                Property="IsReadOnly"
+                Value="True" />
+            <Setter
+                Property="Width"
+                Value="{StaticResource MainWindowControlWidth}" />
+            <Setter
+                Property="Height"
+                Value="{StaticResource MainWindowControlHeight}" />
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Center" />
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Center" />
+            <Setter
+                Property="SelectedValuePath"
+                Value="Content" />
 
         </Style>
-        
-        <Style 
-            TargetType="ComboBoxItem" 
+
+        <Style
+            TargetType="ComboBoxItem"
             x:Key="MainWindowComboBoxItem">
 
-            <Setter Property="Height" Value="{StaticResource MainWindowControlHeight}"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter
+                Property="Width"
+                Value="{StaticResource MainWindowControlWidth}" />
+            <Setter
+                Property="Height"
+                Value="{StaticResource MainWindowControlHeight}" />
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Center" />
+            <Setter
+                Property="VerticalAlignment"
+                Value="Center" />
 
         </Style>
 
@@ -86,7 +129,7 @@
             <Setter
                 Property="FontSize"
                 Value="16" />
-           
+
         </Style>
 
         <Style
@@ -100,7 +143,7 @@
             <Setter
                 Property="Width"
                 Value="200" />
-            
+
         </Style>
     </Application.Resources>
 </Application>

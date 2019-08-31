@@ -42,8 +42,12 @@ namespace MELTEX
         private void Clear()
         {
             foreach (UIElement child in this.Grid.Children)
+            {
                 if ((child as TextBox) != null)
                     (child as TextBox).Text = "";
+                else if ((child as ComboBox) != null)
+                    (child as ComboBox).SelectedItem = -1;
+            }
         }
 
         private void UpdatePublishedSales()
@@ -74,7 +78,7 @@ namespace MELTEX
                     cmd.Parameters.AddWithValue("@description", TB_Desc.Text);
                     cmd.Parameters.AddWithValue("@weight", Convert.ToDecimal(TB_Weight.Text));
                     cmd.Parameters.AddWithValue("@listprice", Convert.ToDecimal(TB_ListPrice.Text));
-                    cmd.Parameters.AddWithValue("@group", CB_Group.SelectedValue.ToString());
+                    cmd.Parameters.AddWithValue("@group", ((DataRowView)CB_Group.SelectedItem).Row[0].ToString());
                     cmd.Parameters.AddWithValue("@multiplier", Convert.ToDecimal(TB_Mult.Text));
                     cmd.Parameters.AddWithValue("@sales", Convert.ToDecimal(TB_PublishedSales.Text));
                     cmd.Parameters.AddWithValue("@cost", Convert.ToDecimal(TB_PublishedCost.Text));

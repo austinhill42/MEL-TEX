@@ -9,7 +9,7 @@
     Height="Auto"
     Width="Auto"
     Background="White"
-    Title="AddItem"
+    Title="Add Item to Inventory"
     Loaded="Page_Loaded">
 
     <Viewbox>
