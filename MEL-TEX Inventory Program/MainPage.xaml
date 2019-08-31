@@ -10,7 +10,8 @@
     Height="Auto"
     Width="Auto"
     Title="Main Window"
-    Loaded="Main_Loaded">
+    Loaded="Main_Loaded"
+    IsVisibleChanged="Main_IsVisibleChanged">
 
     <ScrollViewer
         HorizontalScrollBarVisibility="Auto"
@@ -116,8 +117,8 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="Visible"
-                           
+                            Visibility="{Binding SelectedItem, ElementName=Sales, Converter={StaticResource NullToVisibilityConverter}}"
+                            
                             IsHitTestVisible="False"
                             Text="Inventory" />
 
@@ -227,13 +228,21 @@
                     <Grid>
 
                         <ComboBox
-                            x:Name="Settings"
-                            Style="{StaticResource MainWindowComboBox}">
+                            x:Name="CB_Settings"
+                            Style="{StaticResource MainWindowComboBox}"
+                            SelectionChanged="Inventory_SelectionChanged">
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Groups
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Edit Password
 
                             </ComboBoxItem>
 

@@ -1,0 +1,108 @@
+﻿<Window
+    x:Class="MELTEX.LoginForm"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Title="Login Form"
+    Height="300"
+    Width="600"
+    WindowStartupLocation="CenterOwner"
+    WindowState="Normal"
+    WindowStyle="ThreeDBorderWindow"
+    ResizeMode="NoResize"
+    Loaded="Window_Loaded"
+    FocusManager.FocusedElement="{Binding ElementName=TB_Password}">
+    
+    <Grid>
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition
+                    Width="300" />
+                <ColumnDefinition
+                    Width="300" />
+
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition
+                    Height="50" />
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="110" />
+
+            </Grid.RowDefinitions>
+
+            <Label
+                Content="Username: "
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource Labels}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Margin="60, 3, 0, 0" />
+
+            <ComboBox
+                x:Name="CB_Users"
+                Grid.Column="0"
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Width="250"
+                Height="25"
+                Margin="100, 5, 0, 0"
+                ItemsSource="{Binding}"
+                DisplayMemberPath="Username"
+                SelectedValuePath="Password" 
+                SelectionChanged="CB_Users_SelectionChanged"/>
+
+            <Label
+                Content="Password: "
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource Labels}"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="66, 0, 0, 3" />
+
+            <PasswordBox
+                x:Name="TB_Password"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="100, 0, 0, 10"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Width="250" />
+
+            <Button
+                x:Name="BTN_Back"
+                Content="_Back"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="2"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Click="BTN_Back_Click" />
+
+            <Button
+                x:Name="BTN_Login"
+                Content="_Login"
+                Style="{StaticResource NavigationButtons}"
+                IsDefault="True"
+                Grid.Row="2"
+                Grid.Column="1"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Click="BTN_Login_Click" />
+        </Grid>
+    </Grid>
+</Window>
