@@ -67,6 +67,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="InventoryInbound.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InventoryReport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +99,9 @@
     </Compile>
     <Compile Include="EditPassword.xaml.cs">
       <DependentUpon>EditPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryInbound.xaml.cs">
+      <DependentUpon>InventoryInbound.xaml</DependentUpon>
     </Compile>
     <Compile Include="InventoryReport.xaml.cs">
       <DependentUpon>InventoryReport.xaml</DependentUpon>

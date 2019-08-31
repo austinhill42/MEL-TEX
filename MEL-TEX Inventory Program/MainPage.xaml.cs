@@ -31,6 +31,33 @@ namespace MELTEX
                     case "Add Inventory Item":
                         MainWindow.GetWindow(this).Content = new AddItem(this);
                         break;
+                    case "Inventory Inbound":
+                        MainWindow.GetWindow(this).Content = new InventoryInbound(this);
+                        break;
+                    case "Edit Inventory Item":
+                        break;
+                    case "Edit Inbounded Item":
+                        break;
+                    case "Remove Inventory Item":
+                        break;
+                    case "Remove Inbounded Item":
+                        break;
+                    case "Customer Information":
+                        break;
+                    case "Add Customer":
+                        break;
+                    case "Edit Customer":
+                        break;
+                    case "Remove Customer":
+                        break;
+                    case "Vendor Information":
+                        break;
+                    case "Add Vendor":
+                        break;
+                    case "Edit Vendor":
+                        break;
+                    case "Remove Vendor":
+                        break;
                     case "Edit Groups":
                         LoginWrapper(new EditGroups(this));
                         break;
