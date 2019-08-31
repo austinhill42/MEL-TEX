@@ -17,7 +17,7 @@ namespace MELTEX
         private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         private bool editItem = false;
-        private DataTable items;
+        private DataTable selectedItem;
 
         public AddItem(Page prev)
         {
@@ -25,14 +25,12 @@ namespace MELTEX
 
             previousPage = prev;
 
-            items = new DataTable();
+            selectedItem = new DataTable();
         }
 
         public AddItem(Page prev, bool edit) : this(prev)
         {
             editItem = edit;
-
-
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -163,7 +161,7 @@ namespace MELTEX
 
         private void PopulateItemInfo()
         {
-            items = new DataTable();
+            selectedItem = new DataTable();
 
             try
             {
@@ -182,7 +180,7 @@ namespace MELTEX
                         SelectCommand = com
                     };
 
-                    adapter.Fill(items);
+                    adapter.Fill(selectedItem);
                 }
             }
             catch (Exception ex)
@@ -190,14 +188,14 @@ namespace MELTEX
                 MessageBox.Show(ex.Message);
             }
 
-            TB_Desc.Text = items.Rows[0]["Description"].ToString();
-            CB_Group.SelectedItem = items.Rows[0]["Group"].ToString();
-            TB_ListPrice.Text = items.Rows[0]["List_Price"].ToString();
-            TB_Mult.Text = items.Rows[0]["Multiplier"].ToString();
-            TB_PublishedCost.Text = items.Rows[0]["Published_Cost"].ToString();
-            TB_PublishedSales.Text = items.Rows[0]["Published_Sales"].ToString();
-            TB_Weight.Text = items.Rows[0]["Weight"].ToString();
-            TB_Notes.Text = items.Rows[0]["Notes"].ToString();
+            TB_Desc.Text = selectedItem.Rows[0]["Description"].ToString();
+            CB_Group.SelectedItem = selectedItem.Rows[0]["Group"].ToString();
+            TB_ListPrice.Text = selectedItem.Rows[0]["List_Price"].ToString();
+            TB_Mult.Text = selectedItem.Rows[0]["Multiplier"].ToString();
+            TB_PublishedCost.Text = selectedItem.Rows[0]["Published_Cost"].ToString();
+            TB_PublishedSales.Text = selectedItem.Rows[0]["Published_Sales"].ToString();
+            TB_Weight.Text = selectedItem.Rows[0]["Weight"].ToString();
+            TB_Notes.Text = selectedItem.Rows[0]["Notes"].ToString();
 
         }
 
@@ -235,7 +233,7 @@ namespace MELTEX
 
                 Clear();
 
-                MessageBox.Show("Database Updated");
+                MessageBox.Show($"Item {TB_ItemID.Text} added to database");
             }
             catch (Exception ex)
             {
@@ -277,16 +275,16 @@ namespace MELTEX
                         cmd.Parameters.AddWithValue("@pubSale", Convert.ToDecimal(TB_PublishedSales.Text));
                         cmd.Parameters.AddWithValue("@pubCost", Convert.ToDecimal(TB_PublishedCost.Text));
                         cmd.Parameters.AddWithValue("@notes", TB_Notes.Text);
-                        cmd.Parameters.AddWithValue("@oldDesc", items.Rows[0]["Description"].ToString());
-                        cmd.Parameters.AddWithValue("@oldWeight", Convert.ToDecimal(items.Rows[0]["Weight"].ToString()));
-                        cmd.Parameters.AddWithValue("@oldList", Convert.ToDecimal(items.Rows[0]["List_Price"].ToString()));
-                        cmd.Parameters.AddWithValue("@oldGroup", items.Rows[0]["Group"].ToString());
-                        cmd.Parameters.AddWithValue("@oldMult", Convert.ToDecimal(items.Rows[0]["Multiplier"].ToString()));
-                        cmd.Parameters.AddWithValue("@oldPubSale", Convert.ToDecimal(items.Rows[0]["Published_Sales"].ToString()));
-                        cmd.Parameters.AddWithValue("@oldPubCost", Convert.ToDecimal(items.Rows[0]["Published_Cost"].ToString()));
-                        cmd.Parameters.AddWithValue("@oldNotes", items.Rows[0]["Notes"].ToString());
 
-                        
+                        cmd.Parameters.AddWithValue("@oldDesc", selectedItem.Rows[0]["Description"].ToString());
+                        cmd.Parameters.AddWithValue("@oldWeight", Convert.ToDecimal(selectedItem.Rows[0]["Weight"].ToString()));
+                        cmd.Parameters.AddWithValue("@oldList", Convert.ToDecimal(selectedItem.Rows[0]["List_Price"].ToString()));
+                        cmd.Parameters.AddWithValue("@oldGroup", selectedItem.Rows[0]["Group"].ToString());
+                        cmd.Parameters.AddWithValue("@oldMult", Convert.ToDecimal(selectedItem.Rows[0]["Multiplier"].ToString()));
+                        cmd.Parameters.AddWithValue("@oldPubSale", Convert.ToDecimal(selectedItem.Rows[0]["Published_Sales"].ToString()));
+                        cmd.Parameters.AddWithValue("@oldPubCost", Convert.ToDecimal(selectedItem.Rows[0]["Published_Cost"].ToString()));
+                        cmd.Parameters.AddWithValue("@oldNotes", selectedItem.Rows[0]["Notes"].ToString());
+
 
                         cmd.ExecuteNonQuery();
                     }
@@ -303,6 +301,8 @@ namespace MELTEX
                 else
                     MessageBox.Show(ex.Message);
             }
+
+            MessageBox.Show($"Item {CB_ItemID.SelectedValue.ToString()} updated successfully");
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)

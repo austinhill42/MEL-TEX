@@ -38,8 +38,10 @@ namespace MELTEX
                         MainWindow.GetWindow(this).Content = new AddItem(this, true);
                         break;
                     case "Edit Inbounded Item":
+                        MainWindow.GetWindow(this).Content = new InventoryInbound(this, true);
                         break;
                     case "Remove Inventory Item":
+                        MainWindow.GetWindow(this).Content = new DeleteItem(this);
                         break;
                     case "Remove Inbounded Item":
                         break;
