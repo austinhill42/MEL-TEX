@@ -14,8 +14,6 @@ namespace MELTEX
     public partial class AddItem : Page
     {
         private Page previousPage;
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         private bool editItem = false;
         private DataTable selectedItem;
 
@@ -110,7 +108,7 @@ namespace MELTEX
             DataTable table = new DataTable();
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
@@ -138,7 +136,7 @@ namespace MELTEX
         {
             string query = "SELECT * FROM Groups";
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            using (SqlConnection sql = new SqlConnection(App.DBConnString))
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();
@@ -165,7 +163,7 @@ namespace MELTEX
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
@@ -211,7 +209,7 @@ namespace MELTEX
                 string query = "INSERT INTO Items ([Inventory_Item], [Description], [Weight], [List_Price], [Group], [Multiplier], [Published_Sales], [Published_Cost], [Notes]) " +
                                "VALUES (@item,@description,@weight,@listprice,@group,@multiplier,@sales,@cost,@notes) ";
 
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
 
@@ -260,7 +258,7 @@ namespace MELTEX
                     "SET [Description] = @desc, [Weight] = @weight, [List_Price] = @list, [Group] = @group, [Multiplier] = @mult, [Published_Sales] = @pubSale, [Published_Cost] = @pubCost, [Notes] = @notes " +
                     "WHERE [Inventory_Item] = @item AND [Description] = @oldDesc AND [Weight] = @oldWeight AND [List_Price] = @oldList AND [Group] = @oldGroup AND [Multiplier] = @oldMult AND [Published_Sales] = @oldPubSale AND [Published_Cost] = @oldPubCost AND [Notes] = @oldNotes ";
 
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
 

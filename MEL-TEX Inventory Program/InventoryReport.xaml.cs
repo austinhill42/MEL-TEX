@@ -16,8 +16,6 @@ namespace MELTEX
         internal Page previousPage;
         private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
                     "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale', item.Notes ";
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         private DataTable inventoryDataTable;
         private DataTable quoteDataTable;
 
@@ -126,7 +124,7 @@ namespace MELTEX
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
@@ -170,7 +168,7 @@ namespace MELTEX
         {
             InventoryDataGrid.DataContext = null;
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            using (SqlConnection sql = new SqlConnection(App.DBConnString))
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();

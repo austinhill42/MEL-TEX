@@ -12,8 +12,6 @@ namespace MELTEX
     /// </summary>
     public partial class LoginForm : Window
     {
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal bool correctLogin;
         internal bool attempted;
 
@@ -70,7 +68,7 @@ namespace MELTEX
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
                 {
                     sql.Open();
 

@@ -13,8 +13,6 @@ namespace MELTEX
     public partial class EditGroups : Page
     {
         private Page previousPage;
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
 
         public EditGroups(Page prev)
         {
@@ -34,7 +32,7 @@ namespace MELTEX
         {
             string query = "SELECT * FROM Groups";
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            using (SqlConnection sql = new SqlConnection(App.DBConnString))
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();
@@ -65,7 +63,7 @@ namespace MELTEX
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
 

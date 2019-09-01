@@ -17,8 +17,6 @@ namespace MELTEX
     public partial class EditPassword : Page
     {
         private Page previousPage;
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";
         private bool correctLogin;
 
         public EditPassword(Page prev)
@@ -47,7 +45,7 @@ namespace MELTEX
         {
             string query = "SELECT * FROM Passwords";
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();
@@ -111,7 +109,7 @@ namespace MELTEX
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
                 {
                     sql.Open();
 
