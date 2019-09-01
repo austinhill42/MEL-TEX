@@ -20,9 +20,20 @@ namespace MELTEX
     /// </summary>
     public partial class AddContact : Page
     {
-        public AddContact()
+        private Page PreviousScreen;
+        private string Type;
+
+        public AddContact(Page prev, string type)
         {
             InitializeComponent();
+
+            PreviousScreen = prev;
+            Type = type;
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = $"Add {Type} Contact";
         }
     }
 }
