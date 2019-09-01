@@ -1,0 +1,121 @@
+﻿<UserControl
+    x:Class="MELTEX.Address"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="250"
+    Width="450"
+    Background="White">
+
+    <StackPanel
+        Grid.ColumnSpan="2">
+
+        <Label
+            Content="{Binding AddressType}"
+            Style="{StaticResource Labels}"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
+
+        <StackPanel
+            Width="350">
+
+            <Label
+                Content="Address Line 1: "
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" />
+
+            <TextBox
+                x:Name="TB_Address1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}"
+                Width="350" />
+
+        </StackPanel>
+
+        <StackPanel
+            Width="350">
+
+            <Label
+                Content="Address Line 2: "
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" />
+
+            <TextBox
+                x:Name="TB_Address2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource InputTextBoxes}"
+                Width="350" />
+
+        </StackPanel>
+
+        <StackPanel
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Width="350">
+
+            <StackPanel>
+
+                <Label
+                    Content="City: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" />
+
+                <TextBox
+                    x:Name="TB_City"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    Width="180" />
+
+            </StackPanel>
+
+            <StackPanel
+                Margin="20, 0, 0, 0">
+
+                <Label
+                    Content="State: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" />
+
+                <TextBox
+                    x:Name="TB_State"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    Width="50" />
+
+            </StackPanel>
+
+            <StackPanel
+                Margin="20, 0, 0, 0">
+
+                <Label
+                    Content="Zip: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" />
+
+                <TextBox
+                    x:Name="TB_Zip"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    Width="75" />
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </StackPanel>
+
+
+</UserControl>

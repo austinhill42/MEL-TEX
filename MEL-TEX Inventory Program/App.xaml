@@ -14,6 +14,8 @@
             x:Key="QuoteDBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MEL-TEXQuoteDB.mdf";Integrated Security=True</sys:String>
         <local:NullToVisibilityConverter
             x:Key="NullToVisibilityConverter" />
+        <local:CountToVisibilityConverter
+            x:Key="CountToVisibilityConverter" />
         <sys:Double
             x:Key="MainWindowControlHeight">50</sys:Double>
         <sys:Double

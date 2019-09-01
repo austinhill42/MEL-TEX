@@ -40,7 +40,7 @@ namespace MELTEX
         {
             string query = "SELECT * FROM Passwords";
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();
