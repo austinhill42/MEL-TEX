@@ -46,18 +46,34 @@ namespace MELTEX
                     case "Add Customer":
                         MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Customer");
                         break;
+                    case "Add Customer Contact":
+                        MainWindow.GetWindow(this).Content = new AddContact(this, "Customer");
+                        break;
                     case "Edit Customer":
                         break;
+                    case "Edit Customer Contact":
+                        break;
                     case "Remove Customer":
+                        MainWindow.GetWindow(this).Content = new RemoveCustomer_Vendor(this, "Customer");
+                        break;
+                    case "Remove Customer Contact":
                         break;
                     case "Vendor Information":
                         break;
                     case "Add Vendor":
                         MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Vendor");
                         break;
+                    case "Add Vendor Contact":
+                        MainWindow.GetWindow(this).Content = new AddContact(this, "Vendor");
+                        break;
                     case "Edit Vendor":
                         break;
+                    case "Edit Vendor Contact":
+                        break;
                     case "Remove Vendor":
+                        MainWindow.GetWindow(this).Content = new RemoveCustomer_Vendor(this, "Vendor");
+                        break;
+                    case "Remove Vendor Contact":
                         break;
                     case "Edit Groups":
                         LoginWrapper(new EditGroups(this));

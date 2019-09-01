@@ -150,6 +150,13 @@
                                 Add Customer
 
                             </ComboBoxItem>
+                            
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Add Customer Contact
+
+                            </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
@@ -161,7 +168,21 @@
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
+                                Edit Customer Contact
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
                                 Remove Customer
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Customer Contact
 
                             </ComboBoxItem>
 
@@ -204,6 +225,13 @@
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
+                                Add Vendor Contact
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
                                 Edit Vendor
 
                             </ComboBoxItem>
@@ -211,7 +239,21 @@
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
+                                Edit Vendor Contact
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
                                 Remove Vendor
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Remove Vendor Contact
 
                             </ComboBoxItem>
 
