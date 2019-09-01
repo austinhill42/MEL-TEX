@@ -14,7 +14,7 @@ namespace MELTEX
             InitializeComponent();
         }
 
-        private void Inventory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as ComboBox).SelectedValue != null)
             {
@@ -44,6 +44,7 @@ namespace MELTEX
                     case "Customer Information":
                         break;
                     case "Add Customer":
+                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Customer");
                         break;
                     case "Edit Customer":
                         break;
@@ -52,6 +53,7 @@ namespace MELTEX
                     case "Vendor Information":
                         break;
                     case "Add Vendor":
+                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Vendor");
                         break;
                     case "Edit Vendor":
                         break;

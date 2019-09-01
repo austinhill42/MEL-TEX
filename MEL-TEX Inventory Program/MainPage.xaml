@@ -55,6 +55,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button
+                    x:Name="Inventory"
                     Style="{StaticResource MainWindowButton}">
 
                     <Grid>
@@ -62,7 +63,7 @@
                         <ComboBox
                             x:Name="CB_Inventory"
                             Style="{StaticResource MainWindowComboBox}"
-                            SelectionChanged="Inventory_SelectionChanged">
+                            SelectionChanged="SelectionChanged">
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
@@ -117,8 +118,7 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=Sales, Converter={StaticResource NullToVisibilityConverter}}"
-                            
+                            Visibility="{Binding SelectedItem, ElementName=CB_Inventory, Converter={StaticResource NullToVisibilityConverter}}"
                             IsHitTestVisible="False"
                             Text="Inventory" />
 
@@ -126,6 +126,7 @@
                 </Button>
 
                 <Button
+                    x:Name="Sales"
                     Style="{StaticResource MainWindowButton}"
                     Grid.Column="1">
 
@@ -133,7 +134,8 @@
 
                         <ComboBox
                             x:Name="CB_Sales"
-                            Style="{StaticResource MainWindowComboBox}">
+                            Style="{StaticResource MainWindowComboBox}"
+                            SelectionChanged="SelectionChanged">
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
@@ -145,7 +147,7 @@
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
-                                Add customer
+                                Add Customer
 
                             </ComboBoxItem>
 
@@ -167,13 +169,14 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=Sales, Converter={StaticResource NullToVisibilityConverter}}"
+                            Visibility="{Binding SelectedItem, ElementName=CB_Sales, Converter={StaticResource NullToVisibilityConverter}}"
                             Text="Sales" />
 
                     </Grid>
                 </Button>
 
                 <Button
+                    x:Name="Purchasing"
                     Style="{StaticResource MainWindowButton}"
                     Grid.Column="2">
 
@@ -181,7 +184,8 @@
 
                         <ComboBox
                             x:Name="CB_Purchasing"
-                            Style="{StaticResource MainWindowComboBox}">
+                            Style="{StaticResource MainWindowComboBox}"
+                            SelectionChanged="SelectionChanged">
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
@@ -215,7 +219,7 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=Purchasing, Converter={StaticResource NullToVisibilityConverter}}"
+                            Visibility="{Binding SelectedItem, ElementName=CB_Purchasing, Converter={StaticResource NullToVisibilityConverter}}"
                             Text="Purchasing" />
 
                     </Grid>
@@ -230,7 +234,7 @@
                         <ComboBox
                             x:Name="CB_Settings"
                             Style="{StaticResource MainWindowComboBox}"
-                            SelectionChanged="Inventory_SelectionChanged">
+                            SelectionChanged="SelectionChanged">
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
@@ -250,7 +254,7 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=Settings, Converter={StaticResource NullToVisibilityConverter}}"
+                            Visibility="{Binding SelectedItem, ElementName=CB_Settings, Converter={StaticResource NullToVisibilityConverter}}"
                             IsHitTestVisible="False"
                             Text="Settings" />
 
