@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -44,6 +45,7 @@ namespace MELTEX
 
             PopulateInventoryDataGrid();
             InitializeQuoteDataGrid();
+            PopulateCustomersComboBox();
         }
 
         private void TB_SearchID_TextChanged(object sender, TextChangedEventArgs e)
@@ -96,7 +98,6 @@ namespace MELTEX
             quoteDataTable.Rows.Remove(quoteDataTable.Rows[rowIndex]);
 
             AddLineNumbers(quoteDataTable);
-            InventoryDataGrid.DataContext = quoteDataTable;
 
             
         }
@@ -164,6 +165,28 @@ namespace MELTEX
             QuoteDataGrid.DataContext = quoteDataTable.DefaultView;
         }
 
+        private void PopulateCustomersComboBox()
+        {
+            using (SqlConnection sql = new SqlConnection(App.SalesDBConnString))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+
+                com.CommandText = "SELECT Number, Name FROM Customer ";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                DataTable table = new DataTable();
+
+                adapter.Fill(table);
+
+                CB_Customers.DataContext = table.DefaultView;
+            }
+        }
+
         private void SearchTable(string query)
         {
             InventoryDataGrid.DataContext = null;
@@ -222,7 +245,62 @@ namespace MELTEX
 
         private void BTN_CreateQuote_Click(object sender, RoutedEventArgs e)
         {
+            if (CB_Customers.SelectedIndex < 0)
+            {
+                MessageBox.Show("You must select a customer to create a quote");
+                return;
+            }
 
+            DataTable table = new DataTable();
+            List<string> shipTo = new List<string>();
+
+            try
+            {
+                using (SqlConnection sql = new SqlConnection(App.SalesDBConnString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = "Select * FROM Customer WHERE Number = @num";
+
+                    com.Parameters.AddWithValue("@num", CB_Customers.SelectedValue.ToString());
+                    com.ExecuteNonQuery();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                    {
+                        SelectCommand = com
+                    };
+
+                    adapter.Fill(table);
+
+                    com.CommandText = "SELECT Ship_To FROM Customer_Ship_Locations WHERE Number = @num";
+                    SqlDataReader reader = com.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        shipTo.Add(reader.GetValue(0).ToString().Replace('|', '\n'));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            string buyer = table.Rows[0]["Name"].ToString();
+            string billto = table.Rows[0]["Bill_To"].ToString().Replace('|', '\n');
+            string terms = table.Rows[0]["Terms"].ToString();
+            DataTable items = ((DataView)QuoteDataGrid.ItemsSource).ToTable();
+
+            items.Columns.Remove("Barcode");
+            items.Columns.Remove("Warehouse");
+            items.Columns.Remove("BIN");
+            items.Columns.Remove("List Price");
+            items.Columns.Remove("Mult.");
+            items.Columns.Remove("Notes");
+
+            GenerateQuote.Data data = new GenerateQuote.Data("", buyer, billto, "", shipTo, "", terms, "", "", "", "", items);
+
+            MainWindow.GetWindow(this).Content = new GenerateQuote(this, data);
         }
 
         private void BTN_OpenQuote_Click(object sender, RoutedEventArgs e)
@@ -239,6 +317,5 @@ namespace MELTEX
         {
             MainWindow.GetWindow(this).Content = previousPage;
         }
-
     }
 }
