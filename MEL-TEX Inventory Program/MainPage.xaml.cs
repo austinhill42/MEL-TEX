@@ -44,6 +44,7 @@ namespace MELTEX
                         MainWindow.GetWindow(this).Content = new DeleteItem(this);
                         break;
                     case "Remove Inbounded Item":
+                        MainWindow.GetWindow(this).Content = new DeleteInboundedItem(this);
                         break;
                     case "Customer Information":
                         break;
