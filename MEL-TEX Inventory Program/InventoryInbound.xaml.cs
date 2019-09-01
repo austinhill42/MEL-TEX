@@ -235,65 +235,7 @@ namespace MELTEX
 
         }
 
-        private void UpdateQuantityAvailable()
-        {
-            DataTable quantities = new DataTable();
-
-            try
-            {
-                string query = "SELECT Quantity FROM Inventory WHERE Inventory_Item = @item";
-
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
-
-                    com.ExecuteNonQuery();
-
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    adapter.Fill(quantities);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
-            }
-
-            int quantityAvail = 0;
-
-            foreach (DataRow row in quantities.Rows)
-                foreach (object cell in row.ItemArray)
-                    quantityAvail += Convert.ToInt32(cell);
-
-            try
-            {
-                string query = "UPDATE Inventory SET QuantityAvail = @avail WHERE Inventory_Item = @item";
-
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
-                    com.Parameters.AddWithValue("@avail", quantityAvail);
-
-                    com.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
-            }
-        }
+        
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
@@ -302,7 +244,8 @@ namespace MELTEX
             else
                 InboundItem();
 
-            UpdateQuantityAvailable();
+            App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
+
             Clear();
         }
 
