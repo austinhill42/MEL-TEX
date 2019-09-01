@@ -1,9 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
-using System.Security.Cryptography;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace MELTEX

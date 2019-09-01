@@ -19,7 +19,10 @@ namespace MELTEX
     {
 
         private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        private static readonly string connString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
+        internal static readonly string DBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
+        internal static readonly string PWDDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";
+        internal static readonly string SalesDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXSalesDB.mdf; Integrated Security = True; Connect Timeout = 30";
+        internal static readonly string PurchasingDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPurchasingDB.mdf; Integrated Security = True; Connect Timeout = 30";
 
         internal static void UpdateQuantityAvailable(string item)
         {
@@ -29,7 +32,7 @@ namespace MELTEX
             {
                 string query = "SELECT Quantity FROM Inventory WHERE Inventory_Item = @item";
 
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
@@ -63,7 +66,7 @@ namespace MELTEX
             {
                 string query = "UPDATE Inventory SET QuantityAvail = @avail WHERE Inventory_Item = @item";
 
-                using (SqlConnection sql = new SqlConnection(connString))
+                using (SqlConnection sql = new SqlConnection(DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
