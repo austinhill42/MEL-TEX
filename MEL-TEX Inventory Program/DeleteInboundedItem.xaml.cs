@@ -230,6 +230,14 @@ namespace MELTEX
                 label.Visibility = Visibility.Hidden;
         }
 
+        private void ClearAll()
+        {
+            ClearComboBoxVisibility(CB_Barcode, CB_Quantity, CB_PO);
+            ClearLabelVisibility(L_Barcode, L_Quantity, L_PO);
+
+            CB_ItemID.SelectedIndex = -1;
+        }
+
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.GetWindow(this).Content = previousPage;
@@ -263,11 +271,15 @@ namespace MELTEX
 
                         com.ExecuteNonQuery();
 
+                        App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
+
                         MessageBox.Show($"The inbounded item matching:\n\n\t" +
                             $"Item ID: {CB_ItemID.SelectedValue.ToString()}\n\t" +
                             $"Barcode: {CB_Barcode.SelectedValue.ToString()}\n\t" +
                             $"Quantity: {CB_Quantity.SelectedValue.ToString()}\n\t" +
                             $"PO: {CB_PO.SelectedValue.ToString()}\n\nhas been removed from inventory.");
+
+                        ClearAll();
                     }
                 }
                 catch (Exception ex)
