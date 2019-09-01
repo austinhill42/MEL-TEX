@@ -228,6 +228,9 @@
 
                 <ComboBox
                     x:Name="CB_Customers"
+                    ItemsSource="{Binding}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Number"
                     Width="225"
                     IsEditable="False" />
 
@@ -239,7 +242,7 @@
                     HorizontalAlignment="Center"
                     Width="100"
                     Margin="20, 0, 0, 0"
-                    Click="BTN_CreateQuote_Click" />
+                    Click="BTN_CreateQuote_Click"/>
 
             </StackPanel>
 
