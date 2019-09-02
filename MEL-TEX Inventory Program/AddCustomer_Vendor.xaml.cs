@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace MELTEX
@@ -13,8 +16,9 @@ namespace MELTEX
     public partial class AddCustomer_Vendor : Page
     {
         private Page previousPage;
-        internal List<Address> ShipToAddresses;
+        public ObservableCollection<Address> ShipToAddresses { get; set; }
         private string Type;
+        
 
         public AddCustomer_Vendor(Page prev, string type)
         {
@@ -22,7 +26,7 @@ namespace MELTEX
 
             previousPage = prev;
             Type = type;
-            ShipToAddresses = new List<Address>();
+            ShipToAddresses = new ObservableCollection<Address>();
             
         }
 
@@ -171,11 +175,6 @@ namespace MELTEX
             AddShipTo(a);
 
             ScrollView.ScrollToBottom();
-
-            if (ShipToAddresses.Count > 1)
-                BTN_RemoveShipTo.Visibility = Visibility.Visible;
-            else
-                BTN_RemoveShipTo.Visibility = Visibility.Hidden;
         }
 
         private void BTN_RemoveShipTo_Click(object sender, RoutedEventArgs e)
@@ -187,14 +186,6 @@ namespace MELTEX
             Grid.SetRow(BTN_AddShipTo, Grid.GetRow(BTN_AddShipTo) - 1);
             Grid.SetRow(BTN_RemoveShipTo, Grid.GetRow(BTN_RemoveShipTo) - 1);
             Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) - 1);
-
-
-            if (ShipToAddresses.Count > 1)
-            {
-                BTN_RemoveShipTo.Visibility = Visibility.Visible;
-            }
-            else
-                BTN_RemoveShipTo.Visibility = Visibility.Hidden;
         }
         
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
