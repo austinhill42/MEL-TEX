@@ -118,7 +118,6 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=CB_Inventory, Converter={StaticResource NullToVisibilityConverter}}"
                             IsHitTestVisible="False"
                             Text="Inventory" />
 
@@ -190,7 +189,7 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=CB_Sales, Converter={StaticResource NullToVisibilityConverter}}"
+                            IsHitTestVisible="False"
                             Text="Sales" />
 
                     </Grid>
@@ -261,7 +260,7 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=CB_Purchasing, Converter={StaticResource NullToVisibilityConverter}}"
+                            IsHitTestVisible="False"
                             Text="Purchasing" />
 
                     </Grid>
@@ -296,7 +295,6 @@
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
-                            Visibility="{Binding SelectedItem, ElementName=CB_Settings, Converter={StaticResource NullToVisibilityConverter}}"
                             IsHitTestVisible="False"
                             Text="Settings" />
 

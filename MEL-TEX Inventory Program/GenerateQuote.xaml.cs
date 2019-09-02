@@ -184,6 +184,8 @@ namespace MELTEX
             data.repNum = TB_RepNum.Text;
             data.table = ((DataView)DataGrid.ItemsSource).ToTable();
 
+            // TODO finish save, serialize struct, write pyrhon file, incorporate file system structure
+
 
             saved = true;
         }
