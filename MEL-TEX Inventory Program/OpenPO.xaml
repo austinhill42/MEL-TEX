@@ -11,7 +11,7 @@
     WindowState="Normal"
     WindowStyle="ThreeDBorderWindow"
     ResizeMode="NoResize"
-    Title="Open Quote"
+    Title="Open PO"
     Loaded="Window_Loaded">
 
     <Grid>

@@ -31,10 +31,8 @@ namespace MELTEX
 
         public InventoryInbound(Page prev, string addItem, string qty, string po) : this(prev)
         {
-            CB_ItemID.Text = addItem;
+            CB_ItemID.SelectedValue = addItem;
             CB_ItemID.IsEditable = false;
-            CB_ItemID.IsHitTestVisible = false;
-            CB_ItemID.Focusable = false;
 
             TB_PO.Text = po;
             TB_PO.IsReadOnly = true;
