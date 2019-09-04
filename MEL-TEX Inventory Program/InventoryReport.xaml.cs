@@ -298,13 +298,17 @@ namespace MELTEX
             items.Columns.Remove("Mult.");
             items.Columns.Remove("Notes");
 
-            GenerateQuote.Data data = new GenerateQuote.Data("", buyer, billto, "", shipTo, "", terms, "", "", "", "", items);
+            GenerateQuote.Data data = new GenerateQuote.Data("", buyer, billto, "", shipTo, "", terms, "", "", "", "", "", items);
 
             MainWindow.GetWindow(this).Content = new GenerateQuote(this, data);
         }
 
         private void BTN_OpenQuote_Click(object sender, RoutedEventArgs e)
         {
+            OpenQuote open = new OpenQuote();
+
+            if (open.ShowDialog() ?? false)
+                MainWindow.GetWindow(this).Content = new GenerateQuote(this, open.quotenum);
 
         }
 

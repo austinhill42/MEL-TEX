@@ -216,15 +216,17 @@
             <StackPanel
                 Orientation="Horizontal"
                 Height="30"
-                VerticalAlignment="Top"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
                 Grid.Row="4"
-                Grid.Column="2"
+                Grid.Column="3"
                 Grid.ColumnSpan="3">
 
                 <Label
                     Content="Customer Lookup: "
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
+                    VerticalAlignment="Center"
+                    TextBlock.FontSize="14"/>
 
                 <ComboBox
                     x:Name="CB_Customers"
@@ -240,8 +242,9 @@
                     FontWeight="Bold"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
-                    Width="100"
-                    Margin="20, 0, 0, 0"
+                    Style="{StaticResource NavigationButtons}"
+                    Width="150"
+                    Margin="20, 0, 10, 0"
                     Click="BTN_CreateQuote_Click"/>
 
             </StackPanel>

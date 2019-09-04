@@ -1,0 +1,5 @@
+9/4/2019;Quote: 20190904-3;14121;11\n11\n11\n11\n11\n;123132\n312312\n321231\n213231\n123231\n;1;213213;1;1;1;1;
+Line:;Item ID;Description;QTY\non\nHand;QTY\nAvail.;Weight;Sale\nPrice
+1;753;123;1;257;789.00;64.50
+2;availtest;Testing quantity available from start to finish;3;3;123.00;205.20
+3;INITNO;Inbound Item Notes Test #1;;;123.00;205.20
