@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,11 +18,11 @@ namespace MELTEX
     {
 
         private Page PreviousPage;
-        private string num = "";
         private string date = "";
         private readonly string connString = App.SalesDBConnString;
         internal Data data;
         private bool saved;
+        private bool opened;
 
         [Serializable]
         public struct Data
@@ -66,6 +65,9 @@ namespace MELTEX
 
             PreviousPage = prev;
             data = d;
+            saved = false;
+            opened = false;
+
         }
 
         public GenerateQuote(Page prev, string open)
@@ -73,6 +75,8 @@ namespace MELTEX
             InitializeComponent();
 
             PreviousPage = prev;
+            saved = true;
+            opened = true;
 
             byte[] binData = null;
             byte[] binTable = null;
@@ -120,8 +124,6 @@ namespace MELTEX
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            saved = false;
-
             foreach (TextBox tb in Grid.Children.OfType<TextBox>())
                 tb.TextChanged += ControlChanged;
 
@@ -129,10 +131,7 @@ namespace MELTEX
             CB_ShipTo.SelectionChanged += ControlChanged;
 
             date = DateTime.Now.ToString("MM/dd/yyyy");
-            num = GetNum();
-
             L_Date.Content = date;
-            L_Num.Content = $"Quote: {num}";
 
             TB_Buyer.Text = data.buyer;
             TB_BillTo.Text = data.billTo;
@@ -147,6 +146,18 @@ namespace MELTEX
             TB_Notes.Text = data.notes;
 
             DataGrid.DataContext = data.table.DefaultView;
+
+            if (opened)
+            {
+                L_Num.Content = $"Quote: {data.number}";
+                saved = true;
+            }
+            else
+            {
+                data.number = GetNum();
+
+               L_Num.Content = $"Quote: {data.number}";
+            }
         }
 
         private void ControlChanged(object sender, EventArgs e)
@@ -307,6 +318,10 @@ namespace MELTEX
                 MessageBox.Show("You have to save before creating the Presale Worksheet");
                 return;
             }
+
+            GeneratePresale.Data pData = new GeneratePresale.Data(data.number, data.buyer, data.billTo, data.selectedShipTo, data.shipTo, data.shipVia, data.terms, data.fob, data.freightTerms, data.repNum, data.repName, "", data.table);
+            GeneratePresale presale = new GeneratePresale(this, pData);
+            MainWindow.GetWindow(this).Content = presale;
         }
 
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
@@ -319,7 +334,6 @@ namespace MELTEX
         {
             try
             {
-                data.number = num;
                 data.buyer = TB_Buyer.Text;
                 data.billTo = TB_BillTo.Text;
                 data.selectedShipTo = CB_ShowList.IsChecked ?? false ? CB_ShipTo.SelectedItem.ToString() : TB_ShipTo.Text;

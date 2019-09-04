@@ -14,7 +14,7 @@ namespace MELTEX
     public partial class AddItem : Page
     {
         private Page previousPage;
-        private bool editItem = false;
+        private bool editMode = false;
         private DataTable selectedItem;
 
         public AddItem(Page prev)
@@ -28,14 +28,14 @@ namespace MELTEX
 
         public AddItem(Page prev, bool edit) : this(prev)
         {
-            editItem = edit;
+            editMode = edit;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateGroupsComboBox();
 
-            if (editItem)
+            if (editMode)
             {
                 this.WindowTitle = "Edit Item";
                 TB_ItemID.Visibility = Visibility.Hidden;
@@ -305,7 +305,7 @@ namespace MELTEX
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (editItem)
+            if (editMode)
                 UpdateItemInDatabase();
             else
                 AddItemToDatabase();

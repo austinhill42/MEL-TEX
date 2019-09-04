@@ -55,11 +55,32 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CreatePO.xaml.cs">
+      <DependentUpon>CreatePO.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GeneratePO.xaml.cs">
+      <DependentUpon>GeneratePO.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GeneratePresale.xaml.cs">
+      <DependentUpon>GeneratePresale.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GenerateQuote.xaml.cs">
       <DependentUpon>GenerateQuote.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GenerateSalesOrder.xaml.cs">
+      <DependentUpon>GenerateSalesOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OpenPO.xaml.cs">
+      <DependentUpon>OpenPO.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OpenQuote.xaml.cs">
       <DependentUpon>OpenQuote.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OpenSalesOrder.xaml.cs">
+      <DependentUpon>OpenSalesOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReceivePO.xaml.cs">
+      <DependentUpon>ReceivePO.xaml</DependentUpon>
     </Compile>
     <Compile Include="RemoveCustomer_Vendor.xaml.cs">
       <DependentUpon>RemoveCustomer_Vendor.xaml</DependentUpon>
@@ -80,6 +101,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CreatePO.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DeleteInboundedItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -96,7 +121,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GeneratePO.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GeneratePresale.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GenerateQuote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GenerateSalesOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,7 +202,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OpenPO.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OpenQuote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenSalesOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ReceivePO.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

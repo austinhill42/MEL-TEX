@@ -11,20 +11,27 @@ file = []
 headers = []
 rows = []
 with open(sys.argv[1]) as csv_file:
-    print("File Opened")
     reader = csv.reader(csv_file, delimiter=';')
     # noinspection PyRedeclaration
     rows = list(reader)
     # noinspection PyRedeclaration
     headers = rows.pop(0)
 
-    for row in rows:
-        #for cell in row:
-            # format the newline character properly
-            #cell = str(cell).replace("\\n", "\n")
-        file.append(row)
 
-print (file)
+def replace_chars(s):
+    return s.replace("\\n", "\n")
+
+
+def recursively_apply(l, f):
+    for n, i in enumerate(l):
+        if type(i) is list:
+            l[n] = recursively_apply(l[n], f)
+        elif type(i) is str:
+            l[n] = f(i)
+    return l
+
+file = recursively_apply(rows, replace_chars)
+
 # grab the date, quote/sales order/presale number, and shipping/billing info from the file, leaving just the line items
 date = headers.pop(0)
 presaleNum = headers.pop(0)
@@ -70,7 +77,7 @@ t1.setStyle(TableStyle([('ALIGN', (0, 0), (-1, 1), 'LEFT'),
 
 shipping = [["Ship Via:", "Terms:", "FOB:", "Freight Terms:", "Rep Number:", "Rep Name:"],
             [shipvia, terms, fob, freightTerms, repNum, repName]]
-t2 = Table(shipping, colWidths=width * .16, rowHeights=30, spaceBefore=20)
+t2 = Table(shipping, colWidths=width * .16, rowHeights=30, spaceBefore=40)
 t2.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('LEADING', (0, 0), (-1, -1), 15*1.2),
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -78,18 +85,12 @@ t2.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                         ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
 
-# create the empty array
-lineItems = []
 
-# add each line item to the array
-for item in file:
-    lineItems.append(item)
-print(lineItems)
-# setup and add the line items
-t3 = Table(lineItems, colWidths=[40, 65, 80, 75, 75, 65, 65, 65, 65], rowHeights=30, spaceBefore=30, splitByRow=True)
+t3 = Table(file, colWidths=[35, 70, 275, 50, 50, 50, 45], rowHeights=40, spaceBefore=30, splitByRow=True)
 t3.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                         ('FONTSIZE', (0, 0), (-1, -1), 10),
+                        ('FONTSIZE', (2, 1), (2, -1), 8),
                         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                         ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
 

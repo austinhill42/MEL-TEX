@@ -27,7 +27,22 @@ namespace MELTEX
             previousPage = prev;
             Type = type;
             ShipToAddresses = new ObservableCollection<Address>();
-            
+
+            Address a;
+
+            if (Type == "Customer")
+            {
+                ((Address)Grid.FindName("BillTo")).AddressType = "Bill To: ";
+                BTN_AddShipTo.Content = "Add Ship To";
+                BTN_RemoveShipTo.Content = "Remove Ship To";
+            }
+            else
+            {
+                ((Address)Grid.FindName("BillTo")).AddressType = "Pay To: ";
+                BTN_AddShipTo.Content = "Add Ship From";
+                BTN_RemoveShipTo.Content = "Remove Ship From";
+            }
+
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -37,7 +52,12 @@ namespace MELTEX
             L_Number.Content = $"{Type} No:";
             L_Name.Content = $"{Type} Name:";
 
-            Address a = new Address() { AddressType = "Ship To:" };
+            Address a;
+
+            if (Type == "Customer")
+                a = new Address() { AddressType = "Ship To:" };
+            else
+                a = new Address() { AddressType = "Ship From:" };
 
             AddShipTo(a);
 
@@ -98,8 +118,14 @@ namespace MELTEX
             try
             {
                 string conn = "";
-                string query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
-                               "VALUES (@num,@name,@website,@billto,@mailto,@terms,@notes) ";
+                string query;
+
+                if (Type == "Customer")
+                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
+                               "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
+                else
+                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Pay_To], [Mail_From], [Terms], [Notes]) " +
+                               "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
                 if (Type == "Customer")
                     conn = App.SalesDBConnString;
@@ -115,8 +141,8 @@ namespace MELTEX
                         cmd.Parameters.AddWithValue("@num", num);
                         cmd.Parameters.AddWithValue("@name", name);
                         cmd.Parameters.AddWithValue("@website", website);
-                        cmd.Parameters.AddWithValue("@billto", billto);
-                        cmd.Parameters.AddWithValue("@mailto", mailto);
+                        cmd.Parameters.AddWithValue("@bill", billto);
+                        cmd.Parameters.AddWithValue("@mail", mailto);
                         cmd.Parameters.AddWithValue("@terms", terms);
                         cmd.Parameters.AddWithValue("@notes", notes);
 
@@ -125,8 +151,13 @@ namespace MELTEX
 
                     for (int i = 0; i < shipto.Count; i++)
                     {
-                        query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_To]) " +
-                        $"VALUES (@num,@{i}) ";
+                        if (Type == "Customer")
+                            query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_To]) " +
+                                $"VALUES (@num,@{i}) ";
+                        else
+                            query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_From]) " +
+                                $"VALUES (@num,@{i}) ";
+
 
                         try
                         {
@@ -170,7 +201,12 @@ namespace MELTEX
 
         private void BTN_AddShipTo_Click(object sender, RoutedEventArgs e)
         {
-            Address a = new Address() { AddressType = "Ship To:" };
+            Address a;
+
+            if (Type == "Customer")
+                a = new Address() { AddressType = "Ship To:" };
+            else
+                a = new Address() { AddressType = "Ship From:" };
 
             AddShipTo(a);
 

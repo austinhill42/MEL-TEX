@@ -27,7 +27,7 @@ namespace MELTEX
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT * FROM Quotes";
+                    com.CommandText = "SELECT Number FROM Quotes";
 
                     com.ExecuteNonQuery();
 

@@ -17,16 +17,6 @@ with open(sys.argv[1]) as csv_file:
     # noinspection PyRedeclaration
     headers = rows.pop(0)
 
-    #for row in rows:
-     #   for cell in row:
-    #        for item in cell:
-                # format the newline character properly
-     #           items.append(str(item).replace("\\n", "\n"))
-            #print(items)
-     #       cells.append(items)
-        #print(cells)
-     #   file.append(cells)
-
 def replace_chars(s):
     return s.replace("\\n", "\n")
 
@@ -40,7 +30,6 @@ def recursively_apply(l, f):
 
 file = recursively_apply(rows, replace_chars)
 
-print (file)
 # grab the date, quote/sales order/presale number, and shipping/billing info from the file, leaving just the line items
 date = headers.pop(0)
 num = headers.pop(0)
@@ -93,15 +82,6 @@ t2.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                         ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
 
-# create the empty array
-#lineItems = []
-
-# add each line item to the array
-#for item in file:
-#    lineItems.append(item)
-#print(file)
-#print(lineItems)
-# setup and add the line items
 t3 = Table(file, colWidths=[35, 70, 275, 50, 50, 50, 45], rowHeights=40, spaceBefore=30, splitByRow=True)
 t3.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
