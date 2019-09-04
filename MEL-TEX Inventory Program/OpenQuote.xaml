@@ -1,0 +1,87 @@
+﻿<Window
+    x:Class="MELTEX.OpenQuote"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="300"
+    Width="600"
+    WindowStartupLocation="CenterOwner"
+    WindowState="Normal"
+    WindowStyle="ThreeDBorderWindow"
+    ResizeMode="NoResize"
+    Title="Open Quote"
+    Loaded="Window_Loaded">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition
+                Width="300" />
+            <ColumnDefinition
+                Width="300" />
+
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition
+                Height="50" />
+            <RowDefinition
+                Height="100" />
+            <RowDefinition
+                Height="110" />
+
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Height="80"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+
+            <Label
+                Content="Select Quote: "
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                TextBlock.FontSize="14" />
+
+            <ComboBox
+                x:Name="CB_Open"
+                ItemsSource="{Binding}"
+                DisplayMemberPath="Number"
+                SelectedValuePath="Number"
+                Width="225"
+                IsEditable="False" />
+
+        </StackPanel>
+
+        <Button
+            x:Name="BTN_Back"
+            Content="_Back"
+            Style="{StaticResource NavigationButtons}"
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="10"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center"
+            Click="BTN_Back_Click" />
+
+        <Button
+            x:Name="BTN_Open"
+            Content="Open Quote"
+            Style="{StaticResource NavigationButtons}"
+            IsDefault="True"
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="10"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center"
+            Click="BTN_Open_Click"/>
+    </Grid>
+</Window>

@@ -58,6 +58,9 @@
     <Compile Include="GenerateQuote.xaml.cs">
       <DependentUpon>GenerateQuote.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenQuote.xaml.cs">
+      <DependentUpon>OpenQuote.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RemoveCustomer_Vendor.xaml.cs">
       <DependentUpon>RemoveCustomer_Vendor.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OpenQuote.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RemoveCustomer_Vendor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
