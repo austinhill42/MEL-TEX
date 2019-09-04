@@ -1,0 +1,5 @@
+09/04/2019;PO: 20190904-7;Austin;1300 Gemini\n#5307\nHouston\nTX\n77058\n;2710 Green Tee Dr\n\nPearland\nTX\n77581\n;DHL;30;YES;30;1234567;Me;
+Line:;Item ID;Description;QTY;Weight;Sale\nPrice
+1;potest 2;testing po 2;12;456.00;197.25
+2;POTest1;testing po 1;3;123.00;205.20
+3;potest3;potest3;10;1.00;0.50

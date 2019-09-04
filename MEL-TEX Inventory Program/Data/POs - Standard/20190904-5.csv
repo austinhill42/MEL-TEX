@@ -1,0 +1,6 @@
+09/04/2019;PO: 20190904-5;Austin;1300 Gemini\n#5307\nHouston\nTX\n77058\n;2710 Green Tee Dr\n\nPearland\nTX\n77581\n;1;30;1;1;1;1;
+Line:;Item ID;Description;QTY;Weight;Sale\nPrice
+1;753;123;12;789.00;64.50
+2;753;123;45;789.00;64.50
+3;availtest;Testing quantity available from start to finish;2;123.00;205.20
+4;EditTest;You've gotta be fucking kidding me;7;45.00;14.00

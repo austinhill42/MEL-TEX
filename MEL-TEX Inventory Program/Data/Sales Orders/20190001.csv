@@ -1,0 +1,5 @@
+09/04/2019;Sales Order: 20190001;Quote: 20190904-9;14121;11\n11\n11\n11\n11\n;123132\n312312\n321231\n213231\n123231\n;4;213213;4;4;4;4;
+Line:;Item ID;Description;QTY\non\nHand;QTY\nAvail.;Weight;Sale\nPrice
+1;availtest;Testing quantity available from start to finish;3;3;123.00;205.20
+2;FL2019;Test flange for Testing the Add Item screen;4;8;123.00;175.00
+3;QuantityTest2;Testing quantity avail update again after adding it to delete as well;7;10;234;5.40

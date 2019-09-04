@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -314,7 +313,10 @@ namespace MELTEX
 
         private void BTN_OpenSalesOrder_Click(object sender, RoutedEventArgs e)
         {
+            OpenSalesOrder open = new OpenSalesOrder();
 
+            if (open.ShowDialog() ?? false)
+                MainWindow.GetWindow(this).Content = new GenerateSalesOrder(this, open.salesordernum);
         }
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)

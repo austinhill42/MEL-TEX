@@ -13,8 +13,9 @@ namespace MELTEX
     public partial class InventoryInbound : Page
     {
         private Page previousPage;
-        private bool editItem = false;
+        private bool editMode = false;
         DataTable selectedInbound;
+        private bool FromPO = false;
 
         public InventoryInbound(Page prev)
         {
@@ -25,14 +26,30 @@ namespace MELTEX
 
         public InventoryInbound(Page prev, bool edit) : this(prev)
         {
-            editItem = edit;
+            editMode = edit;
+        }
+
+        public InventoryInbound(Page prev, string addItem, string qty, string po) : this(prev)
+        {
+            CB_ItemID.Text = addItem;
+            CB_ItemID.IsEditable = false;
+            CB_ItemID.IsHitTestVisible = false;
+            CB_ItemID.Focusable = false;
+
+            TB_PO.Text = po;
+            TB_PO.IsReadOnly = true;
+
+            TB_Quantity.Text = qty;
+            TB_Quantity.IsReadOnly = true;
+
+            FromPO = true;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowTitle = "Inventory Inbound";
 
-            if (editItem)
+            if (editMode)
                 PopulateInboundComboBox();
             else
                 PopulateItemsComboBox();
@@ -44,7 +61,7 @@ namespace MELTEX
             {
                 if ((sender as ComboBox).SelectedIndex >= 0)
                 {
-                    if (editItem)
+                    if (editMode)
                         PopulateInboundInfo();
                     else
                         PopulateItemInfo();
@@ -237,7 +254,7 @@ namespace MELTEX
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (editItem)
+            if (editMode)
                 EditInboundedItem();
             else
                 InboundItem();
@@ -245,6 +262,9 @@ namespace MELTEX
             App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
 
             Clear();
+
+            if (FromPO)
+                BTN_Back_Click(sender, e);
         }
 
         private void InboundItem()

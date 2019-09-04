@@ -58,6 +58,15 @@ namespace MELTEX
                         break;
                     case "Remove Customer Contact":
                         break;
+                    case "Generate PO":
+                        MainWindow.GetWindow(this).Content = new GeneratePO(this);
+                        break;
+                    case "Receive PO":
+                        OpenPO open = new OpenPO();
+
+                        if (open.ShowDialog() ?? false)
+                            MainWindow.GetWindow(this).Content = new ReceivePO(this, open.poNum);
+                        break;
                     case "Vendor Information":
                         break;
                     case "Add Vendor":
