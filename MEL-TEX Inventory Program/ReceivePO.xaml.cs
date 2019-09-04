@@ -363,12 +363,12 @@ namespace MELTEX
             foreach (Tuple<string, string> item in toReceive)
                 str += $"\n\t{item.Item1}";
 
-            str += "Do you wish to inbound them now?";
+            str += "\n\nDo you wish to inbound them now?";
 
             if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 foreach (Tuple<string, string> item in toReceive)
-                    MainWindow.GetWindow(this).Content = new InventoryInbound(this); //new InventoryInbound(this, item.Item1.ToString(), item.Item2.ToString(), data.number);
+                    MainWindow.GetWindow(this).Content = new InventoryInbound(this, item.Item1.ToString(), item.Item2.ToString(), data.number);
             }
         }
 
