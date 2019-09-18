@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="MELTEX.Phone"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    mc:Ignorable="d"
+    Height="30"
+    Width="420"
+    Background="White">
+
+    <Grid>
+        <StackPanel
+            Orientation="Horizontal">
+
+            <Label
+                Content="Phone: " />
+
+            <TextBox
+                x:Name="TB_Phone"
+                Width="250"
+                FontSize="18" />
+
+            <Label
+                Content="Type: " 
+                Margin="10,0,0,0"/>
+
+            <ComboBox
+                x:Name="CB_Type"
+                Width="75"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center">
+
+                <ComboBoxItem
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center">
+                    
+                    Mobile
+                </ComboBoxItem>
+
+                <ComboBoxItem
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center">
+                    
+                    Work
+                </ComboBoxItem>
+
+                <ComboBoxItem
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center">
+                    
+                    Fax
+                </ComboBoxItem>
+
+                <ComboBoxItem
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center">
+                    
+                    Home
+                </ComboBoxItem>
+
+                <ComboBoxItem
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center">
+                    
+                    Other
+                </ComboBoxItem>
+            </ComboBox>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

@@ -79,6 +79,9 @@
     <Compile Include="OpenSalesOrder.xaml.cs">
       <DependentUpon>OpenSalesOrder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Phone.xaml.cs">
+      <DependentUpon>Phone.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReceivePO.xaml.cs">
       <DependentUpon>ReceivePO.xaml</DependentUpon>
     </Compile>
@@ -211,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OpenSalesOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Phone.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
