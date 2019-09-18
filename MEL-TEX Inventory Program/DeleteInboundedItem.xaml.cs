@@ -25,34 +25,7 @@ namespace MELTEX
         {
             this.WindowTitle = "Delete Inbounded Item";
 
-            string query = "SELECT DISTINCT Inventory_Item FROM Inventory ";
-
-            DataTable table = new DataTable();
-
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(App.DBConnString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    adapter.Fill(table);
-
-                    CB_ItemID.DataContext = table.DefaultView;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            PopulateItemIDComboBox();
 
         }
 
@@ -216,6 +189,38 @@ namespace MELTEX
             }
         }
 
+        private void PopulateItemIDComboBox()
+        {
+            string query = "SELECT DISTINCT Inventory_Item FROM Inventory ";
+
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.ExecuteNonQuery();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                    {
+                        SelectCommand = com
+                    };
+
+                    adapter.Fill(table);
+
+                    CB_ItemID.DataContext = table.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void ClearComboBoxVisibility(params ComboBox[] comboBoxes)
         {
             foreach (ComboBox box in comboBoxes)
@@ -233,7 +238,8 @@ namespace MELTEX
             ClearComboBoxVisibility(CB_Barcode, CB_Quantity, CB_PO);
             ClearLabelVisibility(L_Barcode, L_Quantity, L_PO);
 
-            CB_ItemID.SelectedIndex = -1;
+            PopulateItemIDComboBox();
+            //CB_ItemID.SelectedIndex = -1;
         }
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)

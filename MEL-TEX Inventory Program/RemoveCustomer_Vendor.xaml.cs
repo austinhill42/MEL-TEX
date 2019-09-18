@@ -128,7 +128,8 @@ namespace MELTEX
 
                 MessageBox.Show($"{Type}: {CB_Name.Text} successfully deleted");
 
-                CB_Name.SelectedIndex = -1;
+                PopulateNameComboBox();
+                //CB_Name.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
