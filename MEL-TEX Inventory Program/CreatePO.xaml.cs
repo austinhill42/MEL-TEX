@@ -22,12 +22,14 @@ namespace MELTEX
         internal Data data;
         private bool saved;
         private bool opened;
+        private bool byWeight;
 
         [Serializable]
         public struct Data
         {
             internal string number;
             internal decimal Weight;
+            internal decimal WeightRemaining;
             internal decimal Cost;
             internal decimal ReceivedCostByWeight;
             internal bool FullyReceived;
@@ -43,13 +45,15 @@ namespace MELTEX
             internal string repName;
             internal string notes;
             internal DataTable table;
+            internal bool byWeight;
 
-            public Data(string num, decimal weight, decimal cost, decimal byweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table)
+            public Data(string num, decimal weight, decimal weightremaining, decimal cost, decimal costbyweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table, bool byweight)
             {
                 number = num;
                 Weight = weight;
+                WeightRemaining = weightremaining;
                 Cost = cost;
-                ReceivedCostByWeight = byweight;
+                ReceivedCostByWeight = costbyweight;
                 FullyReceived = fullyreceived;
                 this.seller = seller;
                 payTo = pay;
@@ -63,6 +67,7 @@ namespace MELTEX
                 repName = repname;
                 this.notes = notes;
                 this.table = table;
+                byWeight = byweight;
             }
         }
 
@@ -72,60 +77,10 @@ namespace MELTEX
 
             PreviousPage = prev;
             data = d;
+            
             saved = false;
             opened = false;
 
-        }
-        public CreatePO(Page prev, string open)
-        {
-            InitializeComponent();
-
-            PreviousPage = prev;
-            saved = true;
-            opened = true;
-
-            byte[] binData = null;
-            byte[] binTable = null;
-
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT Data, Items FROM PO_Standard WHERE Number = @num";
-
-                    com.Parameters.AddWithValue("@num", open);
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataReader reader = com.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        binData = (byte[])reader["Data"];
-                        binTable = (byte[])reader["Items"];
-                    }
-
-                    reader.Close();
-                }
-
-                using (MemoryStream stream = new MemoryStream(binData))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    data = (Data)formatter.Deserialize(stream);
-                }
-
-                using (MemoryStream stream = new MemoryStream(binTable))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    data.table = (DataTable)formatter.Deserialize(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -210,7 +165,7 @@ namespace MELTEX
             {
                 sql.Open();
                 SqlCommand com = sql.CreateCommand();
-                com.CommandText = "SELECT Number FROM PO_Standard";
+                com.CommandText = "SELECT Number FROM PO";
 
                 DateTime now = DateTime.Now;
 
@@ -379,14 +334,14 @@ namespace MELTEX
                     binTable = stream.ToArray();
                 }
 
-                string query = "INSERT INTO PO_Standard ([Number], [Weight], [Cost], [ReceivedCostByWeight], [FullyReceived], [Seller], [PayTo], [ShipFrom], [ShipVia], [Terms], [FOB], [FreightTerms], [RepNumber], [RepName], [Notes], [Items], [Data])" +
-                    "VALUES (@num,@weight,@cost,@costByWeight,@received,@seller,@pay,@ship,@shipvia,@terms,@fob,@freight,@repnum,@repname,@notes,@items,@data)";
+                string query = "INSERT INTO PO ([Number], [Weight], [WeightRemaining], [Cost], [ReceivedCostByWeight], [FullyReceived], [Seller], [PayTo], [ShipFrom], [ShipVia], [Terms], [FOB], [FreightTerms], [RepNumber], [RepName], [Notes], [Items], [Data])" +
+                    "VALUES (@num,@weight,@weight,@cost,@costByWeight,@received,@seller,@pay,@ship,@shipvia,@terms,@fob,@freight,@repnum,@repname,@notes,@items,@data)";
 
                 using (SqlConnection sql = new SqlConnection(connString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT Number from PO_Standard WHERE Number = @num";
+                    com.CommandText = "SELECT Number from PO WHERE Number = @num";
 
                     com.Parameters.AddWithValue("@num", data.number);
 
@@ -399,7 +354,7 @@ namespace MELTEX
                         MessageBoxResult result = MessageBox.Show("PO already exists, do you want to overwrite? Selecting \"No\" will save the PO under a new PO number.", "Overwrite", MessageBoxButton.YesNoCancel);
                         if (result == MessageBoxResult.Yes)
                         {
-                            query = "UPDATE PO_Standard " +
+                            query = "UPDATE PO " +
                                "SET [Weight] = @weight, [Cost] = @cost, [ReceivedCostByWeight] = @costByWeight, [FullyReceived] = @received, [Seller] = @seller, [PayTo] = @pay, [ShipFrom] = @ship, [ShipVia] = @shipvia, [Terms] = @terms, [FOB] = @fob, [FreightTerms] = @freight, [RepNumber] = @repnum, [RepName] = @repname, [Notes] = @notes, [Items] = @items, [Data] = @data " +
                                "WHERE [Number] = @num";
                         }

@@ -27,7 +27,7 @@ namespace MELTEX
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT Number FROM PO_Standard";
+                    com.CommandText = "SELECT Number FROM PO";
 
                     com.ExecuteNonQuery();
 

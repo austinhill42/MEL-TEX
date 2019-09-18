@@ -46,13 +46,14 @@ namespace MELTEX
             internal string repName;
             internal string notes;
             internal DataTable table;
+            internal bool byWeight;
 
-            public Data(string num, decimal weight, decimal cost, decimal byweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table)
+            public Data(string num, decimal weight, decimal cost, decimal costbyweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table, bool byweight)
             {
                 number = num;
                 Weight = weight;
                 Cost = cost;
-                ReceivedCostByWeight = byweight;
+                ReceivedCostByWeight = costbyweight;
                 FullyReceived = fullyreceived;
                 this.seller = seller;
                 payTo = pay;
@@ -66,6 +67,7 @@ namespace MELTEX
                 repName = repname;
                 this.notes = notes;
                 this.table = table;
+                byWeight = byweight;
             }
         }
 
@@ -86,7 +88,7 @@ namespace MELTEX
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT Data, Items FROM PO_Standard WHERE Number = @num";
+                    com.CommandText = "SELECT Data, Items FROM PO WHERE Number = @num";
 
                     com.Parameters.AddWithValue("@num", open);
 
@@ -177,6 +179,9 @@ namespace MELTEX
             if (data.table.Columns.Contains("Pub. Sale"))
                 data.table.Columns["Pub. Sale"].ColumnName = "Sale Price";
 
+            if (data.byWeight)
+                BTN_ReceiveSelected.Visibility = Visibility.Hidden;
+
             saved = true;
         }
 
@@ -228,7 +233,7 @@ namespace MELTEX
                 formatter.Serialize(stream, data.table);
                 binTable = stream.ToArray();
             }
-                string query = "UPDATE PO_Standard " +
+                string query = "UPDATE PO " +
                                    "SET [FullyReceived] = @received, [Items] = @items " +
                                    "WHERE [Number] = @num";
 
@@ -268,7 +273,7 @@ namespace MELTEX
                     formatter.Serialize(stream, data);
                     binData = stream.ToArray();
                 }
-                string query = "UPDATE PO_Standard " +
+                string query = "UPDATE PO " +
                                    "SET [Data] = @data " +
                                    "WHERE [Number] = @num";
 
@@ -298,7 +303,7 @@ namespace MELTEX
         {
             try
             {
-                string query = "UPDATE PO_Standard " +
+                string query = "UPDATE PO " +
                                    "SET [ReceivedCostByWeight] = @cost " +
                                    "WHERE [Number] = @num";
 
@@ -380,7 +385,7 @@ namespace MELTEX
                     binTable = stream.ToArray();
                 }
 
-                string query = "UPDATE PO_Standard " +
+                string query = "UPDATE PO " +
                                "SET [Weight] = @weight, [Cost] = @cost, [ReceivedCostByWeight] = @costByWeight, [FullyReceived] = @received, [Seller] = @seller, [PayTo] = @pay, [ShipFrom] = @ship, [ShipVia] = @shipvia, [Terms] = @terms, [FOB] = @fob, [FreightTerms] = @freight, [RepNumber] = @repnum, [RepName] = @repname, [Notes] = @notes, [Items] = @items, [Data] = @data " +
                                "WHERE [Number] = @num";
 
@@ -453,7 +458,7 @@ namespace MELTEX
             str += "\n\nDo you wish to inbound them now?";
 
             if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive);
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
 
             UpdateTableInDatabase();
             UpdateDataInDatabase();
@@ -466,7 +471,11 @@ namespace MELTEX
 
             foreach (DataRow row in data.table.Rows)
             {
-                toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
+                if (data.byWeight)
+                    toReceive.Enqueue(new Tuple<string, string, string>("", "", data.number));
+                else
+                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
+
                 data.table.Columns["Received"].ReadOnly = false;
                 row["Received"] = true;
                 data.table.Columns["Received"].ReadOnly = true;
@@ -479,10 +488,15 @@ namespace MELTEX
             L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
             UpdateReceivedByWeight();
 
-            string str = "All items will be marked received. Do you wish to inbound them now?";
+            string str;
+
+            if (data.byWeight)
+                str = "PO will be marked received. Do you wish to inbound items now?";
+            else
+                str = "All items will be marked received. Do you wish to inbound them now?";
 
             if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive);
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
 
             UpdateTableInDatabase();
             UpdateDataInDatabase();

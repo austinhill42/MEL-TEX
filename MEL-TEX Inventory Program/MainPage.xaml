@@ -220,6 +220,7 @@
                                 Receive PO
 
                             </ComboBoxItem>
+
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 

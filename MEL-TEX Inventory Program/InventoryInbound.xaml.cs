@@ -17,6 +17,8 @@ namespace MELTEX
         DataTable selectedInbound;
         private bool FromPO = false;
         private Queue<Tuple<string, string, string>> toReceive;
+        private Tuple<string, string, string> current;
+        private bool byWeight;
 
 
         public InventoryInbound(Page prev)
@@ -31,10 +33,10 @@ namespace MELTEX
             editMode = edit;
         }
 
-        public InventoryInbound(Page prev, Queue<Tuple<string, string, string>> receive) : this(prev)
+        public InventoryInbound(Page prev, Queue<Tuple<string, string, string>> receive, bool byweight) : this(prev)
         {
             toReceive = receive;
-
+            byWeight = byweight;
             FromPO = true;
         }
 
@@ -49,13 +51,17 @@ namespace MELTEX
 
             if (FromPO)
             {
-                Tuple<string, string, string> current = toReceive.Dequeue();
-                CB_ItemID.SelectedValue = current.Item1;
-                CB_ItemID.IsEditable = false;
-                CB_ItemID.IsHitTestVisible = false;
+                current = toReceive.Dequeue();
 
-                TB_Quantity.Text = current.Item2;
-                TB_Quantity.IsReadOnly = true;
+                if (!byWeight)
+                {
+                    CB_ItemID.SelectedValue = current.Item1;
+                    CB_ItemID.IsEditable = false;
+                    CB_ItemID.IsHitTestVisible = false;
+
+                    TB_Quantity.Text = current.Item2;
+                    TB_Quantity.IsReadOnly = true;
+                }
 
                 TB_PO.Text = current.Item3;
                 TB_PO.IsReadOnly = true;
@@ -353,17 +359,54 @@ namespace MELTEX
 
             App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
 
+            if (byWeight)
+            {
+                using (SqlConnection sql = new SqlConnection(App.PurchasingDBConnString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = $"SELECT WeightRemaining FROM PO WHERE Number LIKE '{current.Item3}%' ";
+
+
+                    SqlDataReader reader = com.ExecuteReader();
+
+                    decimal weight = 0;
+
+                    while (reader.Read())
+                    {
+                        weight = Convert.ToDecimal(reader.GetValue(0));
+                    }
+
+                    reader.Close();
+
+                    decimal remaining = weight - Convert.ToDecimal(L_Weight.Content.ToString());
+
+                    if (remaining < 0)
+                        MessageBox.Show("Remaining PO weight is less than 0.....\n\nSomething went wrong or values were entered incorrectly!!");
+                    else if (remaining == 0)
+                        MessageBox.Show("Remaining PO weight is 0.\n\nNo more items can come from that PO.");
+                    else
+                        MessageBox.Show($"Remaining PO weight is {remaining}");
+
+                    using (SqlCommand cmd = new SqlCommand($"UPDATE PO SET WeightRemaining = @weight WHERE Number = {current.Item3}", sql))
+                    {
+                        cmd.Parameters.AddWithValue("@weight", remaining);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
             Clear();
 
             if (FromPO)
             {
                 if (toReceive.Count > 0)
                 {
-                    MainWindow.GetWindow(this).Content = new InventoryInbound(previousPage, toReceive);
+                    MainWindow.GetWindow(this).Content = new InventoryInbound(previousPage, toReceive, byWeight);
                 }
                 else
                 {
-                    MessageBox.Show("All selected items inbounded");
                     BTN_Back_Click(sender, e);
                 }
             }

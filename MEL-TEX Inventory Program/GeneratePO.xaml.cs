@@ -18,6 +18,7 @@ namespace MELTEX
                     "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale', item.Notes ";
         private DataTable inventoryDataTable;
         private DataTable PODataTable;
+        private CreatePO.Data data;
 
         public GeneratePO(Page page)
         {
@@ -204,25 +205,7 @@ namespace MELTEX
                 row[0] = num++;
         }
 
-
-        private void BTN_ClearSelected_Click(object sender, RoutedEventArgs e)
-        {
-            InitializaPODataGrid();
-        }
-
-        private void BTN_ClearSearch_Click(object sender, RoutedEventArgs e)
-        {
-            TB_SearchDesc.Text = "";
-            TB_SearchID.Text = "";
-        }
-
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.GetWindow(this).Content = previousPage;
-        }
-
-
-        private void BTN_CreatePO_Click(object sender, RoutedEventArgs e)
+        private void CreatePO(bool byweight)
         {
             if (CB_Vendors.SelectedIndex < 0)
             {
@@ -277,17 +260,53 @@ namespace MELTEX
             items.Columns.Remove("BIN");
             items.Columns.Remove("QTY Available");
 
-            items.Columns["QTY on Hand"].ColumnName = "QTY";
+            if (byweight)
+            {
+                items.Columns.Remove("QTY on Hand");
+                items.Columns.Remove("Item ID");
+                items.Columns["Weight"].SetOrdinal(1);
+            }
+            else
+                items.Columns["QTY on Hand"].ColumnName = "QTY";
+
             items.Columns["Pub. Sale"].ColumnName = "Sale Price";
 
             foreach (DataRow row in items.Rows)
-            {   
+            {
                 row["QTY"] = 0;
             }
 
-            CreatePO.Data data = new CreatePO.Data("", 0, 0, 0, false, seller, payTo, "", shipFrom, "", terms, "", "", "", "", "", items);
+            data = new CreatePO.Data("", 0, 0, 0, 0, false, seller, payTo, "", shipFrom, "", terms, "", "", "", "", "", items, byweight);
 
             MainWindow.GetWindow(this).Content = new CreatePO(this, data);
+        }
+
+
+        private void BTN_ClearSelected_Click(object sender, RoutedEventArgs e)
+        {
+            InitializaPODataGrid();
+        }
+
+        private void BTN_ClearSearch_Click(object sender, RoutedEventArgs e)
+        {
+            TB_SearchDesc.Text = "";
+            TB_SearchID.Text = "";
+        }
+
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = previousPage;
+        }
+
+
+        private void BTN_CreatePO_Click(object sender, RoutedEventArgs e)
+        {
+            CreatePO(false);
+        }
+
+        private void BTN_CreatePOByWeight_Click(object sender, RoutedEventArgs e)
+        {
+            CreatePO(true);
         }
     }
 }
