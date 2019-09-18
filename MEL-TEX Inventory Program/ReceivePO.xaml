@@ -64,6 +64,17 @@
                 VerticalAlignment="Center" />
 
             <Label
+                x:Name="L_ReceivedCost"
+                Content="Quote: 1234567-3"
+                Grid.Row="0"
+                Grid.Column="3"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource Labels}"
+                Foreground="Red"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
+            <Label
                 x:Name="L_Date"
                 Content="Quote: 1234567-3"
                 Grid.Row="0"
