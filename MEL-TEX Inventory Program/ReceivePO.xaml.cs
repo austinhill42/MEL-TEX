@@ -23,7 +23,7 @@ namespace MELTEX
         internal CreatePO.Data data;
         private bool saved;
         private bool opened;
-        private List<Tuple<string, string>> toReceive = new List<Tuple<string, string>>();
+        private Queue<Tuple<string, string, string>> toReceive = new Queue<Tuple<string, string, string>>();
         private List<Tuple<string, string>> toInbound = new List<Tuple<string, string>>();
 
         [Serializable]
@@ -156,6 +156,8 @@ namespace MELTEX
             DateTime.TryParseExact(data.number.Split('-')[0], "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out poDate);
             L_Date.Content = poDate.ToString("MM/dd/yyyy");
 
+            L_ReceivedCost.Content = $"Received Cost by Weight: {(data.ReceivedCostByWeight != 0 ? data.ReceivedCostByWeight.ToString("0.00") : "N/A")}";
+
             TB_Seller.Text = data.seller;
             TB_PayTo.Text = data.payTo;
             CB_ShipFrom.ItemsSource = data.shipFrom;
@@ -171,6 +173,10 @@ namespace MELTEX
             DataGrid.DataContext = data.table.DefaultView;
 
             L_Num.Content = $"PO: {data.number}";
+
+            if (data.table.Columns.Contains("Pub. Sale"))
+                data.table.Columns["Pub. Sale"].ColumnName = "Sale Price";
+
             saved = true;
         }
 
@@ -209,38 +215,111 @@ namespace MELTEX
             DataGrid.DataContext = table.DefaultView;
         }
 
-        private string GetNum()
+        private void UpdateTableInDatabase()
         {
-            int prevdate = 0;
-            int prevNum = 0;
+            byte[] binTable;
 
-            using (SqlConnection sql = new SqlConnection(connString))
+            try
             {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-                com.CommandText = "SELECT Number FROM PO_Standard";
 
-                DateTime now = DateTime.Now;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(stream, data.table);
+                binTable = stream.ToArray();
+            }
+                string query = "UPDATE PO_Standard " +
+                                   "SET [FullyReceived] = @received, [Items] = @items " +
+                                   "WHERE [Number] = @num";
 
-                int today = Convert.ToInt32(now.ToString("yyyy") + now.ToString("MM") + now.ToString("dd"));
-
-                SqlDataReader reader = com.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection sql = new SqlConnection(connString))
                 {
-                    string read = reader.GetValue(0).ToString();
-                    int testDate = Convert.ToInt32(read.Split('-')[0]);
-                    int testNum = Convert.ToInt32(read.Split('-')[1]);
-                    prevdate = prevdate > testDate ? prevdate : testDate;
-                    prevNum = prevNum > testNum ? prevNum : testNum;
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@received", data.FullyReceived);
+                    com.Parameters.AddWithValue("@items", binTable);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error marking received in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
+            }
 
-                reader.Close();
+        }
 
-                if (today > prevdate)
-                    return $"{today.ToString()}-1";
-                else
-                    return $"{today}-{++prevNum}";
+        private void UpdateDataInDatabase()
+        {
+            byte[] binData;
+
+            try
+            {
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, data);
+                    binData = stream.ToArray();
+                }
+                string query = "UPDATE PO_Standard " +
+                                   "SET [Data] = @data " +
+                                   "WHERE [Number] = @num";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@data", binData);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating data in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
+            }
+
+        }
+
+        private void UpdateReceivedByWeight()
+        {
+            try
+            {
+                string query = "UPDATE PO_Standard " +
+                                   "SET [ReceivedCostByWeight] = @cost " +
+                                   "WHERE [Number] = @num";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@cost", data.ReceivedCostByWeight);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating received cost by weight in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
             }
         }
 
@@ -286,8 +365,6 @@ namespace MELTEX
                 data.table = ((DataView)DataGrid.ItemsSource).ToTable();
                 byte[] binTable;
                 byte[] binData;
-
-
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -347,48 +424,68 @@ namespace MELTEX
 
         private void BTN_ReceiveSelected_Click(object sender, RoutedEventArgs e)
         {
+            decimal weight = 0;
+            decimal cost = 0;
+
             foreach (DataRow row in data.table.Rows)
             {
                 if ((bool)row["Selected"])
                 {
-                    toReceive.Add(new Tuple<string, string>(row["Item ID"].ToString(), row["QTY"].ToString()));
+                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
                     data.table.Columns["Received"].ReadOnly = false;
                     row["Received"] = true;
                     data.table.Columns["Received"].ReadOnly = true;
                 }
+
+                weight += (decimal)row["Weight"];
+                cost += (decimal)row["Sale Price"];
             }
+
+            data.ReceivedCostByWeight = cost / weight;
+            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
+            UpdateReceivedByWeight();
 
             string str = "The following items will be marked received:";
 
-            foreach (Tuple<string, string> item in toReceive)
+            foreach (Tuple<string, string, string> item in toReceive)
                 str += $"\n\t{item.Item1}";
 
             str += "\n\nDo you wish to inbound them now?";
 
             if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (Tuple<string, string> item in toReceive)
-                    MainWindow.GetWindow(this).Content = new InventoryInbound(this, item.Item1.ToString(), item.Item2.ToString(), data.number);
-            }
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive);
+
+            UpdateTableInDatabase();
+            UpdateDataInDatabase();
         }
 
         private void BTN_ReceiveAll_Click(object sender, RoutedEventArgs e)
         {
+            decimal weight = 0;
+            decimal cost = 0;
+
             foreach (DataRow row in data.table.Rows)
             {
-                toReceive.Add(new Tuple<string, string>(row["Item ID"].ToString(), row["QTY"].ToString()));
+                toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
                 data.table.Columns["Received"].ReadOnly = false;
                 row["Received"] = true;
                 data.table.Columns["Received"].ReadOnly = true;
+
+                weight += Convert.ToDecimal(row["Weight"]);
+                cost += Convert.ToDecimal(row["Sale Price"]);
             }
+
+            data.ReceivedCostByWeight = cost / weight;
+            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
+            UpdateReceivedByWeight();
 
             string str = "All items will be marked received. Do you wish to inbound them now?";
 
             if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                foreach (Tuple<string, string> item in toReceive)
-                    MainWindow.GetWindow(this).Content = new InventoryInbound(this, item.Item1, item.Item2, data.number);
-            }
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive);
+
+            UpdateTableInDatabase();
+            UpdateDataInDatabase();
         }
     }
 }

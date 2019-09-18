@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -16,6 +16,8 @@ namespace MELTEX
         private bool editMode = false;
         DataTable selectedInbound;
         private bool FromPO = false;
+        private Queue<Tuple<string, string, string>> toReceive;
+
 
         public InventoryInbound(Page prev)
         {
@@ -29,16 +31,9 @@ namespace MELTEX
             editMode = edit;
         }
 
-        public InventoryInbound(Page prev, string addItem, string qty, string po) : this(prev)
+        public InventoryInbound(Page prev, Queue<Tuple<string, string, string>> receive) : this(prev)
         {
-            CB_ItemID.SelectedValue = addItem;
-            CB_ItemID.IsEditable = false;
-
-            TB_PO.Text = po;
-            TB_PO.IsReadOnly = true;
-
-            TB_Quantity.Text = qty;
-            TB_Quantity.IsReadOnly = true;
+            toReceive = receive;
 
             FromPO = true;
         }
@@ -51,6 +46,21 @@ namespace MELTEX
                 PopulateInboundComboBox();
             else
                 PopulateItemsComboBox();
+
+            if (FromPO)
+            {
+                Tuple<string, string, string> current = toReceive.Dequeue();
+                CB_ItemID.SelectedValue = current.Item1;
+                CB_ItemID.IsEditable = false;
+                CB_ItemID.IsHitTestVisible = false;
+
+                TB_Quantity.Text = current.Item2;
+                TB_Quantity.IsReadOnly = true;
+
+                TB_PO.Text = current.Item3;
+                TB_PO.IsReadOnly = true;
+
+            }
         }
 
         private void CB_ItemID_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -248,23 +258,6 @@ namespace MELTEX
 
         }
 
-        
-
-        private void BTN_Save_Click(object sender, RoutedEventArgs e)
-        {
-            if (editMode)
-                EditInboundedItem();
-            else
-                InboundItem();
-
-            App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
-
-            Clear();
-
-            if (FromPO)
-                BTN_Back_Click(sender, e);
-        }
-
         private void InboundItem()
         {
             try
@@ -348,6 +341,31 @@ namespace MELTEX
                     MessageBox.Show("One of the fields was entered with an incorrect format. Check your values and try again.");
                 else
                     MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+            }
+        }
+
+        private void BTN_Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (editMode)
+                EditInboundedItem();
+            else
+                InboundItem();
+
+            App.UpdateQuantityAvailable(CB_ItemID.SelectedValue.ToString());
+
+            Clear();
+
+            if (FromPO)
+            {
+                if (toReceive.Count > 0)
+                {
+                    MainWindow.GetWindow(this).Content = new InventoryInbound(previousPage, toReceive);
+                }
+                else
+                {
+                    MessageBox.Show("All selected items inbounded");
+                    BTN_Back_Click(sender, e);
+                }
             }
         }
 

@@ -278,6 +278,7 @@ namespace MELTEX
             items.Columns.Remove("QTY Available");
 
             items.Columns["QTY on Hand"].ColumnName = "QTY";
+            items.Columns["Pub. Sale"].ColumnName = "Sale Price";
 
             foreach (DataRow row in items.Rows)
             {   
