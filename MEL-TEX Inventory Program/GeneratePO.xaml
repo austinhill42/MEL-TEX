@@ -196,8 +196,8 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
                 Grid.Row="4"
-                Grid.Column="3"
-                Grid.ColumnSpan="3">
+                Grid.Column="2"
+                Grid.ColumnSpan="4">
 
                 <Label
                     Content="Vendor Lookup: "
@@ -223,6 +223,17 @@
                     Width="150"
                     Margin="20, 0, 10, 0"
                     Click="BTN_CreatePO_Click" />
+
+                <Button
+                    x:Name="BTN_CreatePOByWeight"
+                    Content="Create PO by Weight"
+                    FontWeight="Bold"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource NavigationButtons}"
+                    Width="200"
+                    Margin="20, 0, 10, 0"
+                    Click="BTN_CreatePOByWeight_Click" />
 
             </StackPanel>
 
