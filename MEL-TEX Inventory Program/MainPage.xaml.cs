@@ -66,6 +66,8 @@ namespace MELTEX
 
                         if (open.ShowDialog() ?? false)
                             MainWindow.GetWindow(this).Content = new ReceivePO(this, open.poNum);
+                        else
+                            Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
                         break;
                     case "Vendor Information":
                         break;
@@ -114,7 +116,7 @@ namespace MELTEX
             else
             {
 
-                CB_Settings.SelectedIndex = -1;
+                Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
 
                 if (login.attempted)
                     MessageBox.Show("Incorrect Login");
