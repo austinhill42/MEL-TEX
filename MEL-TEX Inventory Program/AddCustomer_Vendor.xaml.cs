@@ -120,12 +120,9 @@ namespace MELTEX
                 string conn = "";
                 string query;
 
-                if (Type == "Customer")
-                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
+                query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
                                "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
-                else
-                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Pay_To], [Mail_From], [Terms], [Notes]) " +
-                               "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
+                
 
                 if (Type == "Customer")
                     conn = App.SalesDBConnString;
