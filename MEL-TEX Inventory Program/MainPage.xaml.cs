@@ -92,6 +92,9 @@ namespace MELTEX
                     case "Edit Password":
                         LoginWrapper(new EditPassword(this));
                         break;
+                    case "Clear Data":
+                        LoginWrapper(new ClearData());
+                        break;
                     default:
                         break;
                 } 
@@ -115,12 +118,30 @@ namespace MELTEX
             }
             else
             {
-
                 Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
 
                 if (login.attempted)
                     MessageBox.Show("Incorrect Login");
             }
+        }
+
+        private void LoginWrapper(Window window)
+        {
+            LoginForm login = new LoginForm();
+
+            login.ShowDialog();
+
+            if (login.correctLogin)
+            {
+                window.Show();
+            }
+            else
+            {
+                if (login.attempted)
+                    MessageBox.Show("Incorrect Login");
+            }
+
+            Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
         }
 
         private void Main_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
