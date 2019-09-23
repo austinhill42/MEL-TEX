@@ -175,9 +175,9 @@ namespace MELTEX
                     
                 }
 
-                Clear();
+                MessageBox.Show($"{Type} {TB_Name.Text} added to database");
 
-                //MessageBox.Show($"Item {TB_ItemID.Text} added to database");
+                Clear();
             }
             catch (Exception ex)
             {

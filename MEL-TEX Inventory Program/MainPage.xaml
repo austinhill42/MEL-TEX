@@ -139,6 +139,13 @@
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
+                                Open Quote
+
+                            </ComboBoxItem>
+
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
                                 Customer Information
 
                             </ComboBoxItem>
