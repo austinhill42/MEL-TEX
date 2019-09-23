@@ -41,6 +41,12 @@ namespace MELTEX
                     case "Remove Inbounded Item":
                         MainWindow.GetWindow(this).Content = new DeleteInboundedItem(this);
                         break;
+                    case "Open Quote":
+                        OpenQuote openquote = new OpenQuote();
+
+                        if (openquote.ShowDialog() ?? false)
+                            MainWindow.GetWindow(this).Content = new GenerateQuote(this, openquote.quotenum);
+                        break;
                     case "Customer Information":
                         break;
                     case "Add Customer":

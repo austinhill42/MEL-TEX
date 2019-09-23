@@ -98,7 +98,7 @@ namespace MELTEX
                     TB_Mult.Text = CB_Group.SelectedValue.ToString();
                     decimal m = Convert.ToDecimal(TB_Mult.Text);
                     decimal p = Convert.ToDecimal(TB_ListPrice.Text);
-                    TB_PublishedSales.Text = Convert.ToString(m * p);
+                    TB_PublishedSales.Text = (m*p).ToString("0.00");
                 }
             }
         }

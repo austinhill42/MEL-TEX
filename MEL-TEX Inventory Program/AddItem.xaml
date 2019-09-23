@@ -64,7 +64,8 @@
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Style="{StaticResource InputTextBoxes}" />
+                Style="{StaticResource InputTextBoxes}" 
+                CharacterCasing="Upper"/>
 
             <ComboBox
                 x:Name="CB_ItemID"
