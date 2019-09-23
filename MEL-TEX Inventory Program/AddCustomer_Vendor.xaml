@@ -180,32 +180,7 @@
                                 <Setter
                                     Property="Height"
                                     Value="30" />
-
-                                <!--<Setter
-                                    Property="Visibility"
-                                    Value="Visible" />-->
-
-                                <!--<Style.Triggers>
-
-                                    <DataTrigger
-                                        Binding="{Binding isVisible, Mode=TwoWay}"
-                                        Value="false">
-
-                                        <Setter
-                                            Property="Visibility"
-                                            Value="Hidden" />
-                                    </DataTrigger>-->
-
-                                    <!--<DataTrigger
-                                        Binding="{Binding isVisible}"
-                                        Value="true">
-
-                                        <Setter
-                                            Property="Visibility"
-                                            Value="Visible" />
-                                    </DataTrigger>
-                                    
-                                </Style.Triggers>-->
+                                
                             </Style>
                         </Button.Style>
                     </Button>

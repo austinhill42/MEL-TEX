@@ -6,8 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MELTEX"
     mc:Ignorable="d"
-    Height="30"
-    Width="420"
+    Height="50"
+    Width="425"
     Background="White">
 
     <Grid>
@@ -15,22 +15,32 @@
             Orientation="Horizontal">
 
             <Label
-                Content="Phone: " />
+                Content="Number: "
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource Labels}"/>
 
             <TextBox
                 x:Name="TB_Phone"
-                Width="250"
-                FontSize="18" />
+                Height="23"
+                FontSize="18" 
+                TextChanged="TB_Phone_TextChanged"
+                Style="{StaticResource InputTextBoxes}" />
 
             <Label
-                Content="Type: " 
-                Margin="10,0,0,0"/>
+                Content="Type: "
+                Margin="10,0,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{StaticResource Labels}"/>
 
             <ComboBox
                 x:Name="CB_Type"
                 Width="75"
+                Height="23"
                 VerticalContentAlignment="Center"
-                HorizontalContentAlignment="Center">
+                HorizontalContentAlignment="Center"
+                SelectionChanged="CB_Type_SelectionChanged">
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
