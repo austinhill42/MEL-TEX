@@ -164,7 +164,7 @@
                 <DataGrid
                     x:Name="QuoteDataGrid"
                     Height="369"
-                    ItemsSource="{Binding}">
+                    ItemsSource="{Binding Mode=OneWay}">
 
                     <DataGrid.Resources>
                         <Style
