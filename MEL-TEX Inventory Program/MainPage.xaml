@@ -305,6 +305,13 @@
 
                             </ComboBoxItem>
 
+                            <ComboBoxItem
+                                Style="{StaticResource MainWindowComboBoxItem}">
+
+                                Clear Data
+                                
+                            </ComboBoxItem>
+
                         </ComboBox>
 
                         <TextBlock
