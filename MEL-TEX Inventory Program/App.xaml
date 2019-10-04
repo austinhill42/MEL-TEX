@@ -8,12 +8,10 @@
 
     <Application.Resources>
 
-        <sys:String
-            x:Key="DBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="|DataDirectory|\MEL-TEXDB.mdf";Integrated Security=True</sys:String>
-        <sys:String
-            x:Key="QuoteDBConnString">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MEL-TEXQuoteDB.mdf";Integrated Security=True</sys:String>
         <local:CountToVisibilityConverter
             x:Key="CountToVisibilityConverter" />
+        <local:BoolToVisibilityConverter
+            x:Key="BoolToVisibilityConverter" />
         <sys:Double
             x:Key="MainWindowControlHeight">50</sys:Double>
         <sys:Double
