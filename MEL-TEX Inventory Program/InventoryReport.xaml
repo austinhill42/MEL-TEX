@@ -11,6 +11,7 @@
     Width="Auto"
     Title="Inventory Report"
     Background="White"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Loaded="InventoryReportPage_Loaded">
 
     <Viewbox>
@@ -164,7 +165,9 @@
                 <DataGrid
                     x:Name="QuoteDataGrid"
                     Height="369"
-                    ItemsSource="{Binding Mode=OneWay}">
+                    AutoGenerateColumns="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding ., UpdateSourceTrigger=PropertyChanged}">
 
                     <DataGrid.Resources>
                         <Style

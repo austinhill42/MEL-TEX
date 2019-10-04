@@ -1,0 +1,362 @@
+﻿<Page
+    x:Class="MELTEX.Invoice"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MELTEX"
+    Height="Auto"
+    Width="Auto"
+    Background="White"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    Loaded="Page_Loaded">
+
+    <Viewbox>
+
+        <Grid
+            x:Name="Grid">
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition
+                    Width="120" />
+                <ColumnDefinition
+                    Width="300" />
+                <ColumnDefinition
+                    Width="300" />
+                <ColumnDefinition
+                    Width="120" />
+
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="80" />
+                <RowDefinition
+                    Height="260" />
+                <RowDefinition
+                    Height="80" />
+
+            </Grid.RowDefinitions>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="0"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Margin="0, 0, 10, 0">
+
+                <Label
+                    Content="Account #: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <TextBox
+                    x:Name="TB_Account"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
+                Margin="10, 0, 0, 0">
+
+                <Label
+                    Content="Name: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <TextBox
+                    x:Name="TB_Name"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Margin="0, 0, 10, 0">
+
+                <Label
+                    Content="Invoice #: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <TextBox
+                    x:Name="TB_Invoice"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="2"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Margin="0, 0, 10, 0">
+
+                <Label
+                    Content="Date Received: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <DatePicker
+                    x:Name="DP_DateReceived"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 5" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="1"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
+                Margin="10, 0, 0, 0">
+
+                <Label
+                    Content="Acknowledged: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <CheckBox
+                    x:Name="CB_Ack"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center" 
+                    IsThreeState="False"/>
+
+                <Label
+                    Content="Paid: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="20, 0, 0, 10" />
+
+                <CheckBox
+                    x:Name="CB_Paid"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center" 
+                    IsThreeState="False"
+                    IsChecked="False"/>
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="2"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
+                Margin="10, 0, 0, 0">
+
+                <Label
+                    Content="Due Date: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10" />
+
+                <DatePicker
+                    x:Name="DP_DateDue"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 5" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="3"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Margin="0, 0, 10, 0">
+
+                <Label
+                    Content="Check #: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                <TextBox
+                    x:Name="TB_CheckNo"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="3"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
+                Margin="10, 0, 0, 0">
+
+                <Label
+                    Content="Bank: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                <TextBox
+                    x:Name="TB_Bank"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="4"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Center">
+
+                <Label
+                    Content="Confirmation #: "
+                    Style="{StaticResource Labels}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 10"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                <TextBox
+                    x:Name="TB_Confirmation"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource InputTextBoxes}"
+                    Width="400"
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+            </StackPanel>
+
+            <Label
+                Content="Notes: "
+                Grid.Row="5"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="0, 0, 0, 0" />
+
+            <TextBox
+                x:Name="TB_Notes"
+                Grid.Row="5"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Margin="10, 10, 0, 0"
+                Height="200"
+                Width="500"
+                TextWrapping="Wrap"
+                IsReadOnly="True"
+                FontSize="16" />
+
+            <Label
+                Content="New Note: "
+                Grid.Row="5"
+                Grid.Column="1"
+                Style="{StaticResource Labels}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="-30, 0, 0, 10" />
+
+            <TextBox
+                x:Name="TB_AddNote"
+                Grid.Row="5"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                VerticalContentAlignment="Center"
+                Margin="10, 0, 0, 10"
+                Height="30"
+                Width="500"
+                FontSize="16" />
+
+            <Button
+                x:Name="BTN_AddNote"
+                Content="Add Note"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="5"
+                Grid.Column="6"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Click="BTN_AddNote_Click"
+                Margin="-70, 0, 0, 10" />
+
+            <Button
+                x:Name="BTN_Back"
+                Content="Back"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="6"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Click="BTN_Back_Click"
+                Margin="10" />
+
+            <Button
+                x:Name="BTN_Clear"
+                Content="Clear"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="6"
+                Grid.Column="2"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Click="BTN_Clear_Click"
+                Margin="10" />
+
+            <Button
+                x:Name="BTN_Save"
+                Content="Save"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="6"
+                Grid.Column="3"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Click="BTN_Save_Click"
+                Margin="10" />
+
+        </Grid>
+
+    </Viewbox>
+</Page>

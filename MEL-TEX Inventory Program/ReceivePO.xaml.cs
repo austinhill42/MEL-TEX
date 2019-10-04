@@ -183,6 +183,8 @@ namespace MELTEX
                 BTN_ReceiveSelected.Visibility = Visibility.Hidden;
 
             saved = true;
+
+            this.WindowTitle = "Receive PO";
         }
 
         private void ControlChanged(object sender, EventArgs e)
@@ -500,6 +502,11 @@ namespace MELTEX
 
             UpdateTableInDatabase();
             UpdateDataInDatabase();
+        }
+
+        private void BTN_Invoice_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = new Invoice(this);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace MELTEX
     {
         internal Page previousPage;
         private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
-                    "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale', item.Notes ";
+                    "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult', item.Weight, item.Published_Sales AS 'Pub Sale', item.Notes ";
         private DataTable inventoryDataTable;
-        private DataTable quoteDataTable;
+        public DataTable QuoteDataTable { get; set; }
 
         public InventoryReport(Page page)
         {
@@ -86,17 +86,18 @@ namespace MELTEX
         private void InventoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int rowIndex = (sender as DataGridRow).GetIndex();
-            quoteDataTable.ImportRow(inventoryDataTable.Rows[rowIndex]);
+            QuoteDataTable.ImportRow(inventoryDataTable.Rows[rowIndex]);
 
-            AddLineNumbers(quoteDataTable);
+            AddLineNumbers(QuoteDataTable);
+            QuoteDataGrid.UpdateLayout();
         }
 
         private void QuoteDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int rowIndex = (sender as DataGridRow).GetIndex();
-            quoteDataTable.Rows.Remove(quoteDataTable.Rows[rowIndex]);
+            QuoteDataTable.Rows.Remove(QuoteDataTable.Rows[rowIndex]);
 
-            AddLineNumbers(quoteDataTable);
+            AddLineNumbers(QuoteDataTable);
 
             
         }
@@ -156,12 +157,13 @@ namespace MELTEX
 
         private void InitializeQuoteDataGrid()
         {
-            quoteDataTable = new DataTable();
+            QuoteDataTable = new DataTable();
 
             foreach (DataColumn col in inventoryDataTable.Columns)
-                quoteDataTable.Columns.Add(new DataColumn(col.ColumnName));
+                QuoteDataTable.Columns.Add(new DataColumn(col.ColumnName));
 
-            QuoteDataGrid.DataContext = quoteDataTable.DefaultView;
+            QuoteDataGrid.DataContext = QuoteDataTable;
+            //QuoteDataGrid.UpdateLayout();
         }
 
         private void PopulateCustomersComboBox()
@@ -294,7 +296,7 @@ namespace MELTEX
             items.Columns.Remove("Warehouse");
             items.Columns.Remove("BIN");
             items.Columns.Remove("List Price");
-            items.Columns.Remove("Mult.");
+            items.Columns.Remove("Mult");
             items.Columns.Remove("Notes");
 
             GenerateQuote.Data data = new GenerateQuote.Data("", buyer, billto, "", shipTo, "", terms, "", "", "", "", "", items);
