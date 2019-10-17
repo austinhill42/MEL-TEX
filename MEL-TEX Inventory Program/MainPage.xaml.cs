@@ -50,7 +50,7 @@ namespace MELTEX
                     case "Customer Information":
                         break;
                     case "Add Customer":
-                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Customer");
+                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Customer", false);
                         break;
                     case "Add Customer Contact":
                         MainWindow.GetWindow(this).Content = new AddContact(this, "Customer");
@@ -78,7 +78,7 @@ namespace MELTEX
                     case "Vendor Information":
                         break;
                     case "Add Vendor":
-                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Vendor");
+                        MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Vendor", false);
                         break;
                     case "Add Vendor Contact":
                         MainWindow.GetWindow(this).Content = new AddContact(this, "Vendor");

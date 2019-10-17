@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Windows;
@@ -18,29 +19,37 @@ namespace MELTEX
         private Page previousPage;
         public ObservableCollection<Address> ShipToAddresses { get; set; }
         private string Type;
+        bool edit;
+        private string conn;
+        private string selectedNumber;
         
 
-        public AddCustomer_Vendor(Page prev, string type)
+        public AddCustomer_Vendor(Page prev, string type, bool edit, string number = "")
         {
             InitializeComponent();
 
             previousPage = prev;
             Type = type;
+            this.edit = edit;
+            selectedNumber = number;
             ShipToAddresses = new ObservableCollection<Address>();
-
-            Address a;
-
+            
+                
             if (Type == "Customer")
             {
                 ((Address)Grid.FindName("BillTo")).AddressType = "Bill To: ";
                 BTN_AddShipTo.Content = "Add Ship To";
                 BTN_RemoveShipTo.Content = "Remove Ship To";
+
+                conn = App.SalesDBConnString;
             }
             else
             {
                 ((Address)Grid.FindName("BillTo")).AddressType = "Pay To: ";
                 BTN_AddShipTo.Content = "Add Ship From";
                 BTN_RemoveShipTo.Content = "Remove Ship From";
+
+                conn = App.PurchasingDBConnString;
             }
 
         }
@@ -52,15 +61,96 @@ namespace MELTEX
             L_Number.Content = $"{Type} No:";
             L_Name.Content = $"{Type} Name:";
 
-            Address a;
+            if (!edit)
+            {
+                Address a;
+                
+                if (Type == "Customer")
+                    a = new Address() { AddressType = "Ship To:" };
+                else
+                    a = new Address() { AddressType = "Ship From:" };
 
-            if (Type == "Customer")
-                a = new Address() { AddressType = "Ship To:" };
+                AddShipTo(a);
+            }
             else
-                a = new Address() { AddressType = "Ship From:" };
+            {
+                DataTable table = new DataTable();
+                DataTable shipTable = new DataTable();
 
-            AddShipTo(a);
+                string query =
+                    $"SELECT * " +
+                    $"FROM {Type}_Ship_Locations " +
+                    $"WHERE Number = @num ";
 
+                using (SqlConnection sql = new SqlConnection(conn))
+                {
+                    sql.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(query, sql))
+                    {
+                        cmd.Parameters.AddWithValue("@num", selectedNumber);
+
+                        cmd.ExecuteNonQuery();
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd.CommandText, sql)
+                        {
+                            SelectCommand = cmd
+                        };
+
+                        adapter.Fill(shipTable);
+
+                        query =
+                            $"SELECT * " +
+                            $"FROM {Type} " +
+                            $"WHERE Number = @num ";
+
+                        cmd.CommandText = query;
+
+                        cmd.ExecuteNonQuery();
+
+                        adapter.Fill(table);
+                    }
+                }
+
+                DataRow row = table.Rows[0];
+
+                TB_Number.Text = row["Number"].ToString();
+                TB_Name.Text = row["Name"].ToString();
+                TB_Website.Text = row["Website"].ToString();
+                TB_Terms.Text = row["Terms"].ToString();
+                TB_Notes.Text = row["Notes"].ToString();
+
+                string[] bill = row[Type == "Customer" ? "Bill_To" : "Pay_To"].ToString().Split('|');
+                string[] mail = row[Type == "Customer" ? "Mail_To" : "Mail_From"].ToString().Split('|');
+
+                ((Address)Grid.FindName("BillTo")).TB_Address1.Text = bill[0];
+                ((Address)Grid.FindName("BillTo")).TB_Address2.Text = bill[1];
+                ((Address)Grid.FindName("BillTo")).TB_City.Text = bill[2];
+                ((Address)Grid.FindName("BillTo")).TB_State.Text = bill[3];
+                ((Address)Grid.FindName("BillTo")).TB_Zip.Text = bill[4];
+
+                ((Address)Grid.FindName("MailTo")).TB_Address1.Text = mail[0];
+                ((Address)Grid.FindName("MailTo")).TB_Address2.Text = mail[1];
+                ((Address)Grid.FindName("MailTo")).TB_City.Text = mail[2];
+                ((Address)Grid.FindName("MailTo")).TB_State.Text = mail[3];
+                ((Address)Grid.FindName("MailTo")).TB_Zip.Text = mail[4];
+
+
+
+                foreach (DataRow shipRow in shipTable.Rows)
+                {
+                    Address a = new Address();
+                    string[] address = shipRow[1].ToString().Split('|');
+
+                    a.TB_Address1.Text = address[0];
+                    a.TB_Address2.Text = address[1];
+                    a.TB_City.Text = address[2];
+                    a.TB_State.Text = address[3];
+                    a.TB_Zip.Text = address[4];
+
+                    AddShipTo(a);
+                }
+            }
             
         }
 
@@ -117,21 +207,38 @@ namespace MELTEX
 
             try
             {
-                string conn = "";
+                string insert;
+                string update;
                 string query;
 
                 if (Type == "Customer")
-                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
-                               "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
+                {
+                    insert = 
+                        $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
+                        "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
+
+                    update =
+                        $"UPDATE {Type}" +
+                        $"SET [Name] = @name, [Website] = @website, [Bill_To] = @bill, [Mail_To] = @mail, [Terms] = @terms, [Notes] = @notes " +
+                        $"WHERE [Number] = @num ";
+                }
                 else
-                    query = $"INSERT INTO {Type} ([Number], [Name], [Website], [Pay_To], [Mail_From], [Terms], [Notes]) " +
-                                   "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
+                {
+                    insert = 
+                        $"INSERT INTO {Type} ([Number], [Name], [Website], [Pay_To], [Mail_From], [Terms], [Notes]) " +
+                        "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
+                    update =
+                        $"UPDATE {Type}" +
+                        $"SET [Name] = @name, [Website] = @website, [pay_To] = @bill, [Mail_From] = @mail, [Terms] = @terms, [Notes] = @notes " +
+                        $"WHERE [Number] = @num ";
+                }
 
-                if (Type == "Customer")
-                    conn = App.SalesDBConnString;
-                else if (Type == "Vendor")
-                    conn = App.PurchasingDBConnString;
+                query =
+                    $"IF EXISTS (SELECT * FROM {Type} WHERE Number = @num) " +
+                    $"  {update} " +
+                    $"ELSE" +
+                    $"  {insert} ";
 
                 using (SqlConnection sql = new SqlConnection(conn))
                 {
@@ -150,36 +257,40 @@ namespace MELTEX
                         cmd.ExecuteNonQuery();
                     }
 
-                    for (int i = 0; i < shipto.Count; i++)
+                    using (SqlCommand cmd = new SqlCommand(query, sql))
                     {
-                        if (Type == "Customer")
-                            query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_To]) " +
-                                $"VALUES (@num,@{i}) ";
-                        else
-                            query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_From]) " +
-                                $"VALUES (@num,@{i}) ";
+                        cmd.Parameters.AddWithValue("@num", num);
 
+                        cmd.CommandText = $"DELETE FROM {Type}_Ship_Locations WHERE Number = @num ";
+                        cmd.ExecuteNonQuery();
 
-                        try
+                        for (int i = 0; i < shipto.Count; i++)
                         {
-                            using (SqlCommand cmd = new SqlCommand(query, sql))
+                            try
                             {
-                                cmd.Parameters.AddWithValue("@num", num);
+                                if (Type == "Customer")
+                                    query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_To]) " +
+                                        $"VALUES (@num,@{i}) ";
+                                else
+                                    query = $"INSERT INTO {Type}_Ship_Locations ([Number], [Ship_From]) " +
+                                        $"VALUES (@num,@{i}) ";
+
+                                cmd.CommandText = query;
+
                                 cmd.Parameters.AddWithValue($"@{i}", shipto[i]);
 
                                 cmd.ExecuteNonQuery();
+
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show($"Couldn't enter address:\n\n\t{shipto[i].Replace("|", "\n\t")}");
                             }
                         }
-                        catch (Exception)
-                        {
-                            MessageBox.Show($"Couldn't enter address:\n\n\t{shipto[i].Replace("|", "\n\t")}");
-                        }
                     }
-
-                    
                 }
 
-                MessageBox.Show($"{Type} {TB_Name.Text} added to database");
+                MessageBox.Show($"{Type} {TB_Name.Text} {(edit ? "updated in" : "added to")} database");
 
                 Clear();
             }
