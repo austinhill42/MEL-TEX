@@ -157,7 +157,7 @@
 
                             </ComboBoxItem>
                             
-                            <ComboBoxItem
+                            <!--<ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Customer Contact
@@ -190,7 +190,7 @@
 
                                 Remove Customer Contact
 
-                            </ComboBoxItem>
+                            </ComboBoxItem>-->
 
                         </ComboBox>
 
@@ -242,7 +242,7 @@
 
                             </ComboBoxItem>
 
-                            <ComboBoxItem
+                            <!--<ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Vendor Contact
@@ -275,7 +275,7 @@
 
                                 Remove Vendor Contact
 
-                            </ComboBoxItem>
+                            </ComboBoxItem>-->
 
                         </ComboBox>
 

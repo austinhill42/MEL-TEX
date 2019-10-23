@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Data.Linq;
 using System.Data.SqlClient;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -16,6 +20,41 @@ namespace MELTEX
         private Page previousPage;
         private bool editMode = false;
         private DataTable selectedItem;
+        protected _ItemValues Values { get; set; }
+
+        protected class _ItemValues : INotifyPropertyChanged
+        {
+
+            private string _ItemID;
+            private string _Description;
+            private string _Weight;
+            private string _ListPrice;
+            private string _Group;
+            private string _Multiplier;
+            private string _PubSale;
+            private string _PubCost;
+            private string _Notes;
+            private string _NewNote;
+
+            public string ItemID { get { return _ItemID; } set { _ItemID = value; OnPropertyChanged("ItemID"); } }
+            public string Description { get { return _Description; } set { _Description = value; OnPropertyChanged("Description"); } }
+            public string Weight { get { return _Weight; } set { _Weight = value; OnPropertyChanged("Weight"); } }
+            public string ListPrice { get { return _ListPrice; } set { _ListPrice = value; OnPropertyChanged("ListPrice"); } }
+            public string Group { get { return _Group; } set { _Group = value; OnPropertyChanged("Group"); } }
+            public string Multiplier { get { return _Multiplier; } set { _Multiplier = value; OnPropertyChanged("Multiplier"); } }
+            public string PubSale { get { return _PubSale; } set { _PubSale = value; OnPropertyChanged("PubSale"); } }
+            public string PubCost { get { return _PubCost; } set { _PubCost = value; OnPropertyChanged("PubCost"); } }
+            public string Notes { get { return _Notes; } set { _Notes += value; OnPropertyChanged("Notes"); } }
+            public string NewNote { get { return _NewNote; } set { _NewNote = value; OnPropertyChanged("NewNote"); } }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            private void OnPropertyChanged(string property)
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
+        }
 
         public AddItem(Page prev)
         {
@@ -24,6 +63,10 @@ namespace MELTEX
             previousPage = prev;
 
             selectedItem = new DataTable();
+
+            Values = new _ItemValues();
+
+            this.DataContext = Values;
         }
 
         public AddItem(Page prev, bool edit) : this(prev)
@@ -49,6 +92,8 @@ namespace MELTEX
                 TB_ItemID.Visibility = Visibility.Visible;
                 CB_ItemID.Visibility = Visibility.Hidden;
             }
+
+            Values.ItemID = "123456";
         }
 
         private void CB_ItemID_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -152,7 +197,7 @@ namespace MELTEX
                 DataTable table = new DataTable();
 
                 adapter.Fill(table);
-                CB_Group.DataContext = table.DefaultView;
+                CB_Group.ItemsSource = table.DefaultView;
             }
 
         }
@@ -200,54 +245,6 @@ namespace MELTEX
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
         {
             Clear();
-        }
-
-        private void AddItemToDatabase()
-        {
-            try
-            {
-                string query = "INSERT INTO Items ([Inventory_Item], [Description], [Weight], [List_Price], [Group], [Multiplier], [Published_Sales], [Published_Cost], [Notes]) " +
-                               "VALUES (@item,@description,@weight,@listprice,@group,@multiplier,@sales,@cost,@notes) ";
-
-                using (SqlConnection sql = new SqlConnection(App.DBConnString))
-                {
-                    sql.Open();
-
-                    using (SqlCommand cmd = new SqlCommand(query, sql))
-                    {
-                        cmd.Parameters.AddWithValue("@item", TB_ItemID.Text);
-                        cmd.Parameters.AddWithValue("@description", TB_Desc.Text);
-                        cmd.Parameters.AddWithValue("@weight", Convert.ToDecimal(TB_Weight.Text));
-                        cmd.Parameters.AddWithValue("@listprice", Convert.ToDecimal(TB_ListPrice.Text));
-                        cmd.Parameters.AddWithValue("@group", ((DataRowView)CB_Group.SelectedItem).Row[0].ToString());
-                        cmd.Parameters.AddWithValue("@multiplier", Convert.ToDecimal(TB_Mult.Text));
-                        cmd.Parameters.AddWithValue("@sales", Convert.ToDecimal(TB_PublishedSales.Text));
-                        cmd.Parameters.AddWithValue("@cost", Convert.ToDecimal(TB_PublishedCost.Text));
-                        cmd.Parameters.AddWithValue("@notes", TB_Notes.Text);
-
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                Clear();
-
-                MessageBox.Show($"Item {TB_ItemID.Text} added to database");
-            }
-            catch (Exception ex)
-            {
-                if (ex is System.FormatException)
-                    MessageBox.Show("One of the fields was entered with an incorrect format...\n\nOr a required value was left black.\n\nCheck your values and try again.");
-                else if (ex is SqlException)
-                {
-                    if (ex.Message.Contains("duplicate"))
-                        MessageBox.Show("The item already exists in the database.");
-
-                    else
-                        MessageBox.Show(ex.Message);
-                }
-                else
-                    MessageBox.Show(ex.Message);
-            }
         }
 
         private void UpdateItemInDatabase()
@@ -305,13 +302,16 @@ namespace MELTEX
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (editMode)
-                UpdateItemInDatabase();
-            else
-                AddItemToDatabase();
+            ArrayList val = new ArrayList();
+
+            foreach (PropertyInfo prop in Values.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                if (prop.Name != "NewNote")
+                    val.Add(prop.GetValue(Values));
+
+            DBController.DBController.Insert(App.DBConnString, "Items", val);
         }
 
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+            private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.GetWindow(this).Content = previousPage;
         }
@@ -321,9 +321,11 @@ namespace MELTEX
             string date = DateTime.Now.ToString("MM/dd/yyyy");
             string time = DateTime.Now.ToString("HH:mm:ss");
 
-            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+            //TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+            Values.Notes = $"{date} -- {time} -- {Values.NewNote}\n";
+            Values.NewNote = "";
 
-            TB_AddNote.Text = "";
+            //TB_AddNote.Text = "";
         }
     }
 }

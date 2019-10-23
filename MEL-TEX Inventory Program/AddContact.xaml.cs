@@ -26,14 +26,17 @@ namespace MELTEX
         private string connstring;
         private Page PreviousPage;
         private string ContactType;
+        private string companyNumber;
         public ObservableCollection<Phone> Numbers { get; set; }
 
-        public AddContact(Page prev, string type)
+
+        public AddContact(Page prev, string type, string number)
         {
             InitializeComponent();
 
             PreviousPage = prev;
             ContactType = type;
+            companyNumber = number;
 
             connstring = ContactType == "Customer" ? App.SalesDBConnString : App.PurchasingDBConnString;
 
@@ -45,37 +48,9 @@ namespace MELTEX
             this.WindowTitle = $"Add {ContactType} Contact";
             L_Number.Content = $"{ContactType} Name";
 
-            PopulateNumberComboBox();
+            TB_Number.Text = companyNumber;
+
             AddNumber(new Phone());
-        }
-
-        private void PopulateNumberComboBox()
-        {
-            DataTable table = new DataTable();
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(connstring))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = $"SELECT Number Name FROM {ContactType}";
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    adapter.Fill(table);
-
-                    CB_Number.DataContext = table.DefaultView;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void UpdateContact()
@@ -91,7 +66,7 @@ namespace MELTEX
 
                     using (SqlCommand cmd = new SqlCommand(query, sql))
                     {
-                        cmd.Parameters.AddWithValue("@num", CB_Number.SelectedValue.ToString());
+                        cmd.Parameters.AddWithValue("@num", TB_Number.Text);
                         cmd.Parameters.AddWithValue("@name", TB_Name.Text);
                         cmd.Parameters.AddWithValue("@title", TB_Title.Text);
                         cmd.Parameters.AddWithValue("@notes", TB_Notes.Text);
@@ -119,7 +94,7 @@ namespace MELTEX
 
                     using (SqlCommand cmd = new SqlCommand(query, sql))
                     {
-                        cmd.Parameters.AddWithValue("@num", CB_Number.SelectedValue.ToString());
+                        cmd.Parameters.AddWithValue("@num", TB_Number.Text);
                         cmd.Parameters.AddWithValue("@name", TB_Name.Text);
                         cmd.Parameters.AddWithValue("@phone", num);
                         cmd.Parameters.AddWithValue("@type", type);
@@ -147,7 +122,7 @@ namespace MELTEX
 
                     using (SqlCommand cmd = new SqlCommand(query, sql))
                     {
-                        cmd.Parameters.AddWithValue("@num", CB_Number.SelectedValue.ToString());
+                        cmd.Parameters.AddWithValue("@num", TB_Number.Text);
                         cmd.Parameters.AddWithValue("@name", TB_Name.Text);
                         cmd.Parameters.AddWithValue("@email", email);
 
@@ -174,7 +149,7 @@ namespace MELTEX
 
                     using (SqlCommand cmd = new SqlCommand(query, sql))
                     {
-                        cmd.Parameters.AddWithValue("@num", CB_Number.SelectedValue.ToString());
+                        cmd.Parameters.AddWithValue("@num", TB_Number.Text);
                         cmd.Parameters.AddWithValue("@name", TB_Name.Text);
                         cmd.Parameters.AddWithValue("@social", social);
 
