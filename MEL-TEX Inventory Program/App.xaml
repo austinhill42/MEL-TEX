@@ -143,5 +143,12 @@
                 Value="200" />
 
         </Style>
+
+        <Style
+            TargetType="TextBox">
+            <EventSetter
+                Event="GotFocus"
+                Handler="TextBox_GotFocus" />
+        </Style>
     </Application.Resources>
 </Application>

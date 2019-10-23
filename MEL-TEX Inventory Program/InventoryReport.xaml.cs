@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Collections;
+using MELTEX.DBController;
 
 namespace MELTEX
 {
@@ -41,7 +44,7 @@ namespace MELTEX
         private void InventoryReportPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowTitle = "Inventory Report";
-
+           
             PopulateInventoryDataGrid();
             InitializeQuoteDataGrid();
             PopulateCustomersComboBox();
@@ -99,7 +102,7 @@ namespace MELTEX
 
             AddLineNumbers(QuoteDataTable);
 
-            
+
         }
 
         /*******************************************

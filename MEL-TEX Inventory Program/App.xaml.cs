@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace MELTEX
 {
@@ -18,7 +20,7 @@ namespace MELTEX
     public partial class App : Application
     {
 
-        private static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
+        internal static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         internal static readonly string DBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal static readonly string PWDDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal static readonly string SalesDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXSalesDB.mdf; Integrated Security = True; Connect Timeout = 30";
@@ -83,6 +85,12 @@ namespace MELTEX
             {
                 MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
+        }
+
+        private void TextBox_GotFocus(Object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.Dispatcher.BeginInvoke(new Action(() => tb.SelectAll()));
         }
     }
 }

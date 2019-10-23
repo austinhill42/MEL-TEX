@@ -48,12 +48,13 @@ namespace MELTEX
                             MainWindow.GetWindow(this).Content = new GenerateQuote(this, openquote.quotenum);
                         break;
                     case "Customer Information":
+                        MainWindow.GetWindow(this).Content = new Customer_VendorReport(this, "Customer");
                         break;
                     case "Add Customer":
                         MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Customer", false);
                         break;
                     case "Add Customer Contact":
-                        MainWindow.GetWindow(this).Content = new AddContact(this, "Customer");
+                        //MainWindow.GetWindow(this).Content = new AddContact(this, "Customer");
                         break;
                     case "Edit Customer":
                         break;
@@ -76,12 +77,13 @@ namespace MELTEX
                             Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
                         break;
                     case "Vendor Information":
+                        MainWindow.GetWindow(this).Content = new Customer_VendorReport(this, "Vendor");
                         break;
                     case "Add Vendor":
                         MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, "Vendor", false);
                         break;
                     case "Add Vendor Contact":
-                        MainWindow.GetWindow(this).Content = new AddContact(this, "Vendor");
+                        //MainWindow.GetWindow(this).Content = new AddContact(this, "Vendor");
                         break;
                     case "Edit Vendor":
                         break;

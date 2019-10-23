@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:MELTEX"
+    xmlns:ei="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d"
     Height="Auto"
     Width="Auto"
@@ -52,47 +52,28 @@
 
             <StackPanel
                 Orientation="Horizontal"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
+                Grid.Column="2"
+                Grid.ColumnSpan="2"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                Margin="0, 0, 100, 0">
+                Margin="0, 0, 0, 0">
 
                 <Label
                     Content="Search Customer: "
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center" />
                 <TextBox
-                    x:Name="TB_SearchCustomer"
+                    x:Name="TB_Search"
                     Width="250"
                     VerticalContentAlignment="Center"
-                    TextChanged="TB_SearchCustomer_TextChanged" />
-
-            </StackPanel>
-
-            <StackPanel
-                Orientation="Horizontal"
-                Grid.Column="2"
-                Grid.ColumnSpan="3"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
-
-                <Label
-                    Content="Search Vendor: "
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
-                <TextBox
-                    x:Name="TB_SearchVendor"
-                    Width="250"
-                    TextWrapping="Wrap"
-                    TextChanged="TB_SearchVendor_TextChanged" />
+                    TextChanged="TB_Search_TextChanged" />
 
             </StackPanel>
 
             <Button
                 x:Name="BTN_ClearSearch"
                 Content="Clear Search"
-                Grid.Column="5"
+                Grid.Column="4"
                 Width="100"
                 Height="25"
                 Click="BTN_ClearSearch_Click" />
@@ -101,11 +82,13 @@
                 Orientation="Vertical"
                 Grid.Row="1"
                 Grid.Column="1"
-                Grid.ColumnSpan="4"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
+                Grid.ColumnSpan="5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Width="908">
 
                 <Label
+                    x:Name="L_Header"
                     Content="Customers"
                     FontSize="16"
                     FontWeight="Bold"
@@ -113,23 +96,16 @@
                     VerticalAlignment="Center" />
 
                 <DataGrid
-                    x:Name="CustomerDataGrid"
+                    x:Name="DataGrid"
                     Height="369"
+                    FontSize="16"
                     VerticalContentAlignment="Center"
                     IsReadOnly="True"
-                    ItemsSource="{Binding}">
-
-                    <DataGrid.Resources>
-                        <Style
-                            TargetType="DataGridRow">
-
-                            <EventSetter
-                                Event="MouseLeftButtonUp"
-                                Handler="CustomerDataGridRow_MouseLeftButtonUp" />
-
-                        </Style>
-
-                    </DataGrid.Resources>
+                    ItemsSource="{Binding}"
+                    SelectionMode="Single"
+                    SelectionUnit="FullRow"
+                    SelectionChanged="DataGrid_SelectionChanged"
+                    Margin="0,0,0,0">
 
                 </DataGrid>
 
@@ -139,45 +115,143 @@
                 Orientation="Vertical"
                 Grid.Row="3"
                 Grid.Column="1"
-                Grid.ColumnSpan="4"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Width="420"
+                Margin="0, 0, 0, 0">
 
-                <StackPanel
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-
-                    <Label
-                        Content="Vendors"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-
-                </StackPanel>
+                <Label
+                    Content="Contacts"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
 
                 <DataGrid
-                    x:Name="VendorDataGrid"
+                    x:Name="ContactsDataGrid"
                     Height="369"
+                    FontSize="16"
                     AutoGenerateColumns="True"
-                    IsReadOnly="False"
-                    ItemsSource="{Binding}">
-
-                    <DataGrid.Resources>
-                        <Style
-                            TargetType="DataGridRow">
-
-                            <EventSetter
-                                Event="MouseLeftButtonUp"
-                                Handler="VendorDataGridRow_MouseLeftButtonUp" />
-
-                        </Style>
-
-                    </DataGrid.Resources>
+                    IsReadOnly="True"
+                    ItemsSource="{Binding}"
+                    SelectionMode="Single"
+                    SelectionUnit="FullRow"
+                    SelectionChanged="ContactsDataGrid_SelectionChanged">
 
                 </DataGrid>
 
             </StackPanel>
+
+            <StackPanel
+                Orientation="Vertical"
+                Grid.Row="3"
+                Grid.Column="3"
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="468"
+                Margin="40,0,42,0">
+
+                <Label
+                    Content="Email"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+
+                <DataGrid
+                    x:Name="ContactEmailDataGrid"
+                    Height="150"
+                    FontSize="16"
+                    AutoGenerateColumns="True"
+                    IsReadOnly="true"
+                    HeadersVisibility="None"
+                    ColumnWidth="468"
+                    HorizontalContentAlignment="Center"
+                    TextBlock.TextAlignment="Center"
+                    ItemsSource="{Binding}">
+
+                </DataGrid>
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Grid.Row="3"
+                Grid.Column="3"
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Height="200"
+                Width="468"
+                Margin="40, 0, 0, 0">
+
+
+                <StackPanel
+                    Orientation="Vertical"
+                    Width="228"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Margin="0, 0, 10, 0">
+
+                    <Label
+                        Content="Phone"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+
+                    <DataGrid
+                        x:Name="ContactPhonesDataGrid"
+                        Height="150"
+                        FontSize="16"
+                        AutoGenerateColumns="True"
+                        IsReadOnly="true"
+                        HeadersVisibility="None"
+                        ColumnWidth="228"
+                        HorizontalContentAlignment="Center"
+                        TextBlock.TextAlignment="Center"
+                        ItemsSource="{Binding}">
+
+                    </DataGrid>
+
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Vertical"
+                    Grid.Row="3"
+                    Grid.Column="4"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Width="228"
+                    Margin="0, 0, 30, 0">
+
+                    <Label
+                        Content="Fax"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+
+                    <DataGrid
+                        x:Name="ContactFaxDataGrid"
+                        Height="150"
+                        FontSize="16"
+                        AutoGenerateColumns="True"
+                        IsReadOnly="true"
+                        HeadersVisibility="None"
+                        ColumnWidth="228"
+                        HorizontalContentAlignment="Center"
+                        TextBlock.TextAlignment="Center"
+                        ItemsSource="{Binding}">
+
+                    </DataGrid>
+
+                </StackPanel>
+            </StackPanel>
+
 
             <Button
                 x:Name="BTN_Back"
@@ -187,100 +261,90 @@
                 Grid.Column="0"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Width="130"
-                Click="BTN_Back_Click" />
+                Width="140"
+                Click="BTN_Back_Click">
+
+
+            </Button>
 
             <Button
-                x:Name="BTN_AddCustomer"
+                x:Name="BTN_AddCustomerVendor"
                 Content="Add Customer"
                 Style="{StaticResource NavigationButtons}"
                 Grid.Row="1"
                 Grid.Column="0"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Margin="0, 0, 0, 50"
-                Width="130"
-                Click="BTN_AddCustomer_Click"/>
+                Margin="0, 0, 0, 100"
+                Width="140"
+                Click="BTN_AddCustomerVendor_Click">
+
+
+            </Button>
 
             <Button
-                x:Name="BTN_EditCustomer"
+                x:Name="BTN_EditCustomerVendor"
                 Content="Edit Customer"
                 Style="{StaticResource NavigationButtons}"
                 Grid.Row="1"
                 Grid.Column="0"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Width="130"
-                Click="BTN_EditCustomer_Click"/>
+                Margin="0, 0, 0, 50"
+                Width="140"
+                IsEnabled="False"
+                Click="BTN_EditCustomerVendor_Click" />
 
             <Button
-                x:Name="BTN_AddVendor"
-                Content="Add Vendor"
+                x:Name="BTN_DeleteCustomerVendor"
+                Content="Delete Customer"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="1"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Width="140"
+                IsEnabled="False"
+                Click="BTN_DeleteCustomerVendor_Click" />
+
+            <Button
+                x:Name="BTN_AddContact"
+                Content="Add Contact"
+                Style="{StaticResource NavigationButtons}"
+                Grid.Row="3"
+                Grid.Column="0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0, 0, 0, 100"
+                Width="140"
+                IsEnabled="False"
+                Click="BTN_AddContact_Click" />
+
+            <Button
+                x:Name="BTN_EditContact"
+                Content="Edit Contact"
                 Style="{StaticResource NavigationButtons}"
                 Grid.Row="3"
                 Grid.Column="0"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
                 Margin="0, 0, 0, 50"
-                Width="130"
-                Click="BTN_AddVendor_Click"/>
+                Width="140"
+                IsEnabled="False"
+                Click="BTN_EditContact_Click" />
 
             <Button
-                x:Name="BTN_EditVendor"
-                Content="Edit Vendor"
+                x:Name="BTN_DeleteContact"
+                Content="Delete Contact"
                 Style="{StaticResource NavigationButtons}"
                 Grid.Row="3"
                 Grid.Column="0"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Width="130" 
-                Click="BTN_EditVendor_Click"/>
+                Width="140"
+                IsEnabled="False"
+                Click="BTN_DeleteContact_Click" />
 
-            <Button
-                x:Name="BTN_AddCustomerContact"
-                Content="Add Contact"
-                Style="{StaticResource NavigationButtons}"
-                Grid.Row="1"
-                Grid.Column="5"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
-                Margin="0, 0, 0, 50"
-                Width="130"
-                Click="BTN_AddCustomerContact_Click"/>
-
-            <Button
-                x:Name="BTN_EditCustomerContact"
-                Content="Edit Contact"
-                Style="{StaticResource NavigationButtons}"
-                Grid.Row="1"
-                Grid.Column="5"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
-                Width="130" 
-                Click="BTN_EditCustomerContact_Click"/>
-
-            <Button
-                x:Name="BTN_AddVendorContact"
-                Content="Add Contact"
-                Style="{StaticResource NavigationButtons}"
-                Grid.Row="3"
-                Grid.Column="5"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
-                Margin="0, 0, 0, 50"
-                Width="130"
-                Click="BTN_AddVendorContact_Click"/>
-
-            <Button
-                x:Name="BTN_EditVendorContact"
-                Content="Edit Contact"
-                Style="{StaticResource NavigationButtons}"
-                Grid.Row="3"
-                Grid.Column="5"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
-                Width="130" 
-                Click="BTN_EditVendorContact_Click"/>
         </Grid>
 
     </Viewbox>

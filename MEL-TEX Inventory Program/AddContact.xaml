@@ -73,17 +73,15 @@
                         VerticalAlignment="Top"
                         Margin="0, 5, 0, 0" />
 
-                    <ComboBox
-                        x:Name="CB_Number"
+                    <TextBox
+                        x:Name="TB_Number"
                         Grid.Row="0"
                         Grid.Column="1"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Width="200"
-                        Margin="0, 30, 10, 0"
-                        ItemsSource="{Binding}"
-                        DisplayMemberPath="Name"
-                        SelectedValuePath="Number"/>
+                        IsReadOnly="True"
+                        Margin="0, 30, 10, 0"/>
 
                     <Label
                         x:Name="L_Name"
@@ -140,7 +138,7 @@
 
                         <TextBox
                             x:Name="TB_Email"
-                            
+                            AcceptsReturn="True"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
                             Style="{StaticResource InputTextBoxes}"

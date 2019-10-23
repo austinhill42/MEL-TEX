@@ -60,6 +60,7 @@ namespace MELTEX
 
             L_Number.Content = $"{Type} No:";
             L_Name.Content = $"{Type} Name:";
+            TB_Number.Text = selectedNumber;
 
             if (!edit)
             {
@@ -142,6 +143,7 @@ namespace MELTEX
                     Address a = new Address();
                     string[] address = shipRow[1].ToString().Split('|');
 
+                    a.AddressType = Type == "Customer" ? "Ship To" : "Ship From";
                     a.TB_Address1.Text = address[0];
                     a.TB_Address2.Text = address[1];
                     a.TB_City.Text = address[2];
@@ -218,7 +220,7 @@ namespace MELTEX
                         "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
                     update =
-                        $"UPDATE {Type}" +
+                        $"UPDATE {Type} " +
                         $"SET [Name] = @name, [Website] = @website, [Bill_To] = @bill, [Mail_To] = @mail, [Terms] = @terms, [Notes] = @notes " +
                         $"WHERE [Number] = @num ";
                 }
@@ -229,7 +231,7 @@ namespace MELTEX
                         "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
                     update =
-                        $"UPDATE {Type}" +
+                        $"UPDATE {Type} " +
                         $"SET [Name] = @name, [Website] = @website, [pay_To] = @bill, [Mail_From] = @mail, [Terms] = @terms, [Notes] = @notes " +
                         $"WHERE [Number] = @num ";
                 }
