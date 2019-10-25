@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections;
-using MELTEX.DBController;
+using MELTEX.Database;
 
 namespace MELTEX
 {
@@ -31,13 +31,7 @@ namespace MELTEX
 
         /*********************************************
          * 
-         * 
          *      EVENT HANDLERS:
-         *          InventoryReportPage_Loaded
-         *          TB_SearchID_TextChanged
-         *          TB_SearchDesc_TextChanged 
-         *          InventoryDataGrid_MouseDoubleClick
-         * 
          * 
          ********************************************/
 
@@ -50,40 +44,15 @@ namespace MELTEX
             PopulateCustomersComboBox();
         }
 
-        private void TB_SearchID_TextChanged(object sender, TextChangedEventArgs e)
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            String query =
-                    $"SELECT {COLSTRING} " +
-                    "FROM (" +
-                        "SELECT * " +
-                        "FROM Items item " +
-                        $"WHERE item.Inventory_Item LIKE '{(sender as TextBox).Text}%'" +
-                    ") item " +
-                    "LEFT JOIN Inventory inventory ON item.Inventory_Item = inventory.Inventory_Item " +
-                    "ORDER BY item.Inventory_Item ASC";
+            string searchcol = "Inventory_Item";
 
-            if ((sender as TextBox).Text == "")
-                PopulateInventoryDataGrid();
-            else
-                SearchTable(query);
-        }
+            if ((sender as TextBox).Name == "TB_Description")
+                searchcol = "Description";
 
-        private void TB_SearchDesc_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            String query =
-                    $"SELECT {COLSTRING} " +
-                    "FROM (" +
-                        "SELECT * " +
-                        "FROM Items item " +
-                        $"WHERE item.Description LIKE '%{(sender as TextBox).Text}%'" +
-                    ") item " +
-                    "LEFT JOIN Inventory inventory ON item.Inventory_Item = inventory.Inventory_Item " +
-                    "ORDER BY item.Inventory_Item ASC";
+            PopulateInventoryDataGrid((sender as TextBox).Text, searchcol);
 
-            if ((sender as TextBox).Text == "")
-                PopulateInventoryDataGrid();
-            else
-                SearchTable(query);
         }
 
         private void InventoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -111,46 +80,17 @@ namespace MELTEX
          *      
          ******************************************/
 
-        private void PopulateInventoryDataGrid()
-        {
-            string query = $"SELECT {COLSTRING} " +
-                    "FROM Inventory inventory " +
-                    "FULL JOIN Items item on item.Inventory_Item = Inventory.Inventory_Item " +
-                    "ORDER BY item.Inventory_Item ASC";
-
-            PopulateInventoryDataGrid(query);
-
-        }
-
-        private void PopulateInventoryDataGrid(string query)
+        private void PopulateInventoryDataGrid(string searchText = "", string searchCol = "")
         {
             inventoryDataTable = new DataTable();
 
             try
             {
-                using (SqlConnection sql = new SqlConnection(App.DBConnString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    inventoryDataTable = new DataTable();
-
-                    adapter.Fill(inventoryDataTable);
-                }
+                inventoryDataTable = DBController.GetTableFromQuery(App.DBConnString, COLSTRING, "Items", "Inventory_Item", "item", "Inventory", "Inventory_Item", "inventory", "item", "Inventory_Item", "item", searchCol, searchText);
 
                 AddLineNumbers(inventoryDataTable);
 
                 InventoryDataGrid.DataContext = inventoryDataTable.DefaultView;
-
-
             }
             catch (Exception ex)
             {
@@ -166,53 +106,13 @@ namespace MELTEX
                 QuoteDataTable.Columns.Add(new DataColumn(col.ColumnName));
 
             QuoteDataGrid.DataContext = QuoteDataTable;
-            //QuoteDataGrid.UpdateLayout();
         }
 
         private void PopulateCustomersComboBox()
         {
-            using (SqlConnection sql = new SqlConnection(App.SalesDBConnString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-
-                com.CommandText = "SELECT Number, Name FROM Customer ";
-
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                DataTable table = new DataTable();
-
-                adapter.Fill(table);
-
-                CB_Customers.DataContext = table.DefaultView;
-            }
-        }
-
-        private void SearchTable(string query)
-        {
-            InventoryDataGrid.DataContext = null;
-
-            using (SqlConnection sql = new SqlConnection(App.DBConnString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-
-                com.CommandText = query;
-
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                inventoryDataTable = new DataTable();
-
-                adapter.Fill(inventoryDataTable);
-
-                InventoryDataGrid.DataContext = inventoryDataTable.DefaultView;
-            }
+            DataTable table = DBController.GetTableFromQuery(sqlconn: App.SalesDBConnString, columns: "Name, Number", t1: "Customer");
+            CB_Customers.DataContext = table.DefaultView;
+            
         }
 
         private void AddLineNumbers(DataTable table)
@@ -327,6 +227,11 @@ namespace MELTEX
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.GetWindow(this).Content = previousPage;
+        }
+
+        private void TB_SearchID_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
