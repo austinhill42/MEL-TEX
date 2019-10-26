@@ -99,6 +99,9 @@
     <Compile Include="GenerateSalesOrder.xaml.cs">
       <DependentUpon>GenerateSalesOrder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MEL-TEXAccountingDB.cs" />
+    <Compile Include="MELTEXPurchasingDB.cs" />
+    <Compile Include="MELTEXSalesDB.cs" />
     <Compile Include="OpenPO.xaml.cs">
       <DependentUpon>OpenPO.xaml</DependentUpon>
     </Compile>
