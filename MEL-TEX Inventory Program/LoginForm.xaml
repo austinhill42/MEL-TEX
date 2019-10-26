@@ -15,7 +15,7 @@
     ResizeMode="NoResize"
     Loaded="Window_Loaded"
     FocusManager.FocusedElement="{Binding ElementName=TB_Password}">
-    
+
     <Grid>
 
         <Grid>
@@ -26,7 +26,6 @@
                     Width="300" />
                 <ColumnDefinition
                     Width="300" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -37,7 +36,6 @@
                     Height="80" />
                 <RowDefinition
                     Height="110" />
-
             </Grid.RowDefinitions>
 
             <Label
@@ -61,8 +59,8 @@
                 Margin="100, 5, 0, 0"
                 ItemsSource="{Binding}"
                 DisplayMemberPath="Username"
-                SelectedValuePath="Password" 
-                SelectionChanged="CB_Users_SelectionChanged"/>
+                SelectedValuePath="Password"
+                SelectionChanged="CB_Users_SelectionChanged" />
 
             <Label
                 Content="Password: "

@@ -18,12 +18,12 @@
                 Content="Number: "
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Style="{StaticResource Labels}"/>
+                Style="{StaticResource Labels}" />
 
             <TextBox
                 x:Name="TB_Phone"
                 Height="23"
-                FontSize="18" 
+                FontSize="18"
                 TextChanged="TB_Phone_TextChanged"
                 Style="{StaticResource InputTextBoxes}" />
 
@@ -32,7 +32,7 @@
                 Margin="10,0,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Style="{StaticResource Labels}"/>
+                Style="{StaticResource Labels}" />
 
             <ComboBox
                 x:Name="CB_Type"
@@ -45,40 +45,38 @@
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center">
-                    
+
                     Mobile
                 </ComboBoxItem>
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center">
-                    
+
                     Work
                 </ComboBoxItem>
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center">
-                    
+
                     Fax
                 </ComboBoxItem>
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center">
-                    
+
                     Home
                 </ComboBoxItem>
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center">
-                    
+
                     Other
                 </ComboBoxItem>
             </ComboBox>
-
         </StackPanel>
-
     </Grid>
 </UserControl>

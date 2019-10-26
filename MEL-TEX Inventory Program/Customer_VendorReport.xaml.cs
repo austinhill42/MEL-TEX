@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace MELTEX
 {
@@ -16,9 +14,9 @@ namespace MELTEX
         private Page previousPage;
         private string conn;
         private string Type;
-        string selectedNumber;
-        string selectedName;
-        string selectedContact;
+        private string selectedNumber;
+        private string selectedName;
+        private string selectedContact;
 
         public Customer_VendorReport(Page prev, string type)
         {
@@ -101,7 +99,6 @@ namespace MELTEX
 
                     ContactEmailDataGrid.DataContext = emailTable.DefaultView;
 
-
                     com.CommandText = $"SELECT [Fax_No] AS 'Fax Number' FROM {Type}_Contact_Fax WHERE [Number] = @num AND [Name] = @name ";
 
                     adapter = new SqlDataAdapter(com.CommandText, sql)
@@ -112,7 +109,6 @@ namespace MELTEX
                     adapter.Fill(faxTable);
 
                     ContactFaxDataGrid.DataContext = faxTable.DefaultView;
-
 
                     com.CommandText = $"SELECT [Phone_No] AS 'Phone Number' FROM {Type}_Contact_Phones WHERE [Number] = @num AND [Name] = @name ";
 
@@ -252,7 +248,6 @@ namespace MELTEX
                     com.CommandText = $"DELETE FROM {Type}_Contact_Fax WHERE Number = @num AND Name = @name ";
                     com.ExecuteNonQuery();
 
-
                     com.CommandText = $"DELETE FROM {Type}_Contact_Email WHERE Number = @num  AND Name = @name ";
                     com.ExecuteNonQuery();
 
@@ -332,7 +327,7 @@ namespace MELTEX
             if (MessageBox.Show($"Are you sure you want to delete {Type}: {selectedName}?\n\nThis will delete all records relating to {selectedName}, including contacts", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 return;
 
-            DeleteCustomerVendor();            
+            DeleteCustomerVendor();
         }
 
         private void BTN_AddContact_Click(object sender, RoutedEventArgs e)
@@ -342,7 +337,6 @@ namespace MELTEX
 
         private void BTN_EditContact_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void BTN_DeleteContact_Click(object sender, RoutedEventArgs e)

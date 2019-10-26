@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MELTEX
 {
@@ -93,7 +82,7 @@ namespace MELTEX
 
             if (MessageBox.Show($"Are you sure you want to delete {Type}: {CB_Name.Text}?\n\nThis will delete all records relating to {CB_Name.Text}, including contacts", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 return;
-           
+
             try
             {
                 using (SqlConnection sql = new SqlConnection(conn))
@@ -105,7 +94,6 @@ namespace MELTEX
 
                     com.CommandText = $"DELETE FROM {Type}_Contact_Fax WHERE Number = @num ";
                     com.ExecuteNonQuery();
-
 
                     com.CommandText = $"DELETE FROM {Type}_Contact_Email WHERE Number = @num ";
                     com.ExecuteNonQuery();

@@ -4,9 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Linq;
-using System.Data.SqlClient;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,48 +14,24 @@ namespace MELTEX
     /// <summary>
     /// Interaction logic for AddItem.xaml
     /// </summary>
-    public partial class AddItem : Page
+    public partial class AddItem : Page, INotifyPropertyChanged
     {
         private Page previousPage;
-        private bool editMode = false;
+        private bool _Edit = false;
         private DataTable selectedItem;
-        private DataTable GroupTable;
-        private DataTable ItemIDTable;
-        protected _ItemValues Values { get; set; }
+        private DataTable _ItemIDTable;
+        private DataTable _GroupTable;
 
-        protected class _ItemValues : INotifyPropertyChanged
-        {
+        public bool Edit { get => _Edit; set { _Edit = value; OnPropertyChanged("Edit"); } }
+        public DataTable GroupTable { get => _GroupTable; set { _GroupTable = value; OnPropertyChanged("GroupTable"); } }
+        public DataTable ItemIDTable { get => _ItemIDTable; set { _ItemIDTable = value; OnPropertyChanged("ItemIDTable"); } }
+        internal MELTEXDB.Items Items { get; set; }
 
-            private string _Inventory_Item;
-            private string _Description;
-            private string _Weight;
-            private string _List_Price;
-            private string _Group;
-            private string _Multiplier;
-            private string _Published_Sales;
-            private string _Published_Cost;
-            private string _Notes;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-            public string Inventory_Item { get { return _Inventory_Item; } set { _Inventory_Item = value; OnPropertyChanged("Inventory_Item"); } }
-            public string Description { get { return _Description; } set { _Description = value; OnPropertyChanged("Description"); } }
-            public string Weight { get { return _Weight; } set { _Weight = value; OnPropertyChanged("Weight"); } }
-            public string List_Price { get { return _List_Price; } set { _List_Price = value; OnPropertyChanged("List_Price"); } }
-            public string Group { get { return _Group; } set { _Group = value; OnPropertyChanged("Group"); } }
-            public string Multiplier { get { return _Multiplier; } set { _Multiplier = value; OnPropertyChanged("Multiplier"); } }
-            public string Published_Sales { get { return _Published_Sales; } set { _Published_Sales = value; OnPropertyChanged("Published_Sales"); } }
-            public string Published_Cost { get { return _Published_Cost; } set { _Published_Cost = value; OnPropertyChanged("Published_Cost"); } }
-            public string Notes { get { return _Notes; } set { _Notes = value; OnPropertyChanged("Notes"); } }
+        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            private void OnPropertyChanged(string property)
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        public AddItem(Page prev)
+        public AddItem(Page prev, bool edit = false)
         {
             InitializeComponent();
 
@@ -65,127 +39,91 @@ namespace MELTEX
 
             selectedItem = new DataTable();
 
-            Values = new _ItemValues();
-            
-            this.DataContext = Values;
-        }
+            Items = new MELTEXDB.Items();
 
-        public AddItem(Page prev, bool edit) : this(prev)
-        {
-            editMode = edit;
+            DataContext = Items;
+
+            Edit = edit;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateGroupsComboBox();
+            this.WindowTitle = "Add Item";
 
-            if (editMode)
+            if (Edit)
             {
-                this.WindowTitle = "Edit Item";
-                TB_ItemID.Visibility = Visibility.Hidden;
-                CB_ItemID.Visibility = Visibility.Visible;
+                WindowTitle = "Edit Item";
 
                 PopulateItemIDComboBox();
-            }
-            else
-            {
-                this.WindowTitle = "Add Item";
-                TB_ItemID.Visibility = Visibility.Visible;
-                CB_ItemID.Visibility = Visibility.Hidden;
             }
         }
 
         private void CB_ItemID_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //try
-            //{
-                if ((sender as ComboBox).SelectedIndex >= 0)
-                    PopulateItemInfo();
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
-            //}
+            if ((sender as ComboBox).SelectedIndex >= 0)
+                PopulateItemInfo();
         }
 
-        private void CB_Group_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdatePublishedSales();
-        }
+        private void CB_Group_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdatePublishedSales();
 
-        private void TB_ListPrice_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdatePublishedSales();
-        }
+        private void TB_ListPrice_TextChanged(object sender, TextChangedEventArgs e) => UpdatePublishedSales();
 
         private void Clear()
         {
-            foreach (UIElement child in this.Grid.Children)
+            foreach (UIElement child in Grid.Children)
             {
                 if ((child as TextBox) != null)
                     (child as TextBox).Text = "";
 
-                CB_ItemID.SelectedIndex = -1;
-                CB_Group.SelectedIndex = -1;
+                Items.Inventory_Item = "";
+                Items.Group = "";
             }
         }
 
         private void UpdatePublishedSales()
         {
-            if (Values.Group == "")
-                Values.Multiplier = "";
+            if (Items.Group == "")
+                Items.Multiplier = "";
             else
             {
-                if (Values.List_Price != "")
+                if (Items.List_Price != "")
                 {
-                    Values.Multiplier = GroupTable.Select($"Group = '{Values.Group}'")[0][1].ToString();
-                    decimal m = Convert.ToDecimal(Values.Multiplier);
-                    decimal p = Convert.ToDecimal(Values.List_Price);
-                    Values.Published_Sales = (m*p).ToString("0.00");
+                    Items.Multiplier = GroupTable.Select($"Group = '{Items.Group}'")[0][1].ToString();
+                    decimal m = Convert.ToDecimal(Items.Multiplier);
+                    decimal p = Convert.ToDecimal(Items.List_Price);
+                    Items.Published_Sales = (m * p).ToString("0.00");
                 }
             }
         }
 
-        private void PopulateItemIDComboBox()
-        {
-            ItemIDTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString, columns: "*", t1: "Items");
-            CB_ItemID.ItemsSource = ItemIDTable.DefaultView;
-        }
+        private void PopulateItemIDComboBox() => ItemIDTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString, columns: "*", t1: "Items");
 
-        private void PopulateGroupsComboBox()
-        {
-            GroupTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString, columns: "*", t1: "Groups");
-            CB_Group.ItemsSource = GroupTable.DefaultView;            
-        }
+        private void PopulateGroupsComboBox() => GroupTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString, columns: "*", t1: "Groups");
 
         private void PopulateItemInfo()
         {
             selectedItem = DBController.GetTableFromQuery(sqlconn: App.DBConnString, columns: "*", t1: "Items", searchTableAlias: "Items", searchCol: "Inventory_Item", searchEqual: CB_ItemID.SelectedValue.ToString());
 
-            Values.Inventory_Item = selectedItem.Rows[0]["Inventory_Item"].ToString();
-            Values.Description = selectedItem.Rows[0]["Description"].ToString();
-            Values.Group = selectedItem.Rows[0]["Group"].ToString();
-            Values.List_Price = selectedItem.Rows[0]["List_Price"].ToString();
-            Values.Multiplier = selectedItem.Rows[0]["Multiplier"].ToString();
-            Values.Published_Cost = selectedItem.Rows[0]["Published_Cost"].ToString();
-            Values.Published_Sales = selectedItem.Rows[0]["Published_Sales"].ToString();
-            Values.Weight = selectedItem.Rows[0]["Weight"].ToString();
-            Values.Notes = selectedItem.Rows[0]["Notes"].ToString();
-
+            Items.Inventory_Item = selectedItem.Rows[0]["Inventory_Item"].ToString();
+            Items.Description = selectedItem.Rows[0]["Description"].ToString();
+            Items.Group = selectedItem.Rows[0]["Group"].ToString();
+            Items.List_Price = selectedItem.Rows[0]["List_Price"].ToString();
+            Items.Multiplier = selectedItem.Rows[0]["Multiplier"].ToString();
+            Items.Published_Cost = selectedItem.Rows[0]["Published_Cost"].ToString();
+            Items.Published_Sales = selectedItem.Rows[0]["Published_Sales"].ToString();
+            Items.Weight = selectedItem.Rows[0]["Weight"].ToString();
+            Items.Notes = selectedItem.Rows[0]["Notes"].ToString();
         }
 
-        private void BTN_Clear_Click(object sender, RoutedEventArgs e)
-        {
-            Clear();
-        }
+        private void BTN_Clear_Click(object sender, RoutedEventArgs e) => Clear();
 
         private void AddItemToDatabase()
         {
             ArrayList val = new ArrayList();
 
-            foreach (PropertyInfo prop in Values.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                val.Add(prop.GetValue(Values));
+            foreach (PropertyInfo prop in Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                val.Add(prop.GetValue(Items));
 
             DBController.Insert(App.DBConnString, "Items", val);
         }
@@ -194,36 +132,30 @@ namespace MELTEX
         {
             List<Tuple<string, string>> setValues = new List<Tuple<string, string>>();
             List<Tuple<string, string>> whereValues = new List<Tuple<string, string>>();
-           
-            foreach (PropertyInfo prop in Values.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                setValues.Add(new Tuple<string, string>(prop.Name, prop.GetValue(Values).ToString()));
 
-            foreach (DataColumn col in selectedItem.Columns)
-                whereValues.Add(new Tuple<string, string>(col.ColumnName, selectedItem.Rows[0][col].ToString()));
+            setValues.AddRange(Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(prop => new Tuple<string, string>(prop.Name, prop.GetValue(Items).ToString())));
+            whereValues.AddRange(selectedItem.Columns.Cast<DataColumn>().Select(col => new Tuple<string, string>(col.ColumnName, selectedItem.Rows[0][col].ToString())));
 
             if (DBController.Update(App.DBConnString, "Items", setValues, whereValues))
-                MessageBox.Show($"Database Updated:\n\nItem {Values.Inventory_Item} updated successfully");
+                MessageBox.Show($"Database Updated:\n\nItem {Items.Inventory_Item} updated successfully");
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (editMode)
+            if (Edit)
                 UpdateItemInDatabase();
             else
                 AddItemToDatabase();
         }
 
-            private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.GetWindow(this).Content = previousPage;
-        }
+        private void BTN_Back_Click(object sender, RoutedEventArgs e) => MainWindow.GetWindow(this).Content = previousPage;
 
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
         {
             string date = DateTime.Now.ToString("MM/dd/yyyy");
             string time = DateTime.Now.ToString("HH:mm:ss");
 
-            Values.Notes += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+            Items.Notes += $"{date} -- {time} -- {TB_AddNote.Text}\n";
             TB_AddNote.Text = "";
         }
     }

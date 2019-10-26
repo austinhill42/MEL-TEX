@@ -25,7 +25,6 @@
 
                 <RowDefinition
                     Height="60" />
-
             </Grid.RowDefinitions>
 
             <ScrollViewer
@@ -47,7 +46,6 @@
                             Width="225" />
                         <ColumnDefinition
                             Width="150" />
-
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
@@ -62,7 +60,6 @@
                             Height="250" />
                         <RowDefinition
                             Height="250" />
-
                     </Grid.RowDefinitions>
 
                     <Label
@@ -151,7 +148,6 @@
                         Grid.ColumnSpan="2"
                         AddressType="Mail To:" />
 
-
                     <Button
                         x:Name="BTN_RemoveShipTo"
                         Content="Remove Ship To"
@@ -167,7 +163,7 @@
                         <Button.Style>
 
                             <Style TargetType="Button">
-                                
+
                                 <Setter
                                     Property="FontWeight"
                                     Value="Bold" />
@@ -180,7 +176,6 @@
                                 <Setter
                                     Property="Height"
                                     Value="30" />
-                                
                             </Style>
                         </Button.Style>
                     </Button>
@@ -246,7 +241,6 @@
                             VerticalAlignment="Bottom"
                             Click="BTN_AddNote_Click" />
                     </Grid>
-
                 </Grid>
             </ScrollViewer>
 
@@ -282,7 +276,6 @@
                 HorizontalAlignment="Right"
                 Margin="0, 0, 10, 10"
                 Click="BTN_Save_Click" />
-
         </Grid>
     </Viewbox>
 </Page>

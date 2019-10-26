@@ -52,6 +52,7 @@ namespace MELTEX
                 this.table = table;
             }
         }
+
         public GeneratePresale(Page prev, Data d)
         {
             InitializeComponent();
@@ -59,8 +60,6 @@ namespace MELTEX
             PreviousPage = prev;
             data = d;
         }
-
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -113,7 +112,6 @@ namespace MELTEX
                 $"{data.selectedShipTo.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};{data.billTo.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};" +
                 $"{data.shipVia};{data.terms};{data.fob};{data.freightTerms};{data.repNum};{data.repName};");
 
-
             DataTable items = data.table;
             if (items.Columns.Contains("Notes"))
                 items.Columns.Remove("Notes");
@@ -147,7 +145,6 @@ namespace MELTEX
                     else
                         writer.Write($"{val.ToString()};");
                 }
-
             }
 
             writer.Close();
@@ -225,7 +222,6 @@ namespace MELTEX
                 data.table = ((DataView)DataGrid.ItemsSource).ToTable();
 
                 generatePDF(true);
-
             }
             catch (Exception ex)
             {

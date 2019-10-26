@@ -32,7 +32,6 @@
                     Width="200" />
                 <ColumnDefinition
                     Width="150" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -47,7 +46,6 @@
                     Height="400" />
                 <RowDefinition
                     Height="70" />
-
             </Grid.RowDefinitions>
 
             <StackPanel
@@ -67,7 +65,6 @@
                     Width="250"
                     VerticalContentAlignment="Center"
                     TextChanged="TB_Search_TextChanged" />
-
             </StackPanel>
 
             <Button
@@ -106,9 +103,7 @@
                     SelectionUnit="FullRow"
                     SelectionChanged="DataGrid_SelectionChanged"
                     Margin="0,0,0,0">
-
                 </DataGrid>
-
             </StackPanel>
 
             <StackPanel
@@ -138,9 +133,7 @@
                     SelectionMode="Single"
                     SelectionUnit="FullRow"
                     SelectionChanged="ContactsDataGrid_SelectionChanged">
-
                 </DataGrid>
-
             </StackPanel>
 
             <StackPanel
@@ -171,9 +164,7 @@
                     HorizontalContentAlignment="Center"
                     TextBlock.TextAlignment="Center"
                     ItemsSource="{Binding}">
-
                 </DataGrid>
-
             </StackPanel>
 
             <StackPanel
@@ -186,7 +177,6 @@
                 Height="200"
                 Width="468"
                 Margin="40, 0, 0, 0">
-
 
                 <StackPanel
                     Orientation="Vertical"
@@ -213,9 +203,7 @@
                         HorizontalContentAlignment="Center"
                         TextBlock.TextAlignment="Center"
                         ItemsSource="{Binding}">
-
                     </DataGrid>
-
                 </StackPanel>
 
                 <StackPanel
@@ -246,12 +234,9 @@
                         HorizontalContentAlignment="Center"
                         TextBlock.TextAlignment="Center"
                         ItemsSource="{Binding}">
-
                     </DataGrid>
-
                 </StackPanel>
             </StackPanel>
-
 
             <Button
                 x:Name="BTN_Back"
@@ -263,8 +248,6 @@
                 HorizontalAlignment="Center"
                 Width="140"
                 Click="BTN_Back_Click">
-
-
             </Button>
 
             <Button
@@ -278,8 +261,6 @@
                 Margin="0, 0, 0, 100"
                 Width="140"
                 Click="BTN_AddCustomerVendor_Click">
-
-
             </Button>
 
             <Button
@@ -344,8 +325,6 @@
                 Width="140"
                 IsEnabled="False"
                 Click="BTN_DeleteContact_Click" />
-
         </Grid>
-
     </Viewbox>
 </Page>

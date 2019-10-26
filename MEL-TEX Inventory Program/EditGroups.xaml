@@ -22,7 +22,6 @@
                     Width="300" />
                 <ColumnDefinition
                     Width="300" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -33,7 +32,6 @@
                     Height="100" />
                 <RowDefinition
                     Height="100" />
-                
             </Grid.RowDefinitions>
 
             <Label
@@ -44,7 +42,7 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                 Margin="50, 0, 0, 0" />
-            
+
             <ComboBox
                 x:Name="CB_Groups"
                 Grid.Column="0"
@@ -56,7 +54,7 @@
                 ItemsSource="{Binding}"
                 DisplayMemberPath="Group"
                 SelectedValuePath="Multiplier"
-                SelectionChanged="CB_Groups_SelectionChanged"/>
+                SelectionChanged="CB_Groups_SelectionChanged" />
 
             <TextBox
                 x:Name="TB_Mult"
@@ -87,6 +85,5 @@
                 HorizontalAlignment="Center"
                 Click="BTN_Save_Click" />
         </Grid>
-
     </Viewbox>
 </Page>

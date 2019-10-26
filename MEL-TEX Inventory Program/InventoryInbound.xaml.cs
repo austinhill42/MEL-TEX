@@ -14,12 +14,11 @@ namespace MELTEX
     {
         private Page previousPage;
         private bool editMode = false;
-        DataTable selectedInbound;
+        private DataTable selectedInbound;
         private bool FromPO = false;
         private Queue<Tuple<string, string, string>> toReceive;
         private Tuple<string, string, string> current;
         private bool byWeight;
-
 
         public InventoryInbound(Page prev)
         {
@@ -65,7 +64,6 @@ namespace MELTEX
 
                 TB_PO.Text = current.Item3;
                 TB_PO.IsReadOnly = true;
-
             }
         }
 
@@ -80,7 +78,6 @@ namespace MELTEX
                     else
                         PopulateItemInfo();
                 }
-
             }
             catch (Exception ex)
             {
@@ -192,7 +189,6 @@ namespace MELTEX
             L_PublishedSales.Content = table.Rows[0]["Published_Sales"];
             L_Weight.Content = table.Rows[0]["Weight"];
             TB_ItemNotes.Text = table.Rows[0]["Notes"].ToString().Replace("\n", "\n\n");
-
         }
 
         private void PopulateInboundInfo()
@@ -255,13 +251,11 @@ namespace MELTEX
                 TB_Quantity.Text = selectedInbound.Rows[0]["Quantity"].ToString();
                 TB_PO.Text = selectedInbound.Rows[0]["PO#"].ToString();
                 TB_Notes.Text = selectedInbound.Rows[0]["Notes"].ToString();
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
         }
 
         private void InboundItem()
@@ -335,7 +329,6 @@ namespace MELTEX
                     com.Parameters.AddWithValue("@oldpo", selectedInbound.Rows[0]["PO#"].ToString());
                     com.Parameters.AddWithValue("@oldnotes", selectedInbound.Rows[0]["Notes"].ToString());
 
-
                     com.ExecuteNonQuery();
 
                     MessageBox.Show($"Item {CB_ItemID.SelectedValue.ToString()} updated successfully");
@@ -366,7 +359,6 @@ namespace MELTEX
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
                     com.CommandText = $"SELECT WeightRemaining FROM PO WHERE Number LIKE '{current.Item3}%' ";
-
 
                     SqlDataReader reader = com.ExecuteReader();
 

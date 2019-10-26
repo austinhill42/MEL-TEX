@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -73,7 +72,6 @@ namespace MELTEX
             if (MessageBox.Show($"Are you sure you want to delete item: {CB_ItemID.SelectedValue.ToString()}?\n\nThis will also remvove all inbounded {CB_ItemID.SelectedValue.ToString()} items.", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 return;
 
-
             try
             {
                 using (SqlConnection sql = new SqlConnection(App.DBConnString))
@@ -85,7 +83,6 @@ namespace MELTEX
                     com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
 
                     com.ExecuteNonQuery();
-
 
                     com.CommandText = "DELETE FROM Inventory WHERE Inventory_Item = @item ";
 

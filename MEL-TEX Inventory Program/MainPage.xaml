@@ -28,12 +28,9 @@
                 Foreground="Black"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-            
+
                     <Bold>MEL-TEX</Bold>
-
             </TextBlock>
-
-
 
             <Grid
                 HorizontalAlignment="Center"
@@ -42,7 +39,6 @@
 
                 <Grid.ColumnDefinitions>
 
-
                     <ColumnDefinition
                         Width="150" />
                     <ColumnDefinition
@@ -51,7 +47,6 @@
                         Width="150" />
                     <ColumnDefinition
                         Width="150" />
-
                 </Grid.ColumnDefinitions>
 
                 <Button
@@ -69,58 +64,49 @@
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Inventory Report
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Inventory Item
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Inventory Inbound
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Inventory Item
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Inbounded Item
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Inventory Item
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Inbounded Item
-
                             </ComboBoxItem>
-
                         </ComboBox>
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
                             IsHitTestVisible="False"
                             Text="Inventory" />
-
                     </Grid>
                 </Button>
 
@@ -140,65 +126,55 @@
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Open Quote
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Customer Information
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Customer
-
                             </ComboBoxItem>
-                            
+
                             <!--<ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Customer Contact
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Customer
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Customer Contact
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Customer
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Customer Contact
-
                             </ComboBoxItem>-->
-
                         </ComboBox>
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
                             IsHitTestVisible="False"
                             Text="Sales" />
-
                     </Grid>
                 </Button>
 
@@ -218,72 +194,61 @@
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Generate PO
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Receive PO
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Vendor Information
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Vendor
-
                             </ComboBoxItem>
 
                             <!--<ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Add Vendor Contact
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Vendor
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Vendor Contact
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Vendor
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Remove Vendor Contact
-
                             </ComboBoxItem>-->
-
                         </ComboBox>
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
                             IsHitTestVisible="False"
                             Text="Purchasing" />
-
                     </Grid>
                 </Button>
 
@@ -302,30 +267,25 @@
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Groups
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Edit Password
-
                             </ComboBoxItem>
 
                             <ComboBoxItem
                                 Style="{StaticResource MainWindowComboBoxItem}">
 
                                 Clear Data
-                                
                             </ComboBoxItem>
-
                         </ComboBox>
 
                         <TextBlock
                             Style="{StaticResource MainWindowButtonText}"
                             IsHitTestVisible="False"
                             Text="Settings" />
-
                     </Grid>
                 </Button>
             </Grid>

@@ -25,7 +25,6 @@
                     Width="250" />
                 <ColumnDefinition
                     Width="110" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -61,8 +60,8 @@
                 FontSize="16"
                 Width="230"
                 Margin="0, 10, 0, 0"
-                SelectionChanged="CB_ItemID_SelectionChanged"/>
-            
+                SelectionChanged="CB_ItemID_SelectionChanged" />
+
             <Label
                 Content="Barcode No: "
                 x:Name="L_Barcode"
@@ -71,8 +70,8 @@
                 Style="{StaticResource Labels}"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
-                Margin="0, 0, 0, 10" 
-                Visibility="Hidden"/>
+                Margin="0, 0, 0, 10"
+                Visibility="Hidden" />
 
             <ComboBox
                 x:Name="CB_Barcode"
@@ -88,7 +87,7 @@
                 Margin="0, 3, 0, 10"
                 Visibility="Hidden"
                 SelectionChanged="CB_Barcode_SelectionChanged"
-                IsVisibleChanged="CB_Barcode_IsVisibleChanged"/>
+                IsVisibleChanged="CB_Barcode_IsVisibleChanged" />
 
             <Label
                 Content="Quantity: "
@@ -113,9 +112,9 @@
                 FontSize="16"
                 Width="230"
                 Margin="0, 10, 0, 0"
-                Visibility="Hidden" 
+                Visibility="Hidden"
                 SelectionChanged="CB_Quantity_SelectionChanged"
-                IsVisibleChanged="CB_Quantity_IsVisibleChanged"/>
+                IsVisibleChanged="CB_Quantity_IsVisibleChanged" />
 
             <Label
                 Content="PO: "
@@ -141,7 +140,7 @@
                 Width="230"
                 Margin="0, 3, 0, 10"
                 Visibility="Hidden"
-                IsVisibleChanged="CB_PO_IsVisibleChanged"/>
+                IsVisibleChanged="CB_PO_IsVisibleChanged" />
 
             <Button
                 x:Name="BTN_Back"
@@ -152,7 +151,7 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
                 Click="BTN_Back_Click"
-                Margin="0, 0, 0, 10"/>
+                Margin="0, 0, 0, 10" />
 
             <Button
                 x:Name="BTN_Delete"
@@ -165,6 +164,5 @@
                 Click="BTN_Delete_Click"
                 Margin="0, 0, 0, 10" />
         </Grid>
-
     </Viewbox>
 </Page>

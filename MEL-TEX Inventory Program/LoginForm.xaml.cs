@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
 
@@ -25,7 +24,6 @@ namespace MELTEX
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             UpdateUsersComboBox();
 
             CB_Users.SelectedIndex = 0;
@@ -46,8 +44,6 @@ namespace MELTEX
                 SqlCommand com = sql.CreateCommand();
                 com.CommandText = query;
 
-
-
                 com.ExecuteNonQuery();
                 SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
                 {
@@ -59,7 +55,6 @@ namespace MELTEX
                 adapter.Fill(table);
                 CB_Users.DataContext = table.DefaultView;
             }
-
         }
 
         private void CheckPassword()

@@ -77,10 +77,9 @@ namespace MELTEX
 
             PreviousPage = prev;
             data = d;
-            
+
             saved = false;
             opened = false;
-
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -208,7 +207,6 @@ namespace MELTEX
                 $"{data.selectedShipFrom.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};{data.payTo.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};" +
                 $"{data.shipVia};{data.terms};{data.fob};{data.freightTerms};{data.repNum};{data.repName};");
 
-
             DataTable items = data.table;
             if (items.Columns.Contains("Notes"))
                 items.Columns.Remove("Notes");
@@ -242,7 +240,6 @@ namespace MELTEX
                     else
                         writer.Write($"{val.ToString()};");
                 }
-
             }
 
             writer.Close();
@@ -291,8 +288,7 @@ namespace MELTEX
                 MainWindow.GetWindow(this).Content = PreviousPage;
             else
                 if (MessageBox.Show("Do you want to exit without saving?\n\n", "Save or Quit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    return;
-
+                return;
         }
 
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
@@ -317,8 +313,6 @@ namespace MELTEX
                 data.table = ((DataView)DataGrid.ItemsSource).ToTable();
                 byte[] binTable;
                 byte[] binData;
-
-
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -396,7 +390,6 @@ namespace MELTEX
                     generatePDF(true);
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)
@@ -404,7 +397,5 @@ namespace MELTEX
                 MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
         }
-
-
     }
 }

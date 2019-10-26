@@ -77,6 +77,7 @@
       <DependentUpon>Customer_VendorReport.xaml</DependentUpon>
     </Compile>
     <Compile Include="DBController\DBController.cs" />
+    <Compile Include="DBController\MELTEXDB.cs" />
     <Compile Include="Invoice.xaml.cs">
       <DependentUpon>Invoice.xaml</DependentUpon>
     </Compile>
@@ -116,6 +117,7 @@
     <Compile Include="RemoveCustomer_Vendor.xaml.cs">
       <DependentUpon>RemoveCustomer_Vendor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters.cs" />
     <Page Include="AddContact.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -216,7 +218,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CountToVisibilityConverter.cs" />
     <Compile Include="DeleteInboundedItem.xaml.cs">
       <DependentUpon>DeleteInboundedItem.xaml</DependentUpon>
     </Compile>
@@ -271,7 +272,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

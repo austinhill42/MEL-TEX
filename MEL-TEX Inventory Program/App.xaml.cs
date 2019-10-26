@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace MELTEX
 {
@@ -19,7 +12,6 @@ namespace MELTEX
     /// </summary>
     public partial class App : Application
     {
-
         internal static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         internal static readonly string DBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal static readonly string PWDDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";
@@ -44,7 +36,6 @@ namespace MELTEX
                     com.Parameters.AddWithValue("@item", item);
 
                     com.ExecuteNonQuery();
-
 
                     SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
                     {

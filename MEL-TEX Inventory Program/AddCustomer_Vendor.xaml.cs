@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 
 namespace MELTEX
@@ -19,10 +17,9 @@ namespace MELTEX
         private Page previousPage;
         public ObservableCollection<Address> ShipToAddresses { get; set; }
         private string Type;
-        bool edit;
+        private bool edit;
         private string conn;
         private string selectedNumber;
-        
 
         public AddCustomer_Vendor(Page prev, string type, bool edit, string number = "")
         {
@@ -33,8 +30,7 @@ namespace MELTEX
             this.edit = edit;
             selectedNumber = number;
             ShipToAddresses = new ObservableCollection<Address>();
-            
-                
+
             if (Type == "Customer")
             {
                 ((Address)Grid.FindName("BillTo")).AddressType = "Bill To: ";
@@ -51,7 +47,6 @@ namespace MELTEX
 
                 conn = App.PurchasingDBConnString;
             }
-
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -65,7 +60,7 @@ namespace MELTEX
             if (!edit)
             {
                 Address a;
-                
+
                 if (Type == "Customer")
                     a = new Address() { AddressType = "Ship To:" };
                 else
@@ -136,8 +131,6 @@ namespace MELTEX
                 ((Address)Grid.FindName("MailTo")).TB_State.Text = mail[3];
                 ((Address)Grid.FindName("MailTo")).TB_Zip.Text = mail[4];
 
-
-
                 foreach (DataRow shipRow in shipTable.Rows)
                 {
                     Address a = new Address();
@@ -153,7 +146,6 @@ namespace MELTEX
                     AddShipTo(a);
                 }
             }
-            
         }
 
         private void Clear()
@@ -174,7 +166,7 @@ namespace MELTEX
             Grid.RowDefinitions.Add(rowDef);
 
             Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) + 1);
-            
+
             Grid.Children.Add(address);
             Grid.SetRow(address, Grid.GetRow(G_Notes) - 1);
             Grid.SetRow(BTN_AddShipTo, Grid.GetRow(G_Notes) - 1);
@@ -215,7 +207,7 @@ namespace MELTEX
 
                 if (Type == "Customer")
                 {
-                    insert = 
+                    insert =
                         $"INSERT INTO {Type} ([Number], [Name], [Website], [Bill_To], [Mail_To], [Terms], [Notes]) " +
                         "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
@@ -226,7 +218,7 @@ namespace MELTEX
                 }
                 else
                 {
-                    insert = 
+                    insert =
                         $"INSERT INTO {Type} ([Number], [Name], [Website], [Pay_To], [Mail_From], [Terms], [Notes]) " +
                         "VALUES (@num,@name,@website,@bill,@mail,@terms,@notes) ";
 
@@ -282,7 +274,6 @@ namespace MELTEX
                                 cmd.Parameters.AddWithValue($"@{i}", shipto[i]);
 
                                 cmd.ExecuteNonQuery();
-
                             }
                             catch (Exception)
                             {
@@ -304,7 +295,6 @@ namespace MELTEX
                 {
                     if (ex.Message.Contains("duplicate"))
                         MessageBox.Show("The item already exists in the database.");
-
                     else
                         MessageBox.Show(ex.Message);
                 }
@@ -337,7 +327,7 @@ namespace MELTEX
             Grid.SetRow(BTN_RemoveShipTo, Grid.GetRow(BTN_RemoveShipTo) - 1);
             Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) - 1);
         }
-        
+
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
         {
             string date = DateTime.Now.ToString("MM/dd/yyyy");

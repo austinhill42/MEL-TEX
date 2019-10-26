@@ -33,7 +33,6 @@
                     Width="200" />
                 <ColumnDefinition
                     Width="150" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -48,7 +47,6 @@
                     Height="400" />
                 <RowDefinition
                     Height="70" />
-
             </Grid.RowDefinitions>
 
             <StackPanel
@@ -67,7 +65,6 @@
                     Width="250"
                     VerticalContentAlignment="Center"
                     TextChanged="Search_TextChanged" />
-
             </StackPanel>
 
             <StackPanel
@@ -86,7 +83,6 @@
                     Width="400"
                     TextWrapping="Wrap"
                     TextChanged="Search_TextChanged" />
-
             </StackPanel>
 
             <Button
@@ -125,14 +121,10 @@
 
                             <EventSetter
                                 Event="MouseDoubleClick"
-                                Handler="InventoryDataGrid_MouseDoubleClick"/>
-                            
+                                Handler="InventoryDataGrid_MouseDoubleClick" />
                         </Style>
-
                     </DataGrid.Resources>
-
                 </DataGrid>
-
             </StackPanel>
 
             <StackPanel
@@ -159,7 +151,6 @@
                         x:Name="BTN_ClearSelected"
                         Content="Clear Selected"
                         Click="BTN_ClearSelected_Click" />
-
                 </StackPanel>
 
                 <DataGrid
@@ -176,13 +167,9 @@
                             <EventSetter
                                 Event="MouseDoubleClick"
                                 Handler="QuoteDataGrid_MouseDoubleClick" />
-
                         </Style>
-                        
                     </DataGrid.Resources>
-                    
                 </DataGrid>
-
             </StackPanel>
 
             <Button
@@ -208,7 +195,7 @@
                     Content="Customer Lookup: "
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    TextBlock.FontSize="14"/>
+                    TextBlock.FontSize="14" />
 
                 <ComboBox
                     x:Name="CB_Customers"
@@ -227,8 +214,7 @@
                     Style="{StaticResource NavigationButtons}"
                     Width="150"
                     Margin="20, 0, 10, 0"
-                    Click="BTN_CreateQuote_Click"/>
-
+                    Click="BTN_CreateQuote_Click" />
             </StackPanel>
 
             <Button
@@ -253,6 +239,5 @@
                 Width="150"
                 Click="BTN_OpenSalesOrder_Click" />
         </Grid>
-
     </Viewbox>
 </Page>
