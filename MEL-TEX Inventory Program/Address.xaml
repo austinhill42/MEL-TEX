@@ -34,7 +34,6 @@
                 VerticalAlignment="Center"
                 Style="{StaticResource InputTextBoxes}"
                 Width="350" />
-
         </StackPanel>
 
         <StackPanel
@@ -52,7 +51,6 @@
                 VerticalAlignment="Center"
                 Style="{StaticResource InputTextBoxes}"
                 Width="350" />
-
         </StackPanel>
 
         <StackPanel
@@ -74,7 +72,6 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
                     Width="180" />
-
             </StackPanel>
 
             <StackPanel
@@ -92,7 +89,6 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
                     Width="50" />
-
             </StackPanel>
 
             <StackPanel
@@ -110,12 +106,7 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
                     Width="75" />
-
             </StackPanel>
-
         </StackPanel>
-
     </StackPanel>
-
-
 </UserControl>

@@ -30,7 +30,6 @@
                     Width="300" />
                 <ColumnDefinition
                     Width="250" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -47,7 +46,6 @@
                     Height="300" />
                 <RowDefinition
                     Height="100" />
-
             </Grid.RowDefinitions>
 
             <Label
@@ -55,8 +53,8 @@
                 Grid.Row="0"
                 Grid.Column="1"
                 Style="{StaticResource Labels}"
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Center"/>
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
 
             <TextBox
                 x:Name="TB_ItemID"
@@ -65,22 +63,23 @@
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Style="{StaticResource InputTextBoxes}" 
-                CharacterCasing="Upper"/>
+                Style="{StaticResource InputTextBoxes}"
+                CharacterCasing="Upper"
+                Visibility="{Binding Path=Edit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
             <ComboBox
                 x:Name="CB_ItemID"
                 SelectedValue="{Binding Path=Inventory_Item, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Grid.Row="0"
                 Grid.Column="1"
-                ItemsSource="{Binding}"
+                ItemsSource="{Binding Path=ItemIDTable.DefaultView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                 DisplayMemberPath="Inventory_Item"
                 SelectedValuePath="Inventory_Item"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Width="200"
-                Visibility="Hidden"
-                SelectionChanged="CB_ItemID_SelectionChanged"/>
+                Visibility="{Binding Path=Edit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}, Converter={StaticResource BoolToVisibilityConverter}}"
+                SelectionChanged="CB_ItemID_SelectionChanged" />
 
             <Label
                 Content="Description: "
@@ -102,7 +101,7 @@
                 VerticalScrollBarVisibility="Auto"
                 Style="{StaticResource InputTextBoxes}"
                 Height="50"
-                Margin="0, 30, 0, 0"/>
+                Margin="0, 30, 0, 0" />
 
             <Label
                 Content="Weight: "
@@ -137,7 +136,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Style="{StaticResource InputTextBoxes}"
-                TextChanged="TB_ListPrice_TextChanged"/>
+                TextChanged="TB_ListPrice_TextChanged" />
 
             <Label
                 Content="Group: "
@@ -150,7 +149,7 @@
             <ComboBox
                 x:Name="CB_Group"
                 Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ItemsSource="{Binding}"
+                ItemsSource="{Binding Path=GroupTable.DefaultView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                 DisplayMemberPath="Group"
                 SelectedValuePath="Multiplier"
                 Grid.Row="2"
@@ -159,7 +158,7 @@
                 VerticalAlignment="Center"
                 FontSize="16"
                 Width="200"
-                SelectionChanged ="CB_Group_SelectionChanged"/>
+                SelectionChanged ="CB_Group_SelectionChanged" />
 
             <Label
                 Content="Multiplier: "
@@ -177,7 +176,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Style="{StaticResource InputTextBoxes}"
-                IsReadOnly="True"/>
+                IsReadOnly="True" />
 
             <Label
                 Content="Published&#10;Sales: "
@@ -194,8 +193,8 @@
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Style="{StaticResource InputTextBoxes}" 
-                IsReadOnly="True"/>
+                Style="{StaticResource InputTextBoxes}"
+                IsReadOnly="True" />
 
             <Label
                 Content="Published&#10;Cost: "
@@ -234,8 +233,8 @@
                 Margin="0, 40, 20, 0"
                 Height="200"
                 Width="530"
-                IsReadOnly="True" 
-                FontSize="16"/>
+                IsReadOnly="True"
+                FontSize="16" />
 
             <Label
                 Content="New Note: "
@@ -257,7 +256,7 @@
                 Margin="0, 0, 20, 0"
                 Height="30"
                 Width="530"
-                FontSize="16"/>
+                FontSize="16" />
 
             <Button
                 x:Name="BTN_AddNote"
@@ -266,8 +265,8 @@
                 Grid.Row="4"
                 Grid.Column="4"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Bottom" 
-                Click="BTN_AddNote_Click"/>
+                VerticalAlignment="Bottom"
+                Click="BTN_AddNote_Click" />
 
             <Button
                 x:Name="BTN_Back"
@@ -298,7 +297,6 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
                 Click="BTN_Save_Click" />
-
         </Grid>
     </Viewbox>
 </Page>

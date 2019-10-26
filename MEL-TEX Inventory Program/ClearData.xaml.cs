@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MELTEX
 {
@@ -64,7 +56,6 @@ namespace MELTEX
                         query = "DELETE FROM Inventory";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
                 }
 
@@ -97,7 +88,6 @@ namespace MELTEX
                         query = "DELETE FROM Customer";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
 
                     if (CB_Quotes.IsChecked ?? false)
@@ -105,7 +95,6 @@ namespace MELTEX
                         query = "DELETE FROM Quotes";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
 
                     if (CB_SalesOrders.IsChecked ?? false)
@@ -113,7 +102,6 @@ namespace MELTEX
                         query = "DELETE FROM SalesOrders";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
 
                     //if (CB_WorkOrders.IsChecked ?? false)
@@ -154,7 +142,6 @@ namespace MELTEX
                         query = "DELETE FROM Vendor";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
 
                     if (CB_POs.IsChecked ?? false)
@@ -162,7 +149,6 @@ namespace MELTEX
                         query = "DELETE FROM PO";
                         cmd = new SqlCommand(query, sql);
                         cmd.ExecuteNonQuery();
-
                     }
                 }
 

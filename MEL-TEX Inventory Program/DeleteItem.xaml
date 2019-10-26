@@ -25,7 +25,6 @@
                     Width="250" />
                 <ColumnDefinition
                     Width="110" />
-                
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -69,7 +68,7 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Right"
                 Click="BTN_Back_Click"
-                Margin="0, 0, 0, 10"/>
+                Margin="0, 0, 0, 10" />
 
             <Button
                 x:Name="BTN_Delete"
@@ -80,8 +79,7 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
                 Click="BTN_Delete_Click"
-                Margin="0, 0, 0, 10"/>
+                Margin="0, 0, 0, 10" />
         </Grid>
-
     </Viewbox>
 </Page>

@@ -68,7 +68,6 @@ namespace MELTEX
             data = d;
             saved = false;
             opened = false;
-
         }
 
         public GenerateSalesOrder(Page prev, string open)
@@ -227,7 +226,6 @@ namespace MELTEX
                 $"{data.selectedShipTo.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};{data.billTo.Replace("\n", "\\n").Replace("\r", "\\n").Replace(Environment.NewLine, "\\n")};" +
                 $"{data.shipVia};{data.terms};{data.fob};{data.freightTerms};{data.repNum};{data.repName};");
 
-
             DataTable items = data.table;
             if (items.Columns.Contains("Notes"))
                 items.Columns.Remove("Notes");
@@ -261,7 +259,6 @@ namespace MELTEX
                     else
                         writer.Write($"{val.ToString()};");
                 }
-
             }
 
             writer.Close();
@@ -346,8 +343,6 @@ namespace MELTEX
                 byte[] binTable;
                 byte[] binData;
 
-
-
                 using (MemoryStream stream = new MemoryStream())
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
@@ -421,7 +416,6 @@ namespace MELTEX
                     generatePDF(true);
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)

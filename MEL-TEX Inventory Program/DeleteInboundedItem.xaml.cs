@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,7 +25,6 @@ namespace MELTEX
             this.WindowTitle = "Delete Inbounded Item";
 
             PopulateItemIDComboBox();
-
         }
 
         private void CB_ItemID_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,7 +107,6 @@ namespace MELTEX
                     MessageBox.Show(ex.Message);
                 }
             }
-            
         }
 
         private void CB_Quantity_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

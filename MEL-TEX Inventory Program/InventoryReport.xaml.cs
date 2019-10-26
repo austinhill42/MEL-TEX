@@ -1,13 +1,11 @@
-﻿using System;
+﻿using MELTEX.Database;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Collections;
-using MELTEX.Database;
 
 namespace MELTEX
 {
@@ -17,8 +15,10 @@ namespace MELTEX
     public partial class InventoryReport : Page
     {
         internal Page previousPage;
+
         private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
                     "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult', item.Weight, item.Published_Sales AS 'Pub Sale', item.Notes ";
+
         private DataTable inventoryDataTable;
         public DataTable QuoteDataTable { get; set; }
 
@@ -30,15 +30,15 @@ namespace MELTEX
         }
 
         /*********************************************
-         * 
+         *
          *      EVENT HANDLERS:
-         * 
+         *
          ********************************************/
 
         private void InventoryReportPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowTitle = "Inventory Report";
-           
+
             PopulateInventoryDataGrid();
             InitializeQuoteDataGrid();
             PopulateCustomersComboBox();
@@ -52,7 +52,6 @@ namespace MELTEX
                 searchcol = "Description";
 
             PopulateInventoryDataGrid((sender as TextBox).Text, searchcol);
-
         }
 
         private void InventoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -70,14 +69,12 @@ namespace MELTEX
             QuoteDataTable.Rows.Remove(QuoteDataTable.Rows[rowIndex]);
 
             AddLineNumbers(QuoteDataTable);
-
-
         }
 
         /*******************************************
-         * 
+         *
          *      CodeBehind Methods
-         *      
+         *
          ******************************************/
 
         private void PopulateInventoryDataGrid(string searchText = "", string searchCol = "")
@@ -112,7 +109,6 @@ namespace MELTEX
         {
             DataTable table = DBController.GetTableFromQuery(sqlconn: App.SalesDBConnString, columns: "Name, Number", t1: "Customer");
             CB_Customers.DataContext = table.DefaultView;
-            
         }
 
         private void AddLineNumbers(DataTable table)
@@ -129,11 +125,10 @@ namespace MELTEX
                 row[0] = num++;
         }
 
-
         /********************************************
-         * 
+         *
          *      BUTTON HANDLING
-         *      
+         *
          *******************************************/
 
         private void BTN_ClearSelected_Click(object sender, RoutedEventArgs e)
@@ -213,7 +208,6 @@ namespace MELTEX
 
             if (open.ShowDialog() ?? false)
                 MainWindow.GetWindow(this).Content = new GenerateQuote(this, open.quotenum);
-
         }
 
         private void BTN_OpenSalesOrder_Click(object sender, RoutedEventArgs e)
@@ -231,7 +225,6 @@ namespace MELTEX
 
         private void TB_SearchID_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
     }
 }

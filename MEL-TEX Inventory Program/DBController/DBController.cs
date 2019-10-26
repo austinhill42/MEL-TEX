@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MELTEX.Database
 {
-    public class DBController
+    public static class DBController
     {
         public static DataTable GetTableFromQuery(string sqlconn, string columns, string t1, string t1join = "",
                                                   string t1Alias = "", string t2 = "", string t2join = "",
@@ -44,7 +42,7 @@ namespace MELTEX.Database
                     {
                         query += $"WHERE {searchTableAlias}.{searchCol} = @search ";
                         cmd.Parameters.AddWithValue("@search", searchEqual);
-                    }                    
+                    }
                 }
 
                 if (orderCol != "")
@@ -66,10 +64,7 @@ namespace MELTEX.Database
             using (SqlCommand cmd = sql.CreateCommand())
             using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
             {
-                List<string> p = new List<string>();
-
-                foreach (var item in values)
-                    p.Add($"@{Guid.NewGuid().ToString().Replace("-", "")}");
+                List<string> p = (values.Cast<Object>().Select(item => $"@{Guid.NewGuid().ToString().Replace("-", "")}")).ToList();
 
                 string query =
                     $"INSERT INTO {tableName} " +
@@ -116,7 +111,6 @@ namespace MELTEX.Database
 
         public static void Delete()
         {
-
         }
     }
 }

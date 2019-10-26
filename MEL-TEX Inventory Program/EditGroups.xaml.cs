@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -38,8 +37,6 @@ namespace MELTEX
                 SqlCommand com = sql.CreateCommand();
                 com.CommandText = query;
 
-
-
                 com.ExecuteNonQuery();
                 SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
                 {
@@ -51,7 +48,6 @@ namespace MELTEX
                 adapter.Fill(table);
                 CB_Groups.DataContext = table.DefaultView;
             }
-
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)

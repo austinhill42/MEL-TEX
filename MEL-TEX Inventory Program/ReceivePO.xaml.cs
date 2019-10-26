@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-
 
 namespace MELTEX
 {
@@ -228,13 +226,12 @@ namespace MELTEX
 
             try
             {
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(stream, data.table);
-                binTable = stream.ToArray();
-            }
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, data.table);
+                    binTable = stream.ToArray();
+                }
                 string query = "UPDATE PO " +
                                    "SET [FullyReceived] = @received, [Items] = @items " +
                                    "WHERE [Number] = @num";
@@ -252,14 +249,12 @@ namespace MELTEX
                     com.ExecuteNonQuery();
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error marking received in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
             }
-
         }
 
         private void UpdateDataInDatabase()
@@ -268,7 +263,6 @@ namespace MELTEX
 
             try
             {
-
                 using (MemoryStream stream = new MemoryStream())
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
@@ -291,14 +285,12 @@ namespace MELTEX
                     com.ExecuteNonQuery();
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error updating data in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
             }
-
         }
 
         private void UpdateReceivedByWeight()
@@ -321,7 +313,6 @@ namespace MELTEX
                     com.ExecuteNonQuery();
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)
@@ -347,7 +338,6 @@ namespace MELTEX
             else
                 if (MessageBox.Show("Do you want to exit without saving?\n\n", "Save or Quit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 return;
-
         }
 
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
@@ -420,7 +410,6 @@ namespace MELTEX
                     MessageBox.Show($"PO: {data.number} updated in database.");
 
                     saved = true;
-
                 }
             }
             catch (Exception ex)

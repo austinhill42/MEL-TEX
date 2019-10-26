@@ -22,7 +22,6 @@
 
                 <RowDefinition
                     Height="60" />
-
             </Grid.RowDefinitions>
 
             <ScrollViewer
@@ -44,7 +43,6 @@
                             Width="225" />
                         <ColumnDefinition
                             Width="150" />
-
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>
@@ -61,7 +59,6 @@
                             Height="100" />
                         <RowDefinition
                             Height="250" />
-
                     </Grid.RowDefinitions>
 
                     <Label
@@ -81,7 +78,7 @@
                         VerticalAlignment="Top"
                         Width="200"
                         IsReadOnly="True"
-                        Margin="0, 30, 10, 0"/>
+                        Margin="0, 30, 10, 0" />
 
                     <Label
                         x:Name="L_Name"
@@ -101,7 +98,7 @@
                         VerticalAlignment="Top"
                         Style="{StaticResource InputTextBoxes}"
                         Margin="0, 30, 10, 0" />
-                    
+
                     <Label
                         x:Name="L_Title"
                         Content="Contact Title: "
@@ -126,7 +123,7 @@
                         Grid.Row="2"
                         Grid.Column="1"
                         Grid.ColumnSpan="2">
-                        
+
                         <Label
                             Content="Email: "
                             Grid.Row="2"
@@ -152,7 +149,7 @@
                         Grid.Row="3"
                         Grid.Column="1"
                         Grid.ColumnSpan="2">
-                        
+
                         <Label
                             Content="Website: "
                             Style="{StaticResource Labels}"
@@ -192,7 +189,7 @@
                             Height="60"
                             Margin="0, 0, 10, 10" />
                     </StackPanel>
-                    
+
                     <Button
                         x:Name="BTN_RemoveNumber"
                         Content="Remove Phone/Fax"
@@ -223,7 +220,6 @@
                                 <Setter
                                     Property="Height"
                                     Value="30" />
-
                             </Style>
                         </Button.Style>
                     </Button>
@@ -289,7 +285,6 @@
                             VerticalAlignment="Bottom"
                             Click="BTN_AddNote_Click" />
                     </Grid>
-
                 </Grid>
             </ScrollViewer>
 
@@ -325,7 +320,6 @@
                 HorizontalAlignment="Right"
                 Margin="0, 0, 10, 10"
                 Click="BTN_Save_Click" />
-
         </Grid>
     </Viewbox>
 </Page>

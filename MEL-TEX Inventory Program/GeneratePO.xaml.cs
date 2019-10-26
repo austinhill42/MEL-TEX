@@ -14,8 +14,10 @@ namespace MELTEX
     public partial class GeneratePO : Page
     {
         internal Page previousPage;
+
         private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
                     "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult.', item.Weight, item.Published_Sales AS 'Pub. Sale', item.Notes ";
+
         private DataTable inventoryDataTable;
         private DataTable PODataTable;
         private CreatePO.Data data;
@@ -79,7 +81,7 @@ namespace MELTEX
 
             AddLineNumbers(PODataTable);
         }
-        
+
         private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             int rowIndex = (sender as DataGridRow).GetIndex();
@@ -96,7 +98,6 @@ namespace MELTEX
                     "ORDER BY item.Inventory_Item ASC";
 
             PopulateInventoryDataGrid(query);
-
         }
 
         private void PopulateInventoryDataGrid(string query)
@@ -126,8 +127,6 @@ namespace MELTEX
                 AddLineNumbers(inventoryDataTable);
 
                 InventoryDataGrid.DataContext = inventoryDataTable.DefaultView;
-
-
             }
             catch (Exception ex)
             {
@@ -281,7 +280,6 @@ namespace MELTEX
             MainWindow.GetWindow(this).Content = new CreatePO(this, data);
         }
 
-
         private void BTN_ClearSelected_Click(object sender, RoutedEventArgs e)
         {
             InitializaPODataGrid();
@@ -297,7 +295,6 @@ namespace MELTEX
         {
             MainWindow.GetWindow(this).Content = previousPage;
         }
-
 
         private void BTN_CreatePO_Click(object sender, RoutedEventArgs e)
         {

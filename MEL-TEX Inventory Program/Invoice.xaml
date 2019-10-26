@@ -26,7 +26,6 @@
                     Width="300" />
                 <ColumnDefinition
                     Width="120" />
-
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -45,7 +44,6 @@
                     Height="260" />
                 <RowDefinition
                     Height="80" />
-
             </Grid.RowDefinitions>
 
             <StackPanel
@@ -67,7 +65,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}" />
-
             </StackPanel>
 
             <StackPanel
@@ -89,7 +86,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}" />
-
             </StackPanel>
 
             <StackPanel
@@ -111,7 +107,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}" />
-
             </StackPanel>
 
             <StackPanel
@@ -133,7 +128,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="0, 0, 0, 5" />
-
             </StackPanel>
 
             <StackPanel
@@ -153,8 +147,8 @@
                 <CheckBox
                     x:Name="CB_Ack"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center" 
-                    IsThreeState="False"/>
+                    VerticalAlignment="Center"
+                    IsThreeState="False" />
 
                 <Label
                     Content="Paid: "
@@ -166,10 +160,9 @@
                 <CheckBox
                     x:Name="CB_Paid"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center" 
+                    VerticalAlignment="Center"
                     IsThreeState="False"
-                    IsChecked="False"/>
-
+                    IsChecked="False" />
             </StackPanel>
 
             <StackPanel
@@ -191,7 +184,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="0, 0, 0, 5" />
-
             </StackPanel>
 
             <StackPanel
@@ -214,8 +206,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
-                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
             </StackPanel>
 
             <StackPanel
@@ -239,7 +230,6 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
                     IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
-
             </StackPanel>
 
             <StackPanel
@@ -263,8 +253,7 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource InputTextBoxes}"
                     Width="400"
-                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
+                    IsEnabled="{Binding IsChecked, ElementName=CB_Paid, Converter={StaticResource BoolToVisibilityConverter}}" />
             </StackPanel>
 
             <Label
@@ -355,8 +344,6 @@
                 HorizontalAlignment="Right"
                 Click="BTN_Save_Click"
                 Margin="10" />
-
         </Grid>
-
     </Viewbox>
 </Page>
