@@ -14,12 +14,23 @@ namespace MELTEX
     /// </summary>
     public partial class AddCustomer_Vendor : Page
     {
-        private Page previousPage;
-        public ObservableCollection<Address> ShipToAddresses { get; set; }
-        private string Type;
-        private bool edit;
+        #region Fields
+
         private string conn;
+        private bool edit;
+        private Page previousPage;
         private string selectedNumber;
+        private string Type;
+
+        #endregion Fields
+
+        #region Properties
+
+        public ObservableCollection<Address> ShipToAddresses { get; set; }
+
+        #endregion Properties
+
+        #region Constructors
 
         public AddCustomer_Vendor(Page prev, string type, bool edit, string number = "")
         {
@@ -49,110 +60,9 @@ namespace MELTEX
             }
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.WindowTitle = $"Add {Type}";
+        #endregion Constructors
 
-            L_Number.Content = $"{Type} No:";
-            L_Name.Content = $"{Type} Name:";
-            TB_Number.Text = selectedNumber;
-
-            if (!edit)
-            {
-                Address a;
-
-                if (Type == "Customer")
-                    a = new Address() { AddressType = "Ship To:" };
-                else
-                    a = new Address() { AddressType = "Ship From:" };
-
-                AddShipTo(a);
-            }
-            else
-            {
-                DataTable table = new DataTable();
-                DataTable shipTable = new DataTable();
-
-                string query =
-                    $"SELECT * " +
-                    $"FROM {Type}_Ship_Locations " +
-                    $"WHERE Number = @num ";
-
-                using (SqlConnection sql = new SqlConnection(conn))
-                {
-                    sql.Open();
-
-                    using (SqlCommand cmd = new SqlCommand(query, sql))
-                    {
-                        cmd.Parameters.AddWithValue("@num", selectedNumber);
-
-                        cmd.ExecuteNonQuery();
-
-                        SqlDataAdapter adapter = new SqlDataAdapter(cmd.CommandText, sql)
-                        {
-                            SelectCommand = cmd
-                        };
-
-                        adapter.Fill(shipTable);
-
-                        query =
-                            $"SELECT * " +
-                            $"FROM {Type} " +
-                            $"WHERE Number = @num ";
-
-                        cmd.CommandText = query;
-
-                        cmd.ExecuteNonQuery();
-
-                        adapter.Fill(table);
-                    }
-                }
-
-                DataRow row = table.Rows[0];
-
-                TB_Number.Text = row["Number"].ToString();
-                TB_Name.Text = row["Name"].ToString();
-                TB_Website.Text = row["Website"].ToString();
-                TB_Terms.Text = row["Terms"].ToString();
-                TB_Notes.Text = row["Notes"].ToString();
-
-                string[] bill = row[Type == "Customer" ? "Bill_To" : "Pay_To"].ToString().Split('|');
-                string[] mail = row[Type == "Customer" ? "Mail_To" : "Mail_From"].ToString().Split('|');
-
-                ((Address)Grid.FindName("BillTo")).TB_Address1.Text = bill[0];
-                ((Address)Grid.FindName("BillTo")).TB_Address2.Text = bill[1];
-                ((Address)Grid.FindName("BillTo")).TB_City.Text = bill[2];
-                ((Address)Grid.FindName("BillTo")).TB_State.Text = bill[3];
-                ((Address)Grid.FindName("BillTo")).TB_Zip.Text = bill[4];
-
-                ((Address)Grid.FindName("MailTo")).TB_Address1.Text = mail[0];
-                ((Address)Grid.FindName("MailTo")).TB_Address2.Text = mail[1];
-                ((Address)Grid.FindName("MailTo")).TB_City.Text = mail[2];
-                ((Address)Grid.FindName("MailTo")).TB_State.Text = mail[3];
-                ((Address)Grid.FindName("MailTo")).TB_Zip.Text = mail[4];
-
-                foreach (DataRow shipRow in shipTable.Rows)
-                {
-                    Address a = new Address();
-                    string[] address = shipRow[1].ToString().Split('|');
-
-                    a.AddressType = Type == "Customer" ? "Ship To" : "Ship From";
-                    a.TB_Address1.Text = address[0];
-                    a.TB_Address2.Text = address[1];
-                    a.TB_City.Text = address[2];
-                    a.TB_State.Text = address[3];
-                    a.TB_Zip.Text = address[4];
-
-                    AddShipTo(a);
-                }
-            }
-        }
-
-        private void Clear()
-        {
-            foreach (TextBox tb in FindVisualChildren<TextBox>(Grid))
-                tb.Text = "";
-        }
+        #region Methods
 
         private void AddShipTo(Address address)
         {
@@ -175,6 +85,30 @@ namespace MELTEX
             Grid.SetColumnSpan(address, 2);
         }
 
+        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
+        {
+            string date = DateTime.Now.ToString("MM/dd/yyyy");
+            string time = DateTime.Now.ToString("HH:mm:ss");
+
+            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+
+            TB_AddNote.Text = "";
+        }
+
+        private void BTN_AddShipTo_Click(object sender, RoutedEventArgs e)
+        {
+            Address a;
+
+            if (Type == "Customer")
+                a = new Address() { AddressType = "Ship To:" };
+            else
+                a = new Address() { AddressType = "Ship From:" };
+
+            AddShipTo(a);
+
+            ScrollView.ScrollToBottom();
+        }
+
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.GetWindow(this).Content = previousPage;
@@ -183,6 +117,17 @@ namespace MELTEX
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
         {
             Clear();
+        }
+
+        private void BTN_RemoveShipTo_Click(object sender, RoutedEventArgs e)
+        {
+            Grid.Children.Remove(ShipToAddresses[ShipToAddresses.Count - 1]);
+            Grid.RowDefinitions.RemoveAt(Grid.GetRow(G_Notes) - 1);
+            ShipToAddresses.RemoveAt(ShipToAddresses.Count - 1);
+
+            Grid.SetRow(BTN_AddShipTo, Grid.GetRow(BTN_AddShipTo) - 1);
+            Grid.SetRow(BTN_RemoveShipTo, Grid.GetRow(BTN_RemoveShipTo) - 1);
+            Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) - 1);
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
@@ -303,39 +248,109 @@ namespace MELTEX
             }
         }
 
-        private void BTN_AddShipTo_Click(object sender, RoutedEventArgs e)
+        private void Clear()
         {
-            Address a;
+            foreach (TextBox tb in FindVisualChildren<TextBox>(Grid))
+                tb.Text = "";
+        }
 
-            if (Type == "Customer")
-                a = new Address() { AddressType = "Ship To:" };
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = $"Add {Type}";
+
+            L_Number.Content = $"{Type} No:";
+            L_Name.Content = $"{Type} Name:";
+            TB_Number.Text = selectedNumber;
+
+            if (!edit)
+            {
+                Address a;
+
+                if (Type == "Customer")
+                    a = new Address() { AddressType = "Ship To:" };
+                else
+                    a = new Address() { AddressType = "Ship From:" };
+
+                AddShipTo(a);
+            }
             else
-                a = new Address() { AddressType = "Ship From:" };
+            {
+                DataTable table = new DataTable();
+                DataTable shipTable = new DataTable();
 
-            AddShipTo(a);
+                string query =
+                    $"SELECT * " +
+                    $"FROM {Type}_Ship_Locations " +
+                    $"WHERE Number = @num ";
 
-            ScrollView.ScrollToBottom();
-        }
+                using (SqlConnection sql = new SqlConnection(conn))
+                {
+                    sql.Open();
 
-        private void BTN_RemoveShipTo_Click(object sender, RoutedEventArgs e)
-        {
-            Grid.Children.Remove(ShipToAddresses[ShipToAddresses.Count - 1]);
-            Grid.RowDefinitions.RemoveAt(Grid.GetRow(G_Notes) - 1);
-            ShipToAddresses.RemoveAt(ShipToAddresses.Count - 1);
+                    using (SqlCommand cmd = new SqlCommand(query, sql))
+                    {
+                        cmd.Parameters.AddWithValue("@num", selectedNumber);
 
-            Grid.SetRow(BTN_AddShipTo, Grid.GetRow(BTN_AddShipTo) - 1);
-            Grid.SetRow(BTN_RemoveShipTo, Grid.GetRow(BTN_RemoveShipTo) - 1);
-            Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) - 1);
-        }
+                        cmd.ExecuteNonQuery();
 
-        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
-        {
-            string date = DateTime.Now.ToString("MM/dd/yyyy");
-            string time = DateTime.Now.ToString("HH:mm:ss");
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd.CommandText, sql)
+                        {
+                            SelectCommand = cmd
+                        };
 
-            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+                        adapter.Fill(shipTable);
 
-            TB_AddNote.Text = "";
+                        query =
+                            $"SELECT * " +
+                            $"FROM {Type} " +
+                            $"WHERE Number = @num ";
+
+                        cmd.CommandText = query;
+
+                        cmd.ExecuteNonQuery();
+
+                        adapter.Fill(table);
+                    }
+                }
+
+                DataRow row = table.Rows[0];
+
+                TB_Number.Text = row["Number"].ToString();
+                TB_Name.Text = row["Name"].ToString();
+                TB_Website.Text = row["Website"].ToString();
+                TB_Terms.Text = row["Terms"].ToString();
+                TB_Notes.Text = row["Notes"].ToString();
+
+                string[] bill = row[Type == "Customer" ? "Bill_To" : "Pay_To"].ToString().Split('|');
+                string[] mail = row[Type == "Customer" ? "Mail_To" : "Mail_From"].ToString().Split('|');
+
+                ((Address)Grid.FindName("BillTo")).TB_Address1.Text = bill[0];
+                ((Address)Grid.FindName("BillTo")).TB_Address2.Text = bill[1];
+                ((Address)Grid.FindName("BillTo")).TB_City.Text = bill[2];
+                ((Address)Grid.FindName("BillTo")).TB_State.Text = bill[3];
+                ((Address)Grid.FindName("BillTo")).TB_Zip.Text = bill[4];
+
+                ((Address)Grid.FindName("MailTo")).TB_Address1.Text = mail[0];
+                ((Address)Grid.FindName("MailTo")).TB_Address2.Text = mail[1];
+                ((Address)Grid.FindName("MailTo")).TB_City.Text = mail[2];
+                ((Address)Grid.FindName("MailTo")).TB_State.Text = mail[3];
+                ((Address)Grid.FindName("MailTo")).TB_Zip.Text = mail[4];
+
+                foreach (DataRow shipRow in shipTable.Rows)
+                {
+                    Address a = new Address();
+                    string[] address = shipRow[1].ToString().Split('|');
+
+                    a.AddressType = Type == "Customer" ? "Ship To" : "Ship From";
+                    a.TB_Address1.Text = address[0];
+                    a.TB_Address2.Text = address[1];
+                    a.TB_City.Text = address[2];
+                    a.TB_State.Text = address[3];
+                    a.TB_Zip.Text = address[4];
+
+                    AddShipTo(a);
+                }
+            }
         }
 
         // Get all the textboxes so I can clear them, since some are deeply nested
@@ -358,5 +373,7 @@ namespace MELTEX
                 }
             }
         }
+
+        #endregion Methods
     }
 }

@@ -11,7 +11,13 @@ namespace MELTEX
     /// </summary>
     public partial class EditGroups : Page
     {
+        #region Fields
+
         private Page previousPage;
+
+        #endregion Fields
+
+        #region Constructors
 
         public EditGroups(Page prev)
         {
@@ -20,34 +26,13 @@ namespace MELTEX
             previousPage = prev;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        #endregion Constructors
+
+        #region Methods
+
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowTitle = "Edit Groups";
-
-            UpdateGroupsComboBox();
-        }
-
-        private void UpdateGroupsComboBox()
-        {
-            string query = "SELECT * FROM Groups";
-
-            using (SqlConnection sql = new SqlConnection(App.DBConnString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-                com.CommandText = query;
-
-                com.ExecuteNonQuery();
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                DataTable table = new DataTable();
-
-                adapter.Fill(table);
-                CB_Groups.DataContext = table.DefaultView;
-            }
+            MainWindow.GetWindow(this).Content = previousPage;
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
@@ -90,16 +75,43 @@ namespace MELTEX
             CB_Groups.SelectedIndex = -1;
         }
 
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.GetWindow(this).Content = previousPage;
-        }
-
         private void CB_Groups_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             object selected = CB_Groups.SelectedValue;
 
             TB_Mult.Text = selected == null ? "" : selected.ToString();
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = "Edit Groups";
+
+            UpdateGroupsComboBox();
+        }
+
+        private void UpdateGroupsComboBox()
+        {
+            string query = "SELECT * FROM Groups";
+
+            using (SqlConnection sql = new SqlConnection(App.DBConnString))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+                com.CommandText = query;
+
+                com.ExecuteNonQuery();
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                DataTable table = new DataTable();
+
+                adapter.Fill(table);
+                CB_Groups.DataContext = table.DefaultView;
+            }
+        }
+
+        #endregion Methods
     }
 }

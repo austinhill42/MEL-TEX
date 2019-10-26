@@ -9,8 +9,14 @@ namespace MELTEX.Database
 {
     public static class DBController
     {
+        #region Methods
+
+        public static void Delete()
+        {
+        }
+
         public static DataTable GetTableFromQuery(string sqlconn, string columns, string t1, string t1join = "",
-                                                  string t1Alias = "", string t2 = "", string t2join = "",
+                                                          string t1Alias = "", string t2 = "", string t2join = "",
                                                   string t2Alias = "t2", string orderTableAlias = "t1",
                                                   string orderCol = "", string searchTableAlias = "t1",
                                                   string searchCol = "", string searchStart = "",
@@ -109,8 +115,6 @@ namespace MELTEX.Database
             }
         }
 
-        public static void Delete()
-        {
-        }
+        #endregion Methods
     }
 }

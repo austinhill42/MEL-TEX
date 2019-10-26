@@ -12,8 +12,14 @@ namespace MELTEX
     /// </summary>
     public partial class Invoice : Page
     {
+        #region Fields
+
         private readonly string connString = App.AccountingDBConnString;
         private Page previousPage;
+
+        #endregion Fields
+
+        #region Constructors
 
         public Invoice(Page prev)
         {
@@ -22,70 +28,18 @@ namespace MELTEX
             previousPage = prev;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        #endregion Constructors
+
+        #region Methods
+
+        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowTitle = "Invoice";
-        }
+            string date = DateTime.Now.ToString("MM/dd/yyyy");
+            string time = DateTime.Now.ToString("HH:mm:ss");
 
-        private void CB_Paid_Checked(object sender, RoutedEventArgs e)
-        {
-            TB_CheckNo.IsReadOnly = false;
-            TB_Bank.IsReadOnly = false;
-            TB_Confirmation.IsReadOnly = false;
-        }
+            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
 
-        private void CB_Paid_Unchecked(object sender, RoutedEventArgs e)
-        {
-            TB_CheckNo.IsReadOnly = true;
-            TB_Bank.IsReadOnly = true;
-            TB_Confirmation.IsReadOnly = true;
-        }
-
-        private void Clear()
-        {
-            foreach (TextBox tb in FindVisualChildren<TextBox>(Grid))
-                tb.Text = "";
-
-            foreach (DatePicker tb in FindVisualChildren<DatePicker>(Grid))
-                tb.SelectedDate = null;
-
-            foreach (CheckBox tb in FindVisualChildren<CheckBox>(Grid))
-                tb.IsChecked = false;
-        }
-
-        private string GetNum()
-        {
-            int prevdate = 0;
-            int prevNum = 0;
-
-            using (SqlConnection sql = new SqlConnection(connString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-                com.CommandText = "SELECT InvoiceNo FROM Invoice";
-
-                DateTime now = DateTime.Now;
-
-                int today = Convert.ToInt32(now.ToString("yyyy") + now.ToString("MM") + now.ToString("dd"));
-
-                SqlDataReader reader = com.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    string read = reader.GetValue(0).ToString();
-                    int testDate = Convert.ToInt32(read.Split('-')[0]);
-                    int testNum = Convert.ToInt32(read.Split('-')[1]);
-                    prevdate = prevdate > testDate ? prevdate : testDate;
-                    prevNum = prevNum > testNum ? prevNum : testNum;
-                }
-
-                reader.Close();
-
-                if (today > prevdate)
-                    return $"{today.ToString()}-1";
-                else
-                    return $"{today}-{++prevNum}";
-            }
+            TB_AddNote.Text = "";
         }
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
@@ -160,14 +114,70 @@ namespace MELTEX
             }
         }
 
-        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
+        private void CB_Paid_Checked(object sender, RoutedEventArgs e)
         {
-            string date = DateTime.Now.ToString("MM/dd/yyyy");
-            string time = DateTime.Now.ToString("HH:mm:ss");
+            TB_CheckNo.IsReadOnly = false;
+            TB_Bank.IsReadOnly = false;
+            TB_Confirmation.IsReadOnly = false;
+        }
 
-            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+        private void CB_Paid_Unchecked(object sender, RoutedEventArgs e)
+        {
+            TB_CheckNo.IsReadOnly = true;
+            TB_Bank.IsReadOnly = true;
+            TB_Confirmation.IsReadOnly = true;
+        }
 
-            TB_AddNote.Text = "";
+        private void Clear()
+        {
+            foreach (TextBox tb in FindVisualChildren<TextBox>(Grid))
+                tb.Text = "";
+
+            foreach (DatePicker tb in FindVisualChildren<DatePicker>(Grid))
+                tb.SelectedDate = null;
+
+            foreach (CheckBox tb in FindVisualChildren<CheckBox>(Grid))
+                tb.IsChecked = false;
+        }
+
+        private string GetNum()
+        {
+            int prevdate = 0;
+            int prevNum = 0;
+
+            using (SqlConnection sql = new SqlConnection(connString))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+                com.CommandText = "SELECT InvoiceNo FROM Invoice";
+
+                DateTime now = DateTime.Now;
+
+                int today = Convert.ToInt32(now.ToString("yyyy") + now.ToString("MM") + now.ToString("dd"));
+
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    string read = reader.GetValue(0).ToString();
+                    int testDate = Convert.ToInt32(read.Split('-')[0]);
+                    int testNum = Convert.ToInt32(read.Split('-')[1]);
+                    prevdate = prevdate > testDate ? prevdate : testDate;
+                    prevNum = prevNum > testNum ? prevNum : testNum;
+                }
+
+                reader.Close();
+
+                if (today > prevdate)
+                    return $"{today.ToString()}-1";
+                else
+                    return $"{today}-{++prevNum}";
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = "Invoice";
         }
 
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -189,5 +199,7 @@ namespace MELTEX
                 }
             }
         }
+
+        #endregion Methods
     }
 }

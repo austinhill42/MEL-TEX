@@ -11,12 +11,18 @@ namespace MELTEX
     /// </summary>
     public partial class Customer_VendorReport : Page
     {
-        private Page previousPage;
+        #region Fields
+
         private string conn;
-        private string Type;
-        private string selectedNumber;
-        private string selectedName;
+        private Page previousPage;
         private string selectedContact;
+        private string selectedName;
+        private string selectedNumber;
+        private string Type;
+
+        #endregion Fields
+
+        #region Constructors
 
         public Customer_VendorReport(Page prev, string type)
         {
@@ -28,38 +34,53 @@ namespace MELTEX
             conn = Type == "Customer" ? App.SalesDBConnString : App.PurchasingDBConnString;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            WindowTitle = $"{Type} Information";
-            L_Header.Content = $"{Type}s";
-            BTN_AddCustomerVendor.Content = $"Add {Type}";
-            BTN_EditCustomerVendor.Content = $"Edit {Type}";
-            BTN_DeleteCustomerVendor.Content = $"Delete {Type}";
+        #endregion Constructors
 
-            PopulateDataGrid();
+        #region Methods
+
+        private void BTN_AddContact_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = new AddContact(this, Type, selectedNumber);
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BTN_AddCustomerVendor_Click(object sender, RoutedEventArgs e)
         {
-            if (DataGrid.SelectedItem == null)
-            {
-                BTN_AddContact.IsEnabled = false;
-                BTN_EditContact.IsEnabled = false;
-                BTN_EditCustomerVendor.IsEnabled = false;
-                BTN_DeleteContact.IsEnabled = false;
-                BTN_DeleteCustomerVendor.IsEnabled = false;
-            }
-            else
-            {
-                BTN_AddContact.IsEnabled = true;
-                BTN_EditCustomerVendor.IsEnabled = true;
-                BTN_DeleteCustomerVendor.IsEnabled = true;
+            MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, Type, false);
+        }
 
-                selectedNumber = ((DataRowView)DataGrid.SelectedItem).Row["Number"].ToString();
-                selectedName = ((DataRowView)DataGrid.SelectedItem).Row["Name"].ToString();
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = previousPage;
+        }
 
-                PopulateContactDataGrid();
-            }
+        private void BTN_ClearSearch_Click(object sender, RoutedEventArgs e)
+        {
+            TB_Search.Text = "";
+        }
+
+        private void BTN_DeleteContact_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show($"Are you sure you want to delete {Type} Contact: {selectedContact}?\n\nThis will delete all records relating to {selectedContact}", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                return;
+
+            DeleteContact(selectedContact);
+        }
+
+        private void BTN_DeleteCustomerVendor_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show($"Are you sure you want to delete {Type}: {selectedName}?\n\nThis will delete all records relating to {selectedName}, including contacts", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                return;
+
+            DeleteCustomerVendor();
+        }
+
+        private void BTN_EditContact_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void BTN_EditCustomerVendor_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, Type, true, selectedNumber);
         }
 
         private void ContactsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -124,113 +145,27 @@ namespace MELTEX
             }
         }
 
-        private void TB_Search_TextChanged(object sender, TextChangedEventArgs e)
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string query =
-                    "SELECT * " +
-                    $"FROM {Type} " +
-                    $"WHERE [Number] LIKE @num ";
-
-            if (TB_Search.Text == "")
-                PopulateDataGrid();
+            if (DataGrid.SelectedItem == null)
+            {
+                BTN_AddContact.IsEnabled = false;
+                BTN_EditContact.IsEnabled = false;
+                BTN_EditCustomerVendor.IsEnabled = false;
+                BTN_DeleteContact.IsEnabled = false;
+                BTN_DeleteCustomerVendor.IsEnabled = false;
+            }
             else
-                SearchTable(query, TB_Search.Text);
-        }
-
-        private void PopulateDataGrid()
-        {
-            DataTable table = new DataTable();
-
-            DataGrid.DataContext = null;
-
-            using (SqlConnection sql = new SqlConnection(conn))
             {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
+                BTN_AddContact.IsEnabled = true;
+                BTN_EditCustomerVendor.IsEnabled = true;
+                BTN_DeleteCustomerVendor.IsEnabled = true;
 
-                com.CommandText = $"SELECT * FROM {Type} ";
+                selectedNumber = ((DataRowView)DataGrid.SelectedItem).Row["Number"].ToString();
+                selectedName = ((DataRowView)DataGrid.SelectedItem).Row["Name"].ToString();
 
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                adapter.Fill(table);
-
-                DataGrid.DataContext = FixAddressFormat(table).DefaultView;
+                PopulateContactDataGrid();
             }
-        }
-
-        private void PopulateContactDataGrid()
-        {
-            DataTable table = new DataTable();
-
-            ContactsDataGrid.DataContext = null;
-
-            using (SqlConnection sql = new SqlConnection(conn))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-
-                com.CommandText = $"SELECT * FROM {Type}_Contacts WHERE Number = @num ";
-
-                com.Parameters.AddWithValue("@num", selectedNumber);
-
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                adapter.Fill(table);
-
-                ContactsDataGrid.DataContext = table.DefaultView;
-            }
-        }
-
-        private void SearchTable(string query, string search)
-        {
-            DataTable table = new DataTable();
-
-            using (SqlConnection sql = new SqlConnection(conn))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-
-                com.CommandText = query;
-
-                com.Parameters.AddWithValue("@num", '%' + search + '%');
-
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                adapter.Fill(table);
-
-                DataGrid.DataContext = FixAddressFormat(table).DefaultView;
-            }
-        }
-
-        private DataTable FixAddressFormat(DataTable t)
-        {
-            DataTable table = t;
-
-            foreach (DataRow row in table.Rows)
-            {
-                if (row.Table.Columns.Contains("Bill_To"))
-                    row["Bill_To"] = row["Bill_To"].ToString().Replace("||", "|").Replace('|', '\n');
-
-                if (row.Table.Columns.Contains("Pay_To"))
-                    row["Pay_To"] = row["Pay_To"].ToString().Replace("||", "|").Replace('|', '\n');
-
-                if (row.Table.Columns.Contains("Mail_To"))
-                    row["Mail_To"] = row["Mail_To"].ToString().Replace("||", "|").Replace('|', '\n');
-
-                if (row.Table.Columns.Contains("Mail_From"))
-                    row["Mail_From"] = row["Mail_From"].ToString().Replace("||", "|").Replace('|', '\n');
-            }
-
-            return table;
         }
 
         private void DeleteContact(string name = "1=1")
@@ -307,49 +242,126 @@ namespace MELTEX
             }
         }
 
-        private void BTN_ClearSearch_Click(object sender, RoutedEventArgs e)
+        private DataTable FixAddressFormat(DataTable t)
         {
-            TB_Search.Text = "";
+            DataTable table = t;
+
+            foreach (DataRow row in table.Rows)
+            {
+                if (row.Table.Columns.Contains("Bill_To"))
+                    row["Bill_To"] = row["Bill_To"].ToString().Replace("||", "|").Replace('|', '\n');
+
+                if (row.Table.Columns.Contains("Pay_To"))
+                    row["Pay_To"] = row["Pay_To"].ToString().Replace("||", "|").Replace('|', '\n');
+
+                if (row.Table.Columns.Contains("Mail_To"))
+                    row["Mail_To"] = row["Mail_To"].ToString().Replace("||", "|").Replace('|', '\n');
+
+                if (row.Table.Columns.Contains("Mail_From"))
+                    row["Mail_From"] = row["Mail_From"].ToString().Replace("||", "|").Replace('|', '\n');
+            }
+
+            return table;
         }
 
-        private void BTN_AddCustomerVendor_Click(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, Type, false);
+            WindowTitle = $"{Type} Information";
+            L_Header.Content = $"{Type}s";
+            BTN_AddCustomerVendor.Content = $"Add {Type}";
+            BTN_EditCustomerVendor.Content = $"Edit {Type}";
+            BTN_DeleteCustomerVendor.Content = $"Delete {Type}";
+
+            PopulateDataGrid();
         }
 
-        private void BTN_EditCustomerVendor_Click(object sender, RoutedEventArgs e)
+        private void PopulateContactDataGrid()
         {
-            MainWindow.GetWindow(this).Content = new AddCustomer_Vendor(this, Type, true, selectedNumber);
+            DataTable table = new DataTable();
+
+            ContactsDataGrid.DataContext = null;
+
+            using (SqlConnection sql = new SqlConnection(conn))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+
+                com.CommandText = $"SELECT * FROM {Type}_Contacts WHERE Number = @num ";
+
+                com.Parameters.AddWithValue("@num", selectedNumber);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                adapter.Fill(table);
+
+                ContactsDataGrid.DataContext = table.DefaultView;
+            }
         }
 
-        private void BTN_DeleteCustomerVendor_Click(object sender, RoutedEventArgs e)
+        private void PopulateDataGrid()
         {
-            if (MessageBox.Show($"Are you sure you want to delete {Type}: {selectedName}?\n\nThis will delete all records relating to {selectedName}, including contacts", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                return;
+            DataTable table = new DataTable();
 
-            DeleteCustomerVendor();
+            DataGrid.DataContext = null;
+
+            using (SqlConnection sql = new SqlConnection(conn))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+
+                com.CommandText = $"SELECT * FROM {Type} ";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                adapter.Fill(table);
+
+                DataGrid.DataContext = FixAddressFormat(table).DefaultView;
+            }
         }
 
-        private void BTN_AddContact_Click(object sender, RoutedEventArgs e)
+        private void SearchTable(string query, string search)
         {
-            MainWindow.GetWindow(this).Content = new AddContact(this, Type, selectedNumber);
+            DataTable table = new DataTable();
+
+            using (SqlConnection sql = new SqlConnection(conn))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+
+                com.CommandText = query;
+
+                com.Parameters.AddWithValue("@num", '%' + search + '%');
+
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                adapter.Fill(table);
+
+                DataGrid.DataContext = FixAddressFormat(table).DefaultView;
+            }
         }
 
-        private void BTN_EditContact_Click(object sender, RoutedEventArgs e)
+        private void TB_Search_TextChanged(object sender, TextChangedEventArgs e)
         {
+            string query =
+                    "SELECT * " +
+                    $"FROM {Type} " +
+                    $"WHERE [Number] LIKE @num ";
+
+            if (TB_Search.Text == "")
+                PopulateDataGrid();
+            else
+                SearchTable(query, TB_Search.Text);
         }
 
-        private void BTN_DeleteContact_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show($"Are you sure you want to delete {Type} Contact: {selectedContact}?\n\nThis will delete all records relating to {selectedContact}", "Confirm Delete", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                return;
-
-            DeleteContact(selectedContact);
-        }
-
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.GetWindow(this).Content = previousPage;
-        }
+        #endregion Methods
     }
 }

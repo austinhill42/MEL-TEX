@@ -12,28 +12,24 @@ namespace MELTEX
     /// </summary>
     public partial class ClearData : Window
     {
+        #region Fields
+
         private string main = App.DBConnString;
-        private string sales = App.SalesDBConnString;
         private string purchasing = App.PurchasingDBConnString;
+        private string sales = App.SalesDBConnString;
+
+        #endregion Fields
+
+        #region Constructors
 
         public ClearData()
         {
             InitializeComponent();
         }
 
-        private void CB_All_Checked(object sender, RoutedEventArgs e)
-        {
-            foreach (CheckBox cb in FindVisualChildren<CheckBox>(grid))
-                if (cb.Content.ToString() != "Select All")
-                    cb.IsChecked = true;
-        }
+        #endregion Constructors
 
-        private void CB_All_Unchecked(object sender, RoutedEventArgs e)
-        {
-            foreach (CheckBox cb in FindVisualChildren<CheckBox>(grid))
-                if (cb.Content.ToString() != "Select All")
-                    cb.IsChecked = false;
-        }
+        #region Methods
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
@@ -162,6 +158,20 @@ namespace MELTEX
             }
         }
 
+        private void CB_All_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckBox cb in FindVisualChildren<CheckBox>(grid))
+                if (cb.Content.ToString() != "Select All")
+                    cb.IsChecked = true;
+        }
+
+        private void CB_All_Unchecked(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckBox cb in FindVisualChildren<CheckBox>(grid))
+                if (cb.Content.ToString() != "Select All")
+                    cb.IsChecked = false;
+        }
+
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -181,5 +191,7 @@ namespace MELTEX
                 }
             }
         }
+
+        #endregion Methods
     }
 }

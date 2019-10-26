@@ -15,59 +15,20 @@ namespace MELTEX
     /// </summary>
     public partial class ReceivePO : Page
     {
-        private Page PreviousPage;
-        private string date = "";
+        #region Fields
+
         private readonly string connString = App.PurchasingDBConnString;
-        internal CreatePO.Data data;
-        private bool saved;
+        private string date = "";
         private bool opened;
-        private Queue<Tuple<string, string, string>> toReceive = new Queue<Tuple<string, string, string>>();
+        private Page PreviousPage;
+        private bool saved;
         private List<Tuple<string, string>> toInbound = new List<Tuple<string, string>>();
+        private Queue<Tuple<string, string, string>> toReceive = new Queue<Tuple<string, string, string>>();
+        internal CreatePO.Data data;
 
-        [Serializable]
-        public struct Data
-        {
-            internal string number;
-            internal decimal Weight;
-            internal decimal Cost;
-            internal decimal ReceivedCostByWeight;
-            internal bool FullyReceived;
-            internal string seller;
-            internal string payTo;
-            internal string selectedShipFrom;
-            internal List<string> shipFrom;
-            internal string shipVia;
-            internal string terms;
-            internal string fob;
-            internal string freightTerms;
-            internal string repNum;
-            internal string repName;
-            internal string notes;
-            internal DataTable table;
-            internal bool byWeight;
+        #endregion Fields
 
-            public Data(string num, decimal weight, decimal cost, decimal costbyweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table, bool byweight)
-            {
-                number = num;
-                Weight = weight;
-                Cost = cost;
-                ReceivedCostByWeight = costbyweight;
-                FullyReceived = fullyreceived;
-                this.seller = seller;
-                payTo = pay;
-                selectedShipFrom = selectship;
-                shipFrom = ship;
-                shipVia = shipvia;
-                this.terms = terms;
-                this.fob = fob;
-                freightTerms = freight;
-                repNum = repnum;
-                repName = repname;
-                this.notes = notes;
-                this.table = table;
-                byWeight = byweight;
-            }
-        }
+        #region Constructors
 
         public ReceivePO(Page prev, string open)
         {
@@ -144,182 +105,9 @@ namespace MELTEX
             }
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
-                tb.TextChanged += ControlChanged;
+        #endregion Constructors
 
-            DataGrid.CurrentCellChanged += ControlChanged;
-            CB_ShipFrom.SelectionChanged += ControlChanged;
-
-            DateTime poDate;
-            DateTime.TryParseExact(data.number.Split('-')[0], "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out poDate);
-            L_Date.Content = poDate.ToString("MM/dd/yyyy");
-
-            L_ReceivedCost.Content = $"Received Cost by Weight: {(data.ReceivedCostByWeight != 0 ? data.ReceivedCostByWeight.ToString("0.00") : "N/A")}";
-
-            TB_Seller.Text = data.seller;
-            TB_PayTo.Text = data.payTo;
-            CB_ShipFrom.ItemsSource = data.shipFrom;
-            CB_ShipFrom.Text = data.selectedShipFrom;
-            TB_ShipVia.Text = data.shipVia;
-            TB_Terms.Text = data.terms;
-            TB_FOB.Text = data.fob;
-            TB_FreightTerms.Text = data.freightTerms;
-            TB_RepNum.Text = data.repNum;
-            TB_RepName.Text = data.repName;
-            TB_Notes.Text = data.notes;
-
-            DataGrid.DataContext = data.table.DefaultView;
-
-            L_Num.Content = $"PO: {data.number}";
-
-            if (data.table.Columns.Contains("Pub. Sale"))
-                data.table.Columns["Pub. Sale"].ColumnName = "Sale Price";
-
-            if (data.byWeight)
-                BTN_ReceiveSelected.Visibility = Visibility.Hidden;
-
-            saved = true;
-
-            this.WindowTitle = "Receive PO";
-        }
-
-        private void ControlChanged(object sender, EventArgs e)
-        {
-            saved = false;
-        }
-
-        private void CB_ShowList_Checked(object sender, RoutedEventArgs e)
-        {
-            CB_ShipFrom.Visibility = Visibility.Visible;
-            TB_ShipFrom.Visibility = Visibility.Hidden;
-        }
-
-        private void CB_ShowList_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CB_ShipFrom.Visibility = Visibility.Hidden;
-            TB_ShipFrom.Visibility = Visibility.Visible;
-        }
-
-        private void Clear()
-        {
-            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
-                tb.Text = "";
-
-            InitializaDataGrid();
-        }
-
-        private void InitializaDataGrid()
-        {
-            DataTable table = new DataTable();
-
-            foreach (DataColumn col in ((DataView)DataGrid.ItemsSource).ToTable().Columns)
-                table.Columns.Add(new DataColumn(col.ColumnName));
-
-            DataGrid.DataContext = table.DefaultView;
-        }
-
-        private void UpdateTableInDatabase()
-        {
-            byte[] binTable;
-
-            try
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(stream, data.table);
-                    binTable = stream.ToArray();
-                }
-                string query = "UPDATE PO " +
-                                   "SET [FullyReceived] = @received, [Items] = @items " +
-                                   "WHERE [Number] = @num";
-
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.Parameters.AddWithValue("@num", data.number);
-                    com.Parameters.AddWithValue("@received", data.FullyReceived);
-                    com.Parameters.AddWithValue("@items", binTable);
-
-                    com.ExecuteNonQuery();
-
-                    saved = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error marking received in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
-            }
-        }
-
-        private void UpdateDataInDatabase()
-        {
-            byte[] binData;
-
-            try
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(stream, data);
-                    binData = stream.ToArray();
-                }
-                string query = "UPDATE PO " +
-                                   "SET [Data] = @data " +
-                                   "WHERE [Number] = @num";
-
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.Parameters.AddWithValue("@num", data.number);
-                    com.Parameters.AddWithValue("@data", binData);
-
-                    com.ExecuteNonQuery();
-
-                    saved = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating data in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
-            }
-        }
-
-        private void UpdateReceivedByWeight()
-        {
-            try
-            {
-                string query = "UPDATE PO " +
-                                   "SET [ReceivedCostByWeight] = @cost " +
-                                   "WHERE [Number] = @num";
-
-                using (SqlConnection sql = new SqlConnection(connString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = query;
-
-                    com.Parameters.AddWithValue("@num", data.number);
-                    com.Parameters.AddWithValue("@cost", data.ReceivedCostByWeight);
-
-                    com.ExecuteNonQuery();
-
-                    saved = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating received cost by weight in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
-            }
-        }
+        #region Methods
 
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
         {
@@ -343,6 +131,86 @@ namespace MELTEX
         private void BTN_Clear_Click(object sender, RoutedEventArgs e)
         {
             Clear();
+        }
+
+        private void BTN_Invoice_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = new Invoice(this);
+        }
+
+        private void BTN_ReceiveAll_Click(object sender, RoutedEventArgs e)
+        {
+            decimal weight = 0;
+            decimal cost = 0;
+
+            foreach (DataRow row in data.table.Rows)
+            {
+                if (data.byWeight)
+                    toReceive.Enqueue(new Tuple<string, string, string>("", "", data.number));
+                else
+                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
+
+                data.table.Columns["Received"].ReadOnly = false;
+                row["Received"] = true;
+                data.table.Columns["Received"].ReadOnly = true;
+
+                weight += Convert.ToDecimal(row["Weight"]);
+                cost += Convert.ToDecimal(row["Sale Price"]);
+            }
+
+            data.ReceivedCostByWeight = cost / weight;
+            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
+            UpdateReceivedByWeight();
+
+            string str;
+
+            if (data.byWeight)
+                str = "PO will be marked received. Do you wish to inbound items now?";
+            else
+                str = "All items will be marked received. Do you wish to inbound them now?";
+
+            if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
+
+            UpdateTableInDatabase();
+            UpdateDataInDatabase();
+        }
+
+        private void BTN_ReceiveSelected_Click(object sender, RoutedEventArgs e)
+        {
+            decimal weight = 0;
+            decimal cost = 0;
+
+            foreach (DataRow row in data.table.Rows)
+            {
+                if ((bool)row["Selected"])
+                {
+                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
+                    data.table.Columns["Received"].ReadOnly = false;
+                    row["Received"] = true;
+                    data.table.Columns["Received"].ReadOnly = true;
+                }
+
+                weight += (decimal)row["Weight"];
+                cost += (decimal)row["Sale Price"];
+            }
+
+            data.ReceivedCostByWeight = cost / weight;
+            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
+            UpdateReceivedByWeight();
+
+            string str = "The following items will be marked received:";
+
+            foreach (Tuple<string, string, string> item in toReceive)
+                str += $"\n\t{item.Item1}";
+
+            str += "\n\nDo you wish to inbound them now?";
+
+            if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
+
+            UpdateTableInDatabase();
+            UpdateDataInDatabase();
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
@@ -418,84 +286,240 @@ namespace MELTEX
             }
         }
 
-        private void BTN_ReceiveSelected_Click(object sender, RoutedEventArgs e)
+        private void CB_ShowList_Checked(object sender, RoutedEventArgs e)
         {
-            decimal weight = 0;
-            decimal cost = 0;
-
-            foreach (DataRow row in data.table.Rows)
-            {
-                if ((bool)row["Selected"])
-                {
-                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
-                    data.table.Columns["Received"].ReadOnly = false;
-                    row["Received"] = true;
-                    data.table.Columns["Received"].ReadOnly = true;
-                }
-
-                weight += (decimal)row["Weight"];
-                cost += (decimal)row["Sale Price"];
-            }
-
-            data.ReceivedCostByWeight = cost / weight;
-            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
-            UpdateReceivedByWeight();
-
-            string str = "The following items will be marked received:";
-
-            foreach (Tuple<string, string, string> item in toReceive)
-                str += $"\n\t{item.Item1}";
-
-            str += "\n\nDo you wish to inbound them now?";
-
-            if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
-
-            UpdateTableInDatabase();
-            UpdateDataInDatabase();
+            CB_ShipFrom.Visibility = Visibility.Visible;
+            TB_ShipFrom.Visibility = Visibility.Hidden;
         }
 
-        private void BTN_ReceiveAll_Click(object sender, RoutedEventArgs e)
+        private void CB_ShowList_Unchecked(object sender, RoutedEventArgs e)
         {
-            decimal weight = 0;
-            decimal cost = 0;
+            CB_ShipFrom.Visibility = Visibility.Hidden;
+            TB_ShipFrom.Visibility = Visibility.Visible;
+        }
 
-            foreach (DataRow row in data.table.Rows)
-            {
-                if (data.byWeight)
-                    toReceive.Enqueue(new Tuple<string, string, string>("", "", data.number));
-                else
-                    toReceive.Enqueue(new Tuple<string, string, string>(row["Item ID"].ToString(), row["QTY"].ToString(), data.number));
+        private void Clear()
+        {
+            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
+                tb.Text = "";
 
-                data.table.Columns["Received"].ReadOnly = false;
-                row["Received"] = true;
-                data.table.Columns["Received"].ReadOnly = true;
+            InitializaDataGrid();
+        }
 
-                weight += Convert.ToDecimal(row["Weight"]);
-                cost += Convert.ToDecimal(row["Sale Price"]);
-            }
+        private void ControlChanged(object sender, EventArgs e)
+        {
+            saved = false;
+        }
 
-            data.ReceivedCostByWeight = cost / weight;
-            L_ReceivedCost.Content = $"Received Cost by Weight: {data.ReceivedCostByWeight.ToString("0.00")}";
-            UpdateReceivedByWeight();
+        private void InitializaDataGrid()
+        {
+            DataTable table = new DataTable();
 
-            string str;
+            foreach (DataColumn col in ((DataView)DataGrid.ItemsSource).ToTable().Columns)
+                table.Columns.Add(new DataColumn(col.ColumnName));
+
+            DataGrid.DataContext = table.DefaultView;
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
+                tb.TextChanged += ControlChanged;
+
+            DataGrid.CurrentCellChanged += ControlChanged;
+            CB_ShipFrom.SelectionChanged += ControlChanged;
+
+            DateTime poDate;
+            DateTime.TryParseExact(data.number.Split('-')[0], "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out poDate);
+            L_Date.Content = poDate.ToString("MM/dd/yyyy");
+
+            L_ReceivedCost.Content = $"Received Cost by Weight: {(data.ReceivedCostByWeight != 0 ? data.ReceivedCostByWeight.ToString("0.00") : "N/A")}";
+
+            TB_Seller.Text = data.seller;
+            TB_PayTo.Text = data.payTo;
+            CB_ShipFrom.ItemsSource = data.shipFrom;
+            CB_ShipFrom.Text = data.selectedShipFrom;
+            TB_ShipVia.Text = data.shipVia;
+            TB_Terms.Text = data.terms;
+            TB_FOB.Text = data.fob;
+            TB_FreightTerms.Text = data.freightTerms;
+            TB_RepNum.Text = data.repNum;
+            TB_RepName.Text = data.repName;
+            TB_Notes.Text = data.notes;
+
+            DataGrid.DataContext = data.table.DefaultView;
+
+            L_Num.Content = $"PO: {data.number}";
+
+            if (data.table.Columns.Contains("Pub. Sale"))
+                data.table.Columns["Pub. Sale"].ColumnName = "Sale Price";
 
             if (data.byWeight)
-                str = "PO will be marked received. Do you wish to inbound items now?";
-            else
-                str = "All items will be marked received. Do you wish to inbound them now?";
+                BTN_ReceiveSelected.Visibility = Visibility.Hidden;
 
-            if (MessageBox.Show(str, "Inbound Prompt", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                MainWindow.GetWindow(this).Content = new InventoryInbound(this, toReceive, data.byWeight);
+            saved = true;
 
-            UpdateTableInDatabase();
-            UpdateDataInDatabase();
+            this.WindowTitle = "Receive PO";
         }
 
-        private void BTN_Invoice_Click(object sender, RoutedEventArgs e)
+        private void UpdateDataInDatabase()
         {
-            MainWindow.GetWindow(this).Content = new Invoice(this);
+            byte[] binData;
+
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, data);
+                    binData = stream.ToArray();
+                }
+                string query = "UPDATE PO " +
+                                   "SET [Data] = @data " +
+                                   "WHERE [Number] = @num";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@data", binData);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating data in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
+            }
         }
+
+        private void UpdateReceivedByWeight()
+        {
+            try
+            {
+                string query = "UPDATE PO " +
+                                   "SET [ReceivedCostByWeight] = @cost " +
+                                   "WHERE [Number] = @num";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@cost", data.ReceivedCostByWeight);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating received cost by weight in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
+            }
+        }
+
+        private void UpdateTableInDatabase()
+        {
+            byte[] binTable;
+
+            try
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, data.table);
+                    binTable = stream.ToArray();
+                }
+                string query = "UPDATE PO " +
+                                   "SET [FullyReceived] = @received, [Items] = @items " +
+                                   "WHERE [Number] = @num";
+
+                using (SqlConnection sql = new SqlConnection(connString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = query;
+
+                    com.Parameters.AddWithValue("@num", data.number);
+                    com.Parameters.AddWithValue("@received", data.FullyReceived);
+                    com.Parameters.AddWithValue("@items", binTable);
+
+                    com.ExecuteNonQuery();
+
+                    saved = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error marking received in database:\n\n{ex.Message}\n\n{ex.StackTrace}");
+            }
+        }
+
+        #endregion Methods
+
+        #region Structs
+
+        [Serializable]
+        public struct Data
+        {
+            #region Fields
+
+            internal bool byWeight;
+            internal decimal Cost;
+            internal string fob;
+            internal string freightTerms;
+            internal bool FullyReceived;
+            internal string notes;
+            internal string number;
+            internal string payTo;
+            internal decimal ReceivedCostByWeight;
+            internal string repName;
+            internal string repNum;
+            internal string selectedShipFrom;
+            internal string seller;
+            internal List<string> shipFrom;
+            internal string shipVia;
+            internal DataTable table;
+            internal string terms;
+            internal decimal Weight;
+
+            #endregion Fields
+
+            #region Constructors
+
+            public Data(string num, decimal weight, decimal cost, decimal costbyweight, bool fullyreceived, string seller, string pay, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table, bool byweight)
+            {
+                number = num;
+                Weight = weight;
+                Cost = cost;
+                ReceivedCostByWeight = costbyweight;
+                FullyReceived = fullyreceived;
+                this.seller = seller;
+                payTo = pay;
+                selectedShipFrom = selectship;
+                shipFrom = ship;
+                shipVia = shipvia;
+                this.terms = terms;
+                this.fob = fob;
+                freightTerms = freight;
+                repNum = repnum;
+                repName = repname;
+                this.notes = notes;
+                this.table = table;
+                byWeight = byweight;
+            }
+
+            #endregion Constructors
+        }
+
+        #endregion Structs
     }
 }

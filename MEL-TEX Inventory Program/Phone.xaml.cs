@@ -7,12 +7,27 @@ namespace MELTEX
     /// </summary>
     public partial class Phone : UserControl
     {
+        #region Fields
+
         internal string number = "";
         internal string type = "";
+
+        #endregion Fields
+
+        #region Constructors
 
         public Phone()
         {
             InitializeComponent();
+        }
+
+        #endregion Constructors
+
+        #region Methods
+
+        private void CB_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            type = CB_Type.Text;
         }
 
         private void TB_Phone_TextChanged(object sender, TextChangedEventArgs e)
@@ -20,9 +35,6 @@ namespace MELTEX
             number = TB_Phone.Text;
         }
 
-        private void CB_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            type = CB_Type.Text;
-        }
+        #endregion Methods
     }
 }
