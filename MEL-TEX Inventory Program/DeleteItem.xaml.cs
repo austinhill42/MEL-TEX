@@ -11,7 +11,13 @@ namespace MELTEX
     /// </summary>
     public partial class DeleteItem : Page
     {
+        #region Fields
+
         private Page previousPage;
+
+        #endregion Fields
+
+        #region Constructors
 
         public DeleteItem(Page prev)
         {
@@ -20,41 +26,9 @@ namespace MELTEX
             previousPage = prev;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.WindowTitle = "Delete Inventory Item";
+        #endregion Constructors
 
-            PopulateItemIDComboBox();
-        }
-
-        private void PopulateItemIDComboBox()
-        {
-            DataTable table = new DataTable();
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(App.DBConnString))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "SELECT * FROM Items";
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    adapter.Fill(table);
-
-                    CB_ItemID.DataContext = table.DefaultView;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        #region Methods
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
@@ -99,5 +73,43 @@ namespace MELTEX
                 MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = "Delete Inventory Item";
+
+            PopulateItemIDComboBox();
+        }
+
+        private void PopulateItemIDComboBox()
+        {
+            DataTable table = new DataTable();
+            try
+            {
+                using (SqlConnection sql = new SqlConnection(App.DBConnString))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = "SELECT * FROM Items";
+
+                    com.ExecuteNonQuery();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                    {
+                        SelectCommand = com
+                    };
+
+                    adapter.Fill(table);
+
+                    CB_ItemID.DataContext = table.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion Methods
     }
 }

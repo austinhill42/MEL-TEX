@@ -14,44 +14,15 @@ namespace MELTEX
     /// </summary>
     public partial class GeneratePresale : Page
     {
-        private Page PreviousPage;
+        #region Fields
+
         private string date = "";
+        private Page PreviousPage;
         internal Data data;
 
-        [Serializable]
-        public struct Data
-        {
-            internal string number;
-            internal string buyer;
-            internal string billTo;
-            internal string selectedShipTo;
-            internal List<string> shipTo;
-            internal string shipVia;
-            internal string terms;
-            internal string fob;
-            internal string freightTerms;
-            internal string repNum;
-            internal string repName;
-            internal string notes;
-            internal DataTable table;
+        #endregion Fields
 
-            public Data(string num, string buyer, string bill, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table)
-            {
-                number = num;
-                this.buyer = buyer;
-                billTo = bill;
-                selectedShipTo = selectship;
-                shipTo = ship;
-                shipVia = shipvia;
-                this.terms = terms;
-                this.fob = fob;
-                freightTerms = freight;
-                repNum = repnum;
-                repName = repname;
-                this.notes = notes;
-                this.table = table;
-            }
-        }
+        #region Constructors
 
         public GeneratePresale(Page prev, Data d)
         {
@@ -61,26 +32,60 @@ namespace MELTEX
             data = d;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        #endregion Constructors
+
+        #region Methods
+
+        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
         {
-            date = DateTime.Now.ToString("MM/dd/yyyy");
+            string date = DateTime.Now.ToString("MM/dd/yyyy");
+            string time = DateTime.Now.ToString("HH:mm:ss");
 
-            L_Date.Content = date;
-            L_Num.Content = $"Presale: {data.number}-PW";
+            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
 
-            TB_Buyer.Text = data.buyer;
-            TB_BillTo.Text = data.billTo;
-            CB_ShipTo.ItemsSource = data.shipTo;
-            CB_ShipTo.Text = data.selectedShipTo;
-            TB_ShipVia.Text = data.shipVia;
-            TB_Terms.Text = data.terms;
-            TB_FOB.Text = data.fob;
-            TB_FreightTerms.Text = data.freightTerms;
-            TB_RepNum.Text = data.repNum;
-            TB_RepName.Text = data.repName;
-            TB_Notes.Text = "";
+            TB_AddNote.Text = "";
+        }
 
-            DataGrid.DataContext = data.table.DefaultView;
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.GetWindow(this).Content = PreviousPage;
+        }
+
+        private void BTN_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
+                tb.Text = "";
+        }
+
+        private void BTN_Print_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                data.buyer = TB_Buyer.Text;
+                data.billTo = TB_BillTo.Text;
+                data.selectedShipTo = CB_ShowList.IsChecked ?? false ? CB_ShipTo.SelectedItem.ToString() : TB_ShipTo.Text;
+                data.shipVia = TB_ShipVia.Text;
+                data.terms = TB_Terms.Text;
+                data.fob = TB_FOB.Text;
+                data.freightTerms = TB_FreightTerms.Text;
+                data.repName = TB_RepName.Text;
+                data.repNum = TB_RepNum.Text;
+                data.notes = TB_Notes.Text;
+                data.table = ((DataView)DataGrid.ItemsSource).ToTable();
+
+                generatePDF(true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
+            }
+        }
+
+        private void BTN_SalesOrder_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateSalesOrder.Data sData = new GenerateSalesOrder.Data("", data.number, data.buyer, data.billTo, data.selectedShipTo, data.shipTo, data.shipVia, data.terms, data.fob, data.freightTerms, data.repNum, data.repName, "", data.table);
+            GenerateSalesOrder salesorder = new GenerateSalesOrder(this, sData);
+            MainWindow.GetWindow(this).Content = salesorder;
         }
 
         private void CB_ShowList_Checked(object sender, RoutedEventArgs e)
@@ -177,56 +182,75 @@ namespace MELTEX
             }
         }
 
-        private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            string date = DateTime.Now.ToString("MM/dd/yyyy");
-            string time = DateTime.Now.ToString("HH:mm:ss");
+            date = DateTime.Now.ToString("MM/dd/yyyy");
 
-            TB_Notes.Text += $"{date} -- {time} -- {TB_AddNote.Text}\n";
+            L_Date.Content = date;
+            L_Num.Content = $"Presale: {data.number}-PW";
 
-            TB_AddNote.Text = "";
+            TB_Buyer.Text = data.buyer;
+            TB_BillTo.Text = data.billTo;
+            CB_ShipTo.ItemsSource = data.shipTo;
+            CB_ShipTo.Text = data.selectedShipTo;
+            TB_ShipVia.Text = data.shipVia;
+            TB_Terms.Text = data.terms;
+            TB_FOB.Text = data.fob;
+            TB_FreightTerms.Text = data.freightTerms;
+            TB_RepNum.Text = data.repNum;
+            TB_RepName.Text = data.repName;
+            TB_Notes.Text = "";
+
+            DataGrid.DataContext = data.table.DefaultView;
         }
 
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.GetWindow(this).Content = PreviousPage;
-        }
+        #endregion Methods
 
-        private void BTN_SalesOrder_Click(object sender, RoutedEventArgs e)
-        {
-            GenerateSalesOrder.Data sData = new GenerateSalesOrder.Data("", data.number, data.buyer, data.billTo, data.selectedShipTo, data.shipTo, data.shipVia, data.terms, data.fob, data.freightTerms, data.repNum, data.repName, "", data.table);
-            GenerateSalesOrder salesorder = new GenerateSalesOrder(this, sData);
-            MainWindow.GetWindow(this).Content = salesorder;
-        }
+        #region Structs
 
-        private void BTN_Clear_Click(object sender, RoutedEventArgs e)
+        [Serializable]
+        public struct Data
         {
-            foreach (TextBox tb in Grid.Children.OfType<TextBox>())
-                tb.Text = "";
-        }
+            #region Fields
 
-        private void BTN_Print_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            internal string billTo;
+            internal string buyer;
+            internal string fob;
+            internal string freightTerms;
+            internal string notes;
+            internal string number;
+            internal string repName;
+            internal string repNum;
+            internal string selectedShipTo;
+            internal List<string> shipTo;
+            internal string shipVia;
+            internal DataTable table;
+            internal string terms;
+
+            #endregion Fields
+
+            #region Constructors
+
+            public Data(string num, string buyer, string bill, string selectship, List<string> ship, string shipvia, string terms, string fob, string freight, string repnum, string repname, string notes, DataTable table)
             {
-                data.buyer = TB_Buyer.Text;
-                data.billTo = TB_BillTo.Text;
-                data.selectedShipTo = CB_ShowList.IsChecked ?? false ? CB_ShipTo.SelectedItem.ToString() : TB_ShipTo.Text;
-                data.shipVia = TB_ShipVia.Text;
-                data.terms = TB_Terms.Text;
-                data.fob = TB_FOB.Text;
-                data.freightTerms = TB_FreightTerms.Text;
-                data.repName = TB_RepName.Text;
-                data.repNum = TB_RepNum.Text;
-                data.notes = TB_Notes.Text;
-                data.table = ((DataView)DataGrid.ItemsSource).ToTable();
+                number = num;
+                this.buyer = buyer;
+                billTo = bill;
+                selectedShipTo = selectship;
+                shipTo = ship;
+                shipVia = shipvia;
+                this.terms = terms;
+                this.fob = fob;
+                freightTerms = freight;
+                repNum = repnum;
+                repName = repname;
+                this.notes = notes;
+                this.table = table;
+            }
 
-                generatePDF(true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
-            }
+            #endregion Constructors
         }
+
+        #endregion Structs
     }
 }

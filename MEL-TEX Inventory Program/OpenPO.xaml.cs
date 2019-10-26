@@ -10,11 +10,33 @@ namespace MELTEX
     /// </summary>
     public partial class OpenPO : Window
     {
+        #region Fields
+
         internal string poNum;
+
+        #endregion Fields
+
+        #region Constructors
 
         public OpenPO()
         {
             InitializeComponent();
+        }
+
+        #endregion Constructors
+
+        #region Methods
+
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void BTN_Open_Click(object sender, RoutedEventArgs e)
+        {
+            poNum = CB_Open.SelectedValue.ToString();
+            DialogResult = true;
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -47,16 +69,6 @@ namespace MELTEX
             }
         }
 
-        private void BTN_Open_Click(object sender, RoutedEventArgs e)
-        {
-            poNum = CB_Open.SelectedValue.ToString();
-            DialogResult = true;
-            Close();
-        }
-
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        #endregion Methods
     }
 }

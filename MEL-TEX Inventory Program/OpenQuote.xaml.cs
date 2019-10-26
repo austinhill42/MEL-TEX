@@ -10,11 +10,33 @@ namespace MELTEX
     /// </summary>
     public partial class OpenQuote : Window
     {
+        #region Fields
+
         internal string quotenum;
+
+        #endregion Fields
+
+        #region Constructors
 
         public OpenQuote()
         {
             InitializeComponent();
+        }
+
+        #endregion Constructors
+
+        #region Methods
+
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void BTN_Open_Click(object sender, RoutedEventArgs e)
+        {
+            quotenum = CB_Open.SelectedValue.ToString();
+            DialogResult = true;
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -47,16 +69,6 @@ namespace MELTEX
             }
         }
 
-        private void BTN_Open_Click(object sender, RoutedEventArgs e)
-        {
-            quotenum = CB_Open.SelectedValue.ToString();
-            DialogResult = true;
-            Close();
-        }
-
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        #endregion Methods
     }
 }

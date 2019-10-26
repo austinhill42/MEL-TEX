@@ -8,9 +8,66 @@ namespace MELTEX
     /// </summary>
     public partial class MainPage : Page
     {
+        #region Constructors
+
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        #endregion Constructors
+
+        #region Methods
+
+        private void LoginWrapper(Page page)
+        {
+            LoginForm login = new LoginForm();
+
+            login.ShowDialog();
+
+            if (login.correctLogin)
+            {
+                MainWindow.GetWindow(this).Content = page;
+            }
+            else
+            {
+                Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
+
+                if (login.attempted)
+                    MessageBox.Show("Incorrect Login");
+            }
+        }
+
+        private void LoginWrapper(Window window)
+        {
+            LoginForm login = new LoginForm();
+
+            login.ShowDialog();
+
+            if (login.correctLogin)
+            {
+                window.Show();
+            }
+            else
+            {
+                if (login.attempted)
+                    MessageBox.Show("Incorrect Login");
+            }
+
+            Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
+        }
+
+        private void Main_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            CB_Inventory.SelectedIndex = -1;
+            CB_Purchasing.SelectedIndex = -1;
+            CB_Sales.SelectedIndex = -1;
+            CB_Settings.SelectedIndex = -1;
+        }
+
+        private void Main_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = "Main Window";
         }
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -135,55 +192,6 @@ namespace MELTEX
             }
         }
 
-        private void Main_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.WindowTitle = "Main Window";
-        }
-
-        private void LoginWrapper(Page page)
-        {
-            LoginForm login = new LoginForm();
-
-            login.ShowDialog();
-
-            if (login.correctLogin)
-            {
-                MainWindow.GetWindow(this).Content = page;
-            }
-            else
-            {
-                Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
-
-                if (login.attempted)
-                    MessageBox.Show("Incorrect Login");
-            }
-        }
-
-        private void LoginWrapper(Window window)
-        {
-            LoginForm login = new LoginForm();
-
-            login.ShowDialog();
-
-            if (login.correctLogin)
-            {
-                window.Show();
-            }
-            else
-            {
-                if (login.attempted)
-                    MessageBox.Show("Incorrect Login");
-            }
-
-            Main_IsVisibleChanged(null, new DependencyPropertyChangedEventArgs());
-        }
-
-        private void Main_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            CB_Inventory.SelectedIndex = -1;
-            CB_Purchasing.SelectedIndex = -1;
-            CB_Sales.SelectedIndex = -1;
-            CB_Settings.SelectedIndex = -1;
-        }
+        #endregion Methods
     }
 }

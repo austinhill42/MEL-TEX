@@ -158,7 +158,7 @@
                 VerticalAlignment="Center"
                 FontSize="16"
                 Width="200"
-                SelectionChanged ="CB_Group_SelectionChanged" />
+                SelectionChanged="CB_Group_SelectionChanged" />
 
             <Label
                 Content="Multiplier: "

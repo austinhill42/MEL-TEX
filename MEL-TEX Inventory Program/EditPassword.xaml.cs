@@ -13,8 +13,14 @@ namespace MELTEX
 
     public partial class EditPassword : Page
     {
-        private Page previousPage;
+        #region Fields
+
         private bool correctLogin;
+        private Page previousPage;
+
+        #endregion Fields
+
+        #region Constructors
 
         public EditPassword(Page prev)
         {
@@ -23,43 +29,9 @@ namespace MELTEX
             previousPage = prev;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.WindowTitle = "Change Password";
+        #endregion Constructors
 
-            UpdateUsersComboBox();
-        }
-
-        private void TB_ConfirmPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (TB_Password.Password != TB_ConfirmPassword.Password)
-                L_ComparePasswords.Content = "Passwords do not match";
-            else
-                L_ComparePasswords.Content = "";
-        }
-
-        private void UpdateUsersComboBox()
-        {
-            string query = "SELECT * FROM Passwords";
-
-            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-                com.CommandText = query;
-
-                com.ExecuteNonQuery();
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                DataTable table = new DataTable();
-
-                adapter.Fill(table);
-                CB_Users.DataContext = table.DefaultView;
-            }
-        }
+        #region Methods
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
@@ -127,5 +99,45 @@ namespace MELTEX
             TB_Password.Password = "";
             TB_ConfirmPassword.Password = "";
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = "Change Password";
+
+            UpdateUsersComboBox();
+        }
+
+        private void TB_ConfirmPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (TB_Password.Password != TB_ConfirmPassword.Password)
+                L_ComparePasswords.Content = "Passwords do not match";
+            else
+                L_ComparePasswords.Content = "";
+        }
+
+        private void UpdateUsersComboBox()
+        {
+            string query = "SELECT * FROM Passwords";
+
+            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+                com.CommandText = query;
+
+                com.ExecuteNonQuery();
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                DataTable table = new DataTable();
+
+                adapter.Fill(table);
+                CB_Users.DataContext = table.DefaultView;
+            }
+        }
+
+        #endregion Methods
     }
 }

@@ -7,11 +7,15 @@ namespace MELTEX
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constructors
+
         public MainWindow()
         {
             InitializeComponent();
 
             Content = new MainPage();
         }
+
+        #endregion Constructors
     }
 }

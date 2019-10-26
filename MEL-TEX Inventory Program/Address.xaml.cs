@@ -7,7 +7,13 @@ namespace MELTEX
     /// </summary>
     public partial class Address : UserControl
     {
+        #region Properties
+
         public string AddressType { get; set; }
+
+        #endregion Properties
+
+        #region Constructors
 
         public Address()
         {
@@ -15,5 +21,7 @@ namespace MELTEX
 
             this.DataContext = this;
         }
+
+        #endregion Constructors
     }
 }

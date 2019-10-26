@@ -11,11 +11,17 @@ namespace MELTEX
     /// </summary>
     public partial class RemoveCustomer_Vendor : Page
     {
+        #region Fields
+
+        private string conn = "";
+        private string name = "";
+        private string number = "";
         private Page PreviousPage;
         private string Type;
-        private string conn = "";
-        private string number = "";
-        private string name = "";
+
+        #endregion Fields
+
+        #region Constructors
 
         public RemoveCustomer_Vendor(Page prev, string type)
         {
@@ -30,42 +36,9 @@ namespace MELTEX
                 conn = App.PurchasingDBConnString;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.WindowTitle = $"Remove {Type}";
-            L_Name.Content = $"{Type} Name:";
+        #endregion Constructors
 
-            PopulateNameComboBox();
-        }
-
-        private void PopulateNameComboBox()
-        {
-            DataTable table = new DataTable();
-            try
-            {
-                using (SqlConnection sql = new SqlConnection(conn))
-                {
-                    sql.Open();
-                    SqlCommand com = sql.CreateCommand();
-                    com.CommandText = $"SELECT Number, Name FROM {Type}";
-
-                    com.ExecuteNonQuery();
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                    {
-                        SelectCommand = com
-                    };
-
-                    adapter.Fill(table);
-
-                    CB_Name.DataContext = table.DefaultView;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        #region Methods
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
         {
@@ -124,5 +97,44 @@ namespace MELTEX
                 MessageBox.Show($"{ex.Message}\n\n{ex.StackTrace}");
             }
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.WindowTitle = $"Remove {Type}";
+            L_Name.Content = $"{Type} Name:";
+
+            PopulateNameComboBox();
+        }
+
+        private void PopulateNameComboBox()
+        {
+            DataTable table = new DataTable();
+            try
+            {
+                using (SqlConnection sql = new SqlConnection(conn))
+                {
+                    sql.Open();
+                    SqlCommand com = sql.CreateCommand();
+                    com.CommandText = $"SELECT Number, Name FROM {Type}";
+
+                    com.ExecuteNonQuery();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                    {
+                        SelectCommand = com
+                    };
+
+                    adapter.Fill(table);
+
+                    CB_Name.DataContext = table.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion Methods
     }
 }

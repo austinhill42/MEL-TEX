@@ -11,8 +11,14 @@ namespace MELTEX
     /// </summary>
     public partial class LoginForm : Window
     {
-        internal bool correctLogin;
+        #region Fields
+
         internal bool attempted;
+        internal bool correctLogin;
+
+        #endregion Fields
+
+        #region Constructors
 
         public LoginForm()
         {
@@ -22,39 +28,26 @@ namespace MELTEX
             attempted = false;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            UpdateUsersComboBox();
+        #endregion Constructors
 
-            CB_Users.SelectedIndex = 0;
+        #region Methods
+
+        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BTN_Login_Click(object sender, RoutedEventArgs e)
+        {
+            CheckPassword();
+            attempted = true;
+
+            this.Close();
         }
 
         private void CB_Users_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             TB_Password.Focus();
-        }
-
-        private void UpdateUsersComboBox()
-        {
-            string query = "SELECT * FROM Passwords";
-
-            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
-            {
-                sql.Open();
-                SqlCommand com = sql.CreateCommand();
-                com.CommandText = query;
-
-                com.ExecuteNonQuery();
-                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
-                {
-                    SelectCommand = com
-                };
-
-                DataTable table = new DataTable();
-
-                adapter.Fill(table);
-                CB_Users.DataContext = table.DefaultView;
-            }
         }
 
         private void CheckPassword()
@@ -109,17 +102,36 @@ namespace MELTEX
             }
         }
 
-        private void BTN_Login_Click(object sender, RoutedEventArgs e)
+        private void UpdateUsersComboBox()
         {
-            CheckPassword();
-            attempted = true;
+            string query = "SELECT * FROM Passwords";
 
-            this.Close();
+            using (SqlConnection sql = new SqlConnection(App.PWDDBConnString))
+            {
+                sql.Open();
+                SqlCommand com = sql.CreateCommand();
+                com.CommandText = query;
+
+                com.ExecuteNonQuery();
+                SqlDataAdapter adapter = new SqlDataAdapter(com.CommandText, sql)
+                {
+                    SelectCommand = com
+                };
+
+                DataTable table = new DataTable();
+
+                adapter.Fill(table);
+                CB_Users.DataContext = table.DefaultView;
+            }
         }
 
-        private void BTN_Back_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            UpdateUsersComboBox();
+
+            CB_Users.SelectedIndex = 0;
         }
+
+        #endregion Methods
     }
 }
