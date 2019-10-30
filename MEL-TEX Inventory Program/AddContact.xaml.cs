@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MELTEX.Database;
 
 namespace MELTEX
 {
@@ -15,32 +18,31 @@ namespace MELTEX
     {
         #region Fields
 
+        private string contactName;
         private string companyNumber;
         private string connstring;
         private string ContactType;
         private Page PreviousPage;
-
+        internal List<Phone> Numbers;
+        private bool edit;
+        
         #endregion Fields
-
-        #region Properties
-
-        public ObservableCollection<Phone> Numbers { get; set; }
-
-        #endregion Properties
 
         #region Constructors
 
-        public AddContact(Page prev, string type, string number)
+        public AddContact(Page prev, string type, string number, string name ="", bool edit = false)
         {
             InitializeComponent();
 
+            contactName = name;
             PreviousPage = prev;
             ContactType = type;
             companyNumber = number;
+            this.edit = edit;
 
             connstring = ContactType == "Customer" ? App.SalesDBConnString : App.PurchasingDBConnString;
 
-            Numbers = new ObservableCollection<Phone>();
+            Numbers = new List<Phone>();
         }
 
         #endregion Constructors
@@ -49,24 +51,10 @@ namespace MELTEX
 
         private void AddNumber(Phone number)
         {
-            Numbers.Add(number);
+            if (!edit)
+                Numbers.Add(number);
 
-            RowDefinition rowDef = new RowDefinition
-            {
-                Height = new GridLength(50)
-            };
-
-            Grid.RowDefinitions.Insert(Grid.GetRow(SP_Email), rowDef);
-            Grid.Children.Add(number);
-            Grid.SetRow(number, Grid.GetRow(SP_Email) - 1);
-            Grid.SetRow(SP_Email, Grid.GetRow(SP_Email) + 1);
-            Grid.SetRow(SP_Website, Grid.GetRow(SP_Website) + 1);
-            Grid.SetRow(SP_Social, Grid.GetRow(SP_Social) + 1);
-            Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) + 1);
-            Grid.SetRow(BTN_AddNumber, Grid.GetRow(BTN_AddNumber) + 1);
-            Grid.SetRow(BTN_RemoveNumber, Grid.GetRow(BTN_RemoveNumber) + 1);
-            Grid.SetColumn(number, 1);
-            Grid.SetColumnSpan(number, 2);
+            SP_Phone.Children.Add(number);
         }
 
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
@@ -81,9 +69,7 @@ namespace MELTEX
 
         private void BTN_AddNumber_Click(object sender, RoutedEventArgs e)
         {
-            AddNumber(new Phone());
-
-            ScrollView.ScrollToBottom();
+            AddNumber(new Phone(this));
         }
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
@@ -98,32 +84,66 @@ namespace MELTEX
 
         private void BTN_RemoveNumber_Click(object sender, RoutedEventArgs e)
         {
-            Grid.Children.Remove(Numbers[Numbers.Count - 1]);
-            Grid.RowDefinitions.RemoveAt(Grid.GetRow(G_Notes) - 1);
-            Numbers.RemoveAt(Numbers.Count - 1);
-
-            Grid.SetRow(BTN_AddNumber, Numbers.Count + 1);
-            Grid.SetRow(BTN_RemoveNumber, Numbers.Count);
-            Grid.SetRow(SP_Email, Grid.GetRow(SP_Email) - 1);
-            Grid.SetRow(SP_Website, Grid.GetRow(SP_Website) - 1);
-            Grid.SetRow(SP_Social, Grid.GetRow(SP_Social) - 1);
-            Grid.SetRow(G_Notes, Grid.GetRow(G_Notes) - 1);
+            for (int i = 0; i < SP_Phone.Children.Count; i++)
+                if (SP_Phone.Children[i] is Button && (SP_Phone.Children[i] as Button).Tag == (sender as Button).Tag)
+                    SP_Phone.Children.RemoveAt(i);
         }
 
         private void BTN_Save_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                UpdateContact();
+                if (!edit)
+                {
+                    InsertContact();
+                }
+                else
+                {
+                    UpdateContact();
 
-                foreach (Phone ph in Numbers)
-                    UpdatePhones(ph.number, ph.type);
+                    using (SqlConnection sql = new SqlConnection(connstring))
+                    {
+                        sql.Open();
+
+                        string query = $"DELETE FROM {ContactType}_Contact_Phones WHERE Number = @num AND Name = @name";
+
+                        using (SqlCommand cmd = new SqlCommand(query, sql))
+                        {
+                            cmd.Parameters.AddWithValue("@num", TB_Number.Text);
+                            cmd.Parameters.AddWithValue("@name", TB_Name.Text);
+
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        query = $"DELETE FROM {ContactType}_Contact_Email WHERE Number = @num AND Name = @name";
+
+                        using (SqlCommand cmd = new SqlCommand(query, sql))
+                        {
+                            cmd.Parameters.AddWithValue("@num", TB_Number.Text);
+                            cmd.Parameters.AddWithValue("@name", TB_Name.Text);
+
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        query = $"DELETE FROM {ContactType}_Contact_Social_Media WHERE Number = @num AND Name = @name";
+
+                        using (SqlCommand cmd = new SqlCommand(query, sql))
+                        {
+                            cmd.Parameters.AddWithValue("@num", TB_Number.Text);
+                            cmd.Parameters.AddWithValue("@name", TB_Name.Text);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                Numbers.ForEach(n => InsertPhones(n.number, n.type));
 
                 foreach (string email in TB_Email.Text.Split('\n'))
-                    UpdateEmail(email);
+                    InsertEmail(email);
 
                 foreach (string social in TB_Social.Text.Split('\n'))
-                    UpdateSocial(social);
+                    InsertSocial(social);
 
                 MessageBox.Show("Database Updated");
 
@@ -151,10 +171,46 @@ namespace MELTEX
 
             TB_Number.Text = companyNumber;
 
-            AddNumber(new Phone());
+            if (!edit)
+                AddNumber(new Phone(this));
+            else
+            {
+                DataTable contact = new DataTable();
+                DataTable contactPhone = new DataTable();
+                DataTable contactSocial = new DataTable();
+                DataTable contactEmail = new DataTable();
+
+                contact = DBController.GetTableFromQuery(connstring, "Title, Notes", $"{ContactType}_Contacts");
+                contactPhone = DBController.GetTableFromQuery(connstring, "Phone_No, Type", $"{ContactType}_Contact_Phones");
+                contactEmail = DBController.GetTableFromQuery(connstring, "Email", $"{ContactType}_Contact_Email");
+                contactSocial = DBController.GetTableFromQuery(connstring, "Social_Media_Page", $"{ContactType}_Contact_Social_Media");
+
+                TB_Name.Text = contactName;
+                TB_Title.Text = contact.Rows[0]["Title"].ToString();
+                TB_Notes.Text = contact.Rows[0]["Notes"].ToString();
+                TB_Email.Text = string.Join("\n", contactEmail.Rows.OfType<DataRow>().Select(x => x.Field<string>("Email")).ToList());
+                TB_Social.Text = string.Join("\n", contactSocial.Rows.OfType<DataRow>().Select(x => x.Field<string>("Social_Media_Page")).ToList());
+                Numbers = contactPhone.AsEnumerable().Select(x => new Phone(this) { Number = x[0].ToString(), Type = x[1].ToString() }).ToList();
+                Numbers.ForEach(x => Console.WriteLine(x.Number + "  " + x.Type));
+                Numbers.ForEach(x => AddNumber(x));
+            }
         }
 
         private void UpdateContact()
+        {
+            List<Tuple<string, string>> setValues = new List<Tuple<string, string>>();
+            List<Tuple<string, string>> whereValues = new List<Tuple<string, string>>();
+
+            setValues.Add(new Tuple<string, string>("Title", TB_Title.Text));
+            setValues.Add(new Tuple<string, string>("Notes", TB_Notes.Text));
+            whereValues.Add(new Tuple<string, string>("Number", TB_Number.Text));
+            whereValues.Add(new Tuple<string, string>("Name", TB_Name.Text));
+
+            DBController.Update(connstring, $"{ContactType}_Contacts", setValues, whereValues);
+ 
+        }
+
+        private void InsertContact()
         {
             try
             {
@@ -182,7 +238,7 @@ namespace MELTEX
             }
         }
 
-        private void UpdateEmail(string email)
+        private void InsertEmail(string email)
         {
             try
             {
@@ -209,7 +265,7 @@ namespace MELTEX
             }
         }
 
-        private void UpdatePhones(string num, string type)
+        private void InsertPhones(string num, string type)
         {
             try
             {
@@ -237,7 +293,7 @@ namespace MELTEX
             }
         }
 
-        private void UpdateSocial(string social)
+        private void InsertSocial(string social)
         {
             try
             {

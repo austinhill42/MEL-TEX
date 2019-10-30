@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:MELTEX"
     mc:Ignorable="d"
     Height="50"
-    Width="425"
+    Width="450"
     Background="White">
 
     <Grid>
@@ -24,12 +24,13 @@
                 x:Name="TB_Phone"
                 Height="23"
                 FontSize="18"
-                TextChanged="TB_Phone_TextChanged"
-                Style="{StaticResource InputTextBoxes}" />
+                Style="{StaticResource InputTextBoxes}"
+                Width="120"
+                Text="{Binding Path=Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label
                 Content="Type: "
-                Margin="10,0,0,0"
+                Margin="5,0,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Style="{StaticResource Labels}" />
@@ -40,7 +41,7 @@
                 Height="23"
                 VerticalContentAlignment="Center"
                 HorizontalContentAlignment="Center"
-                SelectionChanged="CB_Type_SelectionChanged">
+                SelectedValue="{Binding Path=Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                 <ComboBoxItem
                     VerticalContentAlignment="Center"
@@ -77,6 +78,15 @@
                     Other
                 </ComboBoxItem>
             </ComboBox>
+
+            <Button
+                x:Name="BTN_Delete"
+                Content="Delete"
+                Style="{StaticResource NavigationButtons}"
+                Width="80"
+                Margin="20, 0, 0, 0"
+                Click="BTN_Delete_Click" />
+            
         </StackPanel>
     </Grid>
 </UserControl>
