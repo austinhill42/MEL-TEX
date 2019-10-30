@@ -76,6 +76,7 @@ namespace MELTEX
 
         private void BTN_EditContact_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.GetWindow(this).Content = new AddContact(this, Type, selectedNumber, selectedContact, true);
         }
 
         private void BTN_EditCustomerVendor_Click(object sender, RoutedEventArgs e)

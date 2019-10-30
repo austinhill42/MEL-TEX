@@ -1,40 +1,48 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace MELTEX
 {
     /// <summary>
     /// Interaction logic for Phone.xaml
     /// </summary>
-    public partial class Phone : UserControl
+    public partial class Phone : UserControl, INotifyPropertyChanged
     {
         #region Fields
 
         internal string number = "";
         internal string type = "";
+        private AddContact contact;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string Number { get => number; set { number = value; OnPropertyChanged("Number"); } }
+        public string Type { get => type; set { type = value; OnPropertyChanged("Type"); } }
 
         #endregion Fields
 
         #region Constructors
 
-        public Phone()
+        public Phone(AddContact c)
         {
             InitializeComponent();
+
+            contact = c;
+
+            DataContext = this;
         }
 
         #endregion Constructors
 
         #region Methods
 
-        private void CB_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            type = CB_Type.Text;
-        }
-
-        private void TB_Phone_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            number = TB_Phone.Text;
-        }
-
         #endregion Methods
+
+        private void BTN_Delete_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            (Parent as StackPanel).Children.Remove(this);
+            contact.Numbers.Remove(this);
+        }
+        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
 }
