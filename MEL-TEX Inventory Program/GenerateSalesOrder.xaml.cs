@@ -223,9 +223,9 @@ namespace MELTEX
                 return;
             }
 
-            GeneratePresale.Data pData = new GeneratePresale.Data(data.number, data.buyer, data.billTo, data.selectedShipTo, data.shipTo, data.shipVia, data.terms, data.fob, data.freightTerms, data.repNum, data.repName, "", data.table);
-            GeneratePresale presale = new GeneratePresale(this, pData);
-            MainWindow.GetWindow(this).Content = presale;
+            GenerateWorkOrder.Data wData = new GenerateWorkOrder.Data(data.number, data.quoteNum, data.buyer, data.billTo, data.selectedShipTo, data.shipTo, data.shipVia, data.terms, data.fob, data.freightTerms, data.repNum, data.repName, data.table);
+            GenerateWorkOrder workorder = new GenerateWorkOrder(this, wData);
+            MainWindow.GetWindow(this).Content = workorder;
         }
 
         private void CB_ShowList_Checked(object sender, RoutedEventArgs e)

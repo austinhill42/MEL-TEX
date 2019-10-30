@@ -127,7 +127,7 @@ namespace MELTEX
             string terms = table.Rows[0]["Terms"].ToString();
             DataTable items = ((DataView)QuoteDataGrid.ItemsSource).ToTable();
 
-            items.Columns.Remove("Barcode");
+            //items.Columns.Remove("Barcode");
             items.Columns.Remove("Warehouse");
             items.Columns.Remove("BIN");
             items.Columns.Remove("List Price");
