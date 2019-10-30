@@ -17,7 +17,7 @@ namespace MELTEX
         #region Fields
 
         internal static readonly string AccountingDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXAccountingDB.mdf; Integrated Security = True; Connect Timeout = 30";
-        internal static readonly string DBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
+        internal static readonly string DBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = |DataDirectory|Database\\MEL-TEXDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal static readonly string loc = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
         internal static readonly string PurchasingDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPurchasingDB.mdf; Integrated Security = True; Connect Timeout = 30";
         internal static readonly string PWDDBConnString = $"Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = {loc}Database\\MEL-TEXPasswordDB.mdf; Integrated Security = True; Connect Timeout = 30";

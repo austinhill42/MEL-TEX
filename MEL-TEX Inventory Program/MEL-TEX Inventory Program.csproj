@@ -124,6 +124,9 @@
       <DependentUpon>RemoveCustomer_Vendor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueConverters.cs" />
+    <Compile Include="WorkOrderItem.xaml.cs">
+      <DependentUpon>WorkOrderItem.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddContact.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -277,6 +280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RemoveCustomer_Vendor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WorkOrderItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
