@@ -78,6 +78,9 @@
     </Compile>
     <Compile Include="DBController\DBController.cs" />
     <Compile Include="DBController\MELTEXDB.cs" />
+    <Compile Include="GenerateWorkOrder.xaml.cs">
+      <DependentUpon>GenerateWorkOrder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Invoice.xaml.cs">
       <DependentUpon>Invoice.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Customer_VendorReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GenerateWorkOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
