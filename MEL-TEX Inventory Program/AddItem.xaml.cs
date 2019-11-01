@@ -67,12 +67,25 @@ namespace MELTEX
 
         private void AddItemToDatabase()
         {
-            ArrayList val = new ArrayList();
+            //ArrayList val = new ArrayList();
 
-            foreach (PropertyInfo prop in Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                val.Add(prop.GetValue(Items));
+            //foreach (PropertyInfo prop in Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            //    val.Add(prop.GetValue(Items));
+            try
+            {
+                List<Tuple<string, string>> setValues = new List<Tuple<string, string>>();
 
-            DBController.Insert(App.DBConnString, "Items", val);
+                setValues.AddRange(Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(prop => new Tuple<string, string>(prop.Name, prop.GetValue(Items).ToString())));
+                DBController.Insert(App.DBConnString, "Items", setValues);
+
+                MessageBox.Show($"Database Updated:\n\nItem {Items.Inventory_Item} entered successfully");
+
+                Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+            }
         }
 
         private void BTN_AddNote_Click(object sender, RoutedEventArgs e)
@@ -154,14 +167,24 @@ namespace MELTEX
 
         private void UpdateItemInDatabase()
         {
-            List<Tuple<string, string>> setValues = new List<Tuple<string, string>>();
-            List<Tuple<string, string>> whereValues = new List<Tuple<string, string>>();
+            try
+            {
+                List<Tuple<string, string>> setValues = new List<Tuple<string, string>>();
+                List<Tuple<string, string>> whereValues = new List<Tuple<string, string>>();
 
-            setValues.AddRange(Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(prop => new Tuple<string, string>(prop.Name, prop.GetValue(Items).ToString())));
-            whereValues.AddRange(selectedItem.Columns.Cast<DataColumn>().Select(col => new Tuple<string, string>(col.ColumnName, selectedItem.Rows[0][col].ToString())));
+                setValues.AddRange(Items.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(prop => new Tuple<string, string>(prop.Name, prop.GetValue(Items).ToString())));
+                whereValues.AddRange(selectedItem.Columns.Cast<DataColumn>().Select(col => new Tuple<string, string>(col.ColumnName, selectedItem.Rows[0][col].ToString())));
 
-            if (DBController.Update(App.DBConnString, "Items", setValues, whereValues))
-                MessageBox.Show($"Database Updated:\n\nItem {Items.Inventory_Item} updated successfully");
+
+                if (DBController.Update(App.DBConnString, "Items", setValues, whereValues))
+                    MessageBox.Show($"Database Updated:\n\nItem {Items.Inventory_Item} updated successfully");
+
+                Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+            }
         }
 
         private void UpdatePublishedSales()
@@ -170,7 +193,7 @@ namespace MELTEX
                 Items.Multiplier = "";
             else
             {
-                if (Items.List_Price != "")
+                if (Items.List_Price != "" && Items.Group != null)
                 {
                     Items.Multiplier = GroupTable.Select($"Group = '{Items.Group}'")[0][1].ToString();
                     decimal m = Convert.ToDecimal(Items.Multiplier);

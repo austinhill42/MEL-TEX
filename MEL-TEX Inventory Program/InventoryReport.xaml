@@ -11,13 +11,13 @@
     Width="Auto"
     Title="Inventory Report"
     Background="White"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Loaded="InventoryReportPage_Loaded">
 
     <Viewbox>
 
         <Grid
-            Margin="10, 20, 10, 20">
+            Margin="10, 20, 10, 20"
+            VirtualizingPanel.IsVirtualizing="True">
 
             <Grid.ColumnDefinitions>
 
@@ -48,7 +48,7 @@
                 <RowDefinition
                     Height="70" />
             </Grid.RowDefinitions>
-
+            
             <StackPanel
                 Orientation="Horizontal"
                 Grid.Column="0"
@@ -109,21 +109,29 @@
                     VerticalAlignment="Center" />
 
                 <DataGrid
-                    x:Name="InventoryDataGrid"
+                    x:Name="ItemsDataGrid"
                     Height="369"
                     VerticalContentAlignment="Center"
                     IsReadOnly="True"
-                    ItemsSource="{Binding}">
+                    ItemsSource="{Binding ItemsDataTable}"
+                    RowDetailsVisibilityMode="VisibleWhenSelected"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    LoadingRowDetails="ItemsDataGrid_LoadingRowDetails">
 
-                    <DataGrid.Resources>
-                        <Style
-                            TargetType="DataGridRow">
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
 
-                            <EventSetter
-                                Event="MouseDoubleClick"
-                                Handler="InventoryDataGrid_MouseDoubleClick" />
-                        </Style>
-                    </DataGrid.Resources>
+                            <DataGrid
+                                x:Name="InventoryDataGrid"
+                                VerticalContentAlignment="Center"
+                                IsReadOnly="True"
+                                Margin="0, 0, 0, 20"
+                                ItemsSource="{Binding InventoryDataTable, RelativeSource={RelativeSource AncestorType=Page, Mode=FindAncestor}}" 
+                                MouseDoubleClick="InventoryDataGrid_MouseDoubleClick"/>
+
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                    
                 </DataGrid>
             </StackPanel>
 
@@ -158,18 +166,9 @@
                     Height="369"
                     AutoGenerateColumns="True"
                     IsReadOnly="False"
-                    ItemsSource="{Binding ., UpdateSourceTrigger=PropertyChanged}">
-
-                    <DataGrid.Resources>
-                        <Style
-                            TargetType="DataGridRow">
-
-                            <EventSetter
-                                Event="MouseDoubleClick"
-                                Handler="QuoteDataGrid_MouseDoubleClick" />
-                        </Style>
-                    </DataGrid.Resources>
-                </DataGrid>
+                    ItemsSource="{Binding QuoteDataTable, UpdateSourceTrigger=PropertyChanged}"
+                    MouseDoubleClick="QuoteDataGrid_MouseDoubleClick" />
+                
             </StackPanel>
 
             <Button

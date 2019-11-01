@@ -1,32 +1,48 @@
 ﻿using MELTEX.Database;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace MELTEX
 {
     /// <summary>
     /// Interaction logic for InventoryInbound.xaml
     /// </summary>
-    public partial class InventoryReport : Page
+    public partial class InventoryReport : Page, INotifyPropertyChanged
     {
+        #region Events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion Events
+
         #region Fields
 
-        private const string COLSTRING = "item.Inventory_Item AS 'Item ID', item.Description, inventory.Barcode_No AS Barcode, inventory.Warehouse, inventory.BIN, inventory.Quantity AS 'QTY on Hand', " +
-                    "inventory.QuantityAvail AS 'QTY Available', item.List_Price AS 'List Price', item.Multiplier AS 'Mult', item.Weight, item.Published_Sales AS 'Pub Sale', item.Notes ";
+        private readonly string InventoryColumns = "Barcode_No AS Barcode, Warehouse, BIN, Quantity AS 'QTY on Hand', QuantityAvail AS 'QTY Available' ";
+        private readonly string ItemsColumns = "Inventory_Item AS 'Item ID', Description, Quantity AS 'Total QTY on Hand', QuantityAvail AS 'Total QTY Available', List_Price AS 'List Price', Multiplier AS 'Mult', Weight, Published_Sales AS 'Pub Sale', Notes ";
+        private readonly string[] ExcludedFromQuote = { "Warehouse", "BIN", "List Price", "Mult", "Notes", "Total QTY on Hand", "Total QTY Available"};
 
-        private DataTable inventoryDataTable;
+        private DataTable _InventoryDataTable;
+        private DataTable _ItemsDataTable;
+        private DataTable _QuoteDataTable;
+        private List<string> list;
+
         internal Page previousPage;
 
         #endregion Fields
 
         #region Properties
 
-        public DataTable QuoteDataTable { get; set; }
+        public DataTable InventoryDataTable { get => _InventoryDataTable; set { _InventoryDataTable = value; OnPropertyChanged("InventoryDataTable"); } }
+        public DataTable ItemsDataTable { get => _ItemsDataTable; set { _ItemsDataTable = value; OnPropertyChanged("ItemsDataTable"); } }
+        public List<string> List { get => list; set { list = value; OnPropertyChanged("list"); } }
+        public DataTable QuoteDataTable { get => _QuoteDataTable; set { _QuoteDataTable = value; OnPropertyChanged("QuoteDataTable"); } }
 
         #endregion Properties
 
@@ -41,26 +57,23 @@ namespace MELTEX
 
         #endregion Constructors
 
-        /*********************************************
-         *
-         *      EVENT HANDLERS:
-         *
-         ********************************************/
-
         #region Methods
 
-        private void AddLineNumbers(DataTable table)
+        private DataTable AddLineNumbers(DataTable table)
         {
-            if (!table.Columns.Contains("Line:"))
-            {
-                table.Columns.Add(new DataColumn("Line:", typeof(string)));
-                table.Columns["Line:"].SetOrdinal(0);
-            }
+            DataTable tb = table.Copy();
 
-            int num = 1;
+            if (tb.Columns.Contains("Line:"))
+                tb.Columns.Remove("Line:");
 
-            foreach (DataRow row in table.Rows)
-                row[0] = num++;
+            tb.Columns.Add(new DataColumn("Line:", Type.GetType("System.Int32")));
+
+            tb.Columns["Line:"].SetOrdinal(0);
+
+            tb.AsEnumerable().ToList().ForEach(x => x["Line:"] = x.Table.Rows.IndexOf(x) + 1);
+
+
+            return tb;
         }
 
         private void BTN_Back_Click(object sender, RoutedEventArgs e)
@@ -127,12 +140,11 @@ namespace MELTEX
             string terms = table.Rows[0]["Terms"].ToString();
             DataTable items = ((DataView)QuoteDataGrid.ItemsSource).ToTable();
 
-            //items.Columns.Remove("Barcode");
-            items.Columns.Remove("Warehouse");
-            items.Columns.Remove("BIN");
-            items.Columns.Remove("List Price");
-            items.Columns.Remove("Mult");
-            items.Columns.Remove("Notes");
+            ExcludedFromQuote.ToList().ForEach(
+                x => {
+                    if (items.Columns.Contains(x))
+                        items.Columns.Remove(x);
+                });
 
             GenerateQuote.Data data = new GenerateQuote.Data("", buyer, billto, "", shipTo, "", terms, "", "", "", "", "", items);
 
@@ -155,33 +167,49 @@ namespace MELTEX
                 MainWindow.GetWindow(this).Content = new GenerateSalesOrder(this, open.salesordernum);
         }
 
-        private void InitializeQuoteDataGrid()
-        {
-            QuoteDataTable = new DataTable();
-
-            foreach (DataColumn col in inventoryDataTable.Columns)
-                QuoteDataTable.Columns.Add(new DataColumn(col.ColumnName));
-
-            QuoteDataGrid.DataContext = QuoteDataTable;
-        }
-
         private void InventoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            int rowIndex = (sender as DataGridRow).GetIndex();
-            QuoteDataTable.ImportRow(inventoryDataTable.Rows[rowIndex]);
+            DataTable t1 = ItemsDataTable.Clone();
+            DataTable t2 = InventoryDataTable.Clone();
 
-            AddLineNumbers(QuoteDataTable);
-            QuoteDataGrid.UpdateLayout();
+            t1.ImportRow((ItemsDataGrid.SelectedItem as DataRowView).Row);
+            t2.ImportRow(((sender as DataGrid).SelectedItem as DataRowView).Row);
+
+            DataTable t3 = MergeTables(t1, t2);
+
+            ExcludedFromQuote.ToList().ForEach(
+                x =>
+                {
+                    if (t3.Columns.Contains(x))
+                        t3.Columns.Remove(x);
+                });
+
+            if (QuoteDataTable == null)
+                QuoteDataTable = t3.Clone();
+
+            t3.AsEnumerable().ToList().ForEach(x => QuoteDataTable.ImportRow(x));
+
+            QuoteDataTable = AddLineNumbers(QuoteDataTable);
+        }
+
+        private void InitializeQuoteDataGrid()
+        {
+            
         }
 
         private void InventoryReportPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.WindowTitle = "Inventory Report";
 
+            DataContext = this;
+
             PopulateInventoryDataGrid();
             InitializeQuoteDataGrid();
             PopulateCustomersComboBox();
+
         }
+
+        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         private void PopulateCustomersComboBox()
         {
@@ -191,15 +219,15 @@ namespace MELTEX
 
         private void PopulateInventoryDataGrid(string searchText = "", string searchCol = "")
         {
-            inventoryDataTable = new DataTable();
-
             try
             {
-                inventoryDataTable = DBController.GetTableFromQuery(App.DBConnString, COLSTRING, "Items", "Inventory_Item", "item", "Inventory", "Inventory_Item", "inventory", "item", "Inventory_Item", "item", searchCol, searchText);
+                ItemsDataTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString,
+                                                                columns: ItemsColumns,
+                                                                t1: "Items",
+                                                                searchCol: searchCol,
+                                                                searchStart: searchText);
 
-                AddLineNumbers(inventoryDataTable);
-
-                InventoryDataGrid.DataContext = inventoryDataTable.DefaultView;
+                ItemsDataTable = AddLineNumbers(ItemsDataTable);
             }
             catch (Exception ex)
             {
@@ -212,7 +240,7 @@ namespace MELTEX
             int rowIndex = (sender as DataGridRow).GetIndex();
             QuoteDataTable.Rows.Remove(QuoteDataTable.Rows[rowIndex]);
 
-            AddLineNumbers(QuoteDataTable);
+            QuoteDataTable = AddLineNumbers(QuoteDataTable);
         }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
@@ -225,6 +253,51 @@ namespace MELTEX
             PopulateInventoryDataGrid((sender as TextBox).Text, searchcol);
         }
 
+        private void ItemsDataGrid_LoadingRowDetails(object sender, DataGridRowDetailsEventArgs e)
+        {
+            int i = e.Row.GetIndex();// ItemsDataGrid.SelectedIndex;
+            string itemid = ItemsDataTable.Rows[i]["Item ID"].ToString();
+
+            InventoryDataTable = DBController.GetTableFromQuery(sqlconn: App.DBConnString,
+                                                                    columns: InventoryColumns,
+                                                                    t1: "Inventory",
+                                                                    searchCol: "Inventory_Item",
+                                                                    searchEqual: itemid);
+        }
+
+        public static DataTable MergeTables(DataTable baseTable, params DataTable[] additionalTables)
+        {
+            // Build combined table columns
+            DataTable merged = baseTable;
+            foreach (DataTable dt in additionalTables)
+            {
+                merged = AddTable(merged, dt);
+            }
+            return merged;
+        }
+
+        public static DataTable AddTable(DataTable baseTable, DataTable additionalTable)
+        {
+            // Build combined table columns
+            DataTable merged = baseTable.Clone();                  // Include all columns from base table in result.
+            foreach (DataColumn col in additionalTable.Columns)
+            {
+                string newColumnName = col.ColumnName;
+                merged.Columns.Add(newColumnName, col.DataType);
+            }
+            // Add all rows from both tables
+            var bt = baseTable.AsEnumerable();
+            var at = additionalTable.AsEnumerable();
+            var mergedRows = bt.Zip(at, (r1, r2) => r1.ItemArray.Concat(r2.ItemArray).ToArray());
+            foreach (object[] rowFields in mergedRows)
+            {
+                merged.Rows.Add(rowFields);
+            }
+            return merged;
+        }
+
+        #endregion Methods
+
         /*******************************************
          *
          *      CodeBehind Methods
@@ -235,11 +308,5 @@ namespace MELTEX
          *      BUTTON HANDLING
          *
          *******************************************/
-
-        private void TB_SearchID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-        }
-
-        #endregion Methods
     }
 }
