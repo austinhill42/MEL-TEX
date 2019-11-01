@@ -209,13 +209,13 @@ namespace MELTEX
 
         private void InboundItem()
         {
-            try
-            {
+            //try
+            //{
                 using (SqlConnection sql = new SqlConnection(App.DBConnString))
                 {
                     sql.Open();
                     SqlCommand com = sql.CreateCommand();
-                    com.CommandText = "INSERT INTO Inventory ([Inventory_Item], [Cost], [Barcode_No], [Warehouse], [BIN], [Quantity], [QuantityAvail], [PO#], [Notes]) " +
+                    com.CommandText = "INSERT INTO Inventory ([Inventory_Item], [Cost], [Barcode_No], [Warehouse], [BIN], [Quantity], [QuantityAvail], [PO], [Notes]) " +
                         "VALUES (@item,@cost,@barcode,@warehouse,@bin,@quantity,@avail,@po,@notes) ";
 
                     com.Parameters.AddWithValue("@item", CB_ItemID.SelectedValue.ToString());
@@ -232,19 +232,19 @@ namespace MELTEX
 
                     MessageBox.Show($"Item {CB_ItemID.SelectedValue.ToString()} inbounded successfully");
                 }
-            }
-            catch (Exception ex)
-            {
-                if (ex is System.FormatException)
-                    MessageBox.Show("One of the fields was entered with an incorrect format. Check your values and try again.");
-                else if (ex is SqlException)
-                {
-                    if (ex.Message.Contains("conflicted"))
-                        MessageBox.Show("The item does not exist. Enter the item into the \"Inventory Items\" page first.");
-                }
-                else
-                    MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (ex is System.FormatException)
+            //        MessageBox.Show("One of the fields was entered with an incorrect format. Check your values and try again.");
+            //    else if (ex is SqlException)
+            //    {
+            //        if (ex.Message.Contains("conflicted"))
+            //            MessageBox.Show("The item does not exist. Enter the item into the \"Inventory Items\" page first.");
+            //    }
+            //    else
+            //        MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+            //}
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

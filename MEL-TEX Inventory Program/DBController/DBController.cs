@@ -16,7 +16,7 @@ namespace MELTEX.Database
         }
 
         public static DataTable GetTableFromQuery(string sqlconn, string columns, string t1, string t1join = "",
-                                                          string t1Alias = "", string t2 = "", string t2join = "",
+                                                          string t1Alias = "t1", string t2 = "", string t2join = "",
                                                   string t2Alias = "t2", string orderTableAlias = "t1",
                                                   string orderCol = "", string searchTableAlias = "t1",
                                                   string searchCol = "", string searchStart = "",
@@ -41,8 +41,8 @@ namespace MELTEX.Database
                 {
                     if (searchStart != "")
                     {
-                        query += $"WHERE {searchTableAlias}.{searchCol} LIKE @search + '%' ";
-                        cmd.Parameters.AddWithValue("@search", searchStart);
+                        query += $"WHERE {searchTableAlias}.{searchCol} LIKE @search ";
+                        cmd.Parameters.AddWithValue("@search", searchStart + "%");
                     }
                     else if (searchEqual != "")
                     {
@@ -64,24 +64,26 @@ namespace MELTEX.Database
             return table;
         }
 
-        public static void Insert(string sqlconn, string tableName, ArrayList values)
+        public static void Insert(string sqlconn, string tableName, List<Tuple<string, string>> values)
         {
             using (SqlConnection sql = new SqlConnection(sqlconn))
             using (SqlCommand cmd = sql.CreateCommand())
             using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
             {
-                List<string> p = (values.Cast<Object>().Select(item => $"@{Guid.NewGuid().ToString().Replace("-", "")}")).ToList();
+                List<string> p = (values.Select(item => $"@{item.Item1}")).ToList();
+                List<string> setString = new List<string>();
+
+                values.ForEach(val => setString.Add($"[{val.Item1}]"));
 
                 string query =
-                    $"INSERT INTO {tableName} " +
+                    $"INSERT INTO {tableName} ({string.Join(", ",setString)}) " +
                     $"VALUES ({string.Join(",", p)}) ";
 
                 sql.Open();
 
                 cmd.CommandText = query;
 
-                int index = 0;
-                p.ForEach(el => cmd.Parameters.AddWithValue(el, values[index++]));
+                values.ForEach(el => cmd.Parameters.AddWithValue($"@{el.Item1}", el.Item2));
 
                 cmd.ExecuteNonQuery();
             }

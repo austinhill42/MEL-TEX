@@ -93,7 +93,7 @@ namespace MELTEX
 
             try
             {
-                string query = "UPDATE Inventory SET QuantityAvail = @avail WHERE Inventory_Item = @item";
+                string query = "UPDATE Items SET QuantityAvail = @avail WHERE Inventory_Item = @item";
 
                 using (SqlConnection sql = new SqlConnection(DBConnString))
                 {
