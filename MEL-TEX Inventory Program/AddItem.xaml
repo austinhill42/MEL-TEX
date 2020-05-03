@@ -148,8 +148,8 @@
 
             <ComboBox
                 x:Name="CB_Group"
-                Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ItemsSource="{Binding Path=GroupTable.DefaultView, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
+                
+                ItemsSource="{Binding Path=GroupTable, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Page}}"
                 DisplayMemberPath="Group"
                 SelectedValuePath="Multiplier"
                 Grid.Row="2"

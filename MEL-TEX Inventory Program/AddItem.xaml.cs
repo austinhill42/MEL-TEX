@@ -109,7 +109,15 @@ namespace MELTEX
                 AddItemToDatabase();
         }
 
-        private void CB_Group_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdatePublishedSales();
+        private void CB_Group_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CB_Group.SelectedIndex >= 0)
+            {
+                Items.Group = CB_Group.SelectedItem.ToString();
+                Items.Multiplier = CB_Group.SelectedValue.ToString();
+                UpdatePublishedSales(); 
+            }
+        }
 
         private void CB_ItemID_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -127,6 +135,8 @@ namespace MELTEX
                 Items.Inventory_Item = "";
                 Items.Group = "";
             }
+
+            CB_Group.SelectedIndex = -1;
         }
 
         private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -189,18 +199,18 @@ namespace MELTEX
 
         private void UpdatePublishedSales()
         {
-            if (Items.Group == "")
-                Items.Multiplier = "";
-            else
-            {
-                if (Items.List_Price != "" && Items.Group != null)
+            //if (Items.Group == "")
+            //    Items.Multiplier = "";
+            //else
+            //{
+                if (Items.List_Price != "" && Items.Group != null && Items.Multiplier != "")
                 {
-                    Items.Multiplier = GroupTable.Select($"Group = '{Items.Group}'")[0][1].ToString();
+                    //Items.Multiplier = GroupTable.Select($"Group = '{Items.Group}'")[0][1].ToString();
                     decimal m = Convert.ToDecimal(Items.Multiplier);
                     decimal p = Convert.ToDecimal(Items.List_Price);
                     Items.Published_Sales = (m * p).ToString("0.00");
                 }
-            }
+            //}
         }
 
         #endregion Methods
